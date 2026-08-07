@@ -74,6 +74,21 @@ section.spec-sec{margin:60px 0}
 .ex-chips span{font-size:.68rem;font-weight:700;border:1.5px solid rgba(43,40,34,.35);border-radius:999px;padding:3px 12px;color:var(--ink-soft);background:var(--paper)}
 .flow-wrap,.model-wrap{overflow-x:auto}
 .flow-wrap svg,.model-wrap svg{min-width:820px;width:100%;height:auto;display:block}
+
+/* ---------- toggle de idioma ES · EN ---------- */
+.lang-toggle{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.72rem;font-weight:800;letter-spacing:.06em;
+  border:2px solid var(--ink);border-radius:999px;padding:5px 13px;
+  background:var(--card);color:var(--ink-soft);cursor:pointer;
+  box-shadow:2.5px 3px 0 var(--ink);transition:all .2s var(--ease);transform:rotate(.8deg);
+}
+.lang-toggle:hover{transform:rotate(.8deg) translate(-1px,-1px);box-shadow:4px 5px 0 var(--ink);background:var(--hl)}
+.lang-toggle:active{transform:rotate(.8deg) translate(1px,2px);box-shadow:1px 1px 0 var(--ink)}
+.lang-toggle [data-lang]{opacity:.42;transition:opacity .2s,color .2s}
+.lang-toggle [data-lang].on{opacity:1;color:var(--ink)}
+.lang-sep{opacity:.4;font-weight:600}
+
 @media(prefers-reduced-motion:reduce){.flow-dot{display:none}}
 
 /* ---------- triangulación ---------- */
@@ -196,7 +211,7 @@ footer{padding:26px 0 40px;font-family:var(--hand);font-weight:600;font-size:1.1
 
   <div class="topbar">
     <a class="back" href="../index.html">← Volver al portafolio</a>
-    <span class="note-hand">caso de estudio · de la pluma al dashboard ✎</span>
+    <span style="display:inline-flex;align-items:center;gap:14px"><span class="note-hand">caso de estudio · de la pluma al dashboard ✎</span><span data-lang-toggle-here></span></span>
   </div>
 
   <div class="page-head">
@@ -628,6 +643,7 @@ footer{padding:26px 0 40px;font-family:var(--hand);font-weight:600;font-size:1.1
 /* ============================================================
    Datos de muestra (deterministas) + motor de filtrado
    ============================================================ */
+window.T = function(s){ return window.I18N ? window.I18N.t(s) : s; };
 const MONTHS_25 = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 const MONTHS_26 = ['Ene','Feb','Mar','Abr','May','Jun'];
 const BGROUPS = ['JLM','CRA','HAB','EMC','REA','SCO'];
@@ -714,7 +730,7 @@ function kcardHTML(k){
           </div>
         </div>
         <div class="kface kback">
-          <div class="ktitle"><span>Fórmula</span><span class="idx">${k.n}</span></div>
+          <div class="ktitle"><span>${window.T('Fórmula')}</span><span class="idx">${k.n}</span></div>
           <div class="kformula">${k.f}</div>
         </div>
       </div>
@@ -723,38 +739,38 @@ function kcardHTML(k){
 function renderKPIs(a){
   const full = a.cyclePRPO+a.cyclePORec+a.cycleRecInv;
   const cycle=[
-    {n:'C1', t:'Avg Cycle Time PR → PO', v:fmt1(a.cyclePRPO), u:'días', pct:Math.min(a.cyclePRPO/22*100,100), tick:15/22*100,
-     l:light(a.cyclePRPO,15,18), fill:light(a.cyclePRPO,15,18), sub:'Meta ≤ 15 días hábiles',
-     f:'PROMEDIO por PR de (creación del PO − envío del PR) en días hábiles, con calendario que excluye fines de semana y festivos.'},
-    {n:'C2', t:'Avg PO → Receipt', v:fmt1(a.cyclePORec), u:'días', pct:Math.min(a.cyclePORec/22*100,100), tick:15/22*100,
-     l:light(a.cyclePORec,15,18), fill:light(a.cyclePORec,15,18), sub:'Meta ≤ 15 días',
-     f:'PROMEDIO de (fecha de recepción − creación del PO) en días hábiles, por orden recibida en el periodo.'},
-    {n:'C3', t:'Avg Receipt → Invoice', v:fmt1(a.cycleRecInv), u:'días', pct:Math.min(a.cycleRecInv/8*100,100), tick:5/8*100,
-     l:light(a.cycleRecInv,5,6.5), fill:light(a.cycleRecInv,5,6.5), sub:'Meta ≤ 5 días',
-     f:'PROMEDIO de (fecha de factura − fecha de recepción) en días hábiles, por orden facturada en el periodo.'},
-    {n:'C4', t:'Full Cycle PR → Invoice', v:fmt1(full), u:'días', pct:Math.min(full/45*100,100), tick:35/45*100,
-     l:light(full,35,40), fill:light(full,35,40), sub:'Meta ≤ 35 días',
-     f:'Suma de los tres segmentos del ciclo: PR→PO (≤15) + PO→Receipt (≤15) + Receipt→Invoice (≤5).'}];
+    {n:'C1', t:window.T('Avg Cycle Time PR → PO'), v:fmt1(a.cyclePRPO), u:window.T('días'), pct:Math.min(a.cyclePRPO/22*100,100), tick:15/22*100,
+     l:light(a.cyclePRPO,15,18), fill:light(a.cyclePRPO,15,18), sub:window.T('Meta ≤ 15 días hábiles'),
+     f:window.T('PROMEDIO por PR de (creación del PO − envío del PR) en días hábiles, con calendario que excluye fines de semana y festivos.')},
+    {n:'C2', t:window.T('Avg PO → Receipt'), v:fmt1(a.cyclePORec), u:window.T('días'), pct:Math.min(a.cyclePORec/22*100,100), tick:15/22*100,
+     l:light(a.cyclePORec,15,18), fill:light(a.cyclePORec,15,18), sub:window.T('Meta ≤ 15 días'),
+     f:window.T('PROMEDIO de (fecha de recepción − creación del PO) en días hábiles, por orden recibida en el periodo.')},
+    {n:'C3', t:window.T('Avg Receipt → Invoice'), v:fmt1(a.cycleRecInv), u:window.T('días'), pct:Math.min(a.cycleRecInv/8*100,100), tick:5/8*100,
+     l:light(a.cycleRecInv,5,6.5), fill:light(a.cycleRecInv,5,6.5), sub:window.T('Meta ≤ 5 días'),
+     f:window.T('PROMEDIO de (fecha de factura − fecha de recepción) en días hábiles, por orden facturada en el periodo.')},
+    {n:'C4', t:window.T('Full Cycle PR → Invoice'), v:fmt1(full), u:window.T('días'), pct:Math.min(full/45*100,100), tick:35/45*100,
+     l:light(full,35,40), fill:light(full,35,40), sub:window.T('Meta ≤ 35 días'),
+     f:window.T('Suma de los tres segmentos del ciclo: PR→PO (≤15) + PO→Receipt (≤15) + Receipt→Invoice (≤5).')}];
   const vol=[
-    {n:'V1', t:'% PRs dentro de SLA', v:fmt1(a.slaPct), u:'%', pct:a.slaPct, tick:80,
-     l:light(a.slaPct,80,65,true), fill:light(a.slaPct,80,65,true), sub:'Convertidas en ≤ 15 días · meta ≥ 80%',
-     f:'DIVIDE(# PRs con ciclo ≤ 15 días hábiles, # PRs convertidas).'},
-    {n:'V2', t:'PR → PO Conversion Rate', v:fmt1(a.convRate), u:'%', pct:a.convRate, tick:75,
-     l:light(a.convRate,75,60,true), fill:light(a.convRate,75,60,true), sub:'Meta ≥ 75%',
-     f:'DIVIDE(# PRs con al menos una orden vinculada, # PRs enviadas) — usando doble ruta de navegación en el modelo.'},
-    {n:'V3', t:'PO Quantity', v:fmt0(a.poQty), u:'POs', pct:100, tick:0, noTick:true,
-     l:'var(--pen)', fill:'var(--blue2)', sub:'Órdenes creadas · excluye canceladas',
-     f:'CONTEO de órdenes de compra con fecha de creación en el periodo, excluyendo canceladas.'}];
+    {n:'V1', t:window.T('% PRs dentro de SLA'), v:fmt1(a.slaPct), u:'%', pct:a.slaPct, tick:80,
+     l:light(a.slaPct,80,65,true), fill:light(a.slaPct,80,65,true), sub:window.T('Convertidas en ≤ 15 días · meta ≥ 80%'),
+     f:window.T('DIVIDE(# PRs con ciclo ≤ 15 días hábiles, # PRs convertidas).')},
+    {n:'V2', t:window.T('PR → PO Conversion Rate'), v:fmt1(a.convRate), u:'%', pct:a.convRate, tick:75,
+     l:light(a.convRate,75,60,true), fill:light(a.convRate,75,60,true), sub:window.T('Meta ≥ 75%'),
+     f:window.T('DIVIDE(# PRs con al menos una orden vinculada, # PRs enviadas) — usando doble ruta de navegación en el modelo.')},
+    {n:'V3', t:window.T('PO Quantity'), v:fmt0(a.poQty), u:'POs', pct:100, tick:0, noTick:true,
+     l:'var(--pen)', fill:'var(--blue2)', sub:window.T('Órdenes creadas · excluye canceladas'),
+     f:window.T('CONTEO de órdenes de compra con fecha de creación en el periodo, excluyendo canceladas.')}];
   const risk=[
-    {n:'R1', t:'PR Backlog %', v:fmt1(a.prBacklogPct), u:`% · ${fmt0(a.prBacklogQty)} PRs`, pct:a.prBacklogPct, tick:10,
-     l:light(a.prBacklogPct,10,20), fill:light(a.prBacklogPct,10,20), sub:'Abiertas fuera de SLA a hoy · meta ≤ 10%',
-     f:'DIVIDE(# PRs abiertas con antigüedad > SLA a hoy, # PRs abiertas totales). El denominador no se filtra por el periodo del reporte.'},
-    {n:'R2', t:'PO Backlog %', v:fmt1(a.poBacklogPct), u:`% · ${fmt0(a.poBacklogQty)} POs`, pct:a.poBacklogPct, tick:10,
-     l:light(a.poBacklogPct,10,18), fill:light(a.poBacklogPct,10,18), sub:'Entrega vencida vs ETA · meta ≤ 10%',
-     f:'DIVIDE(# órdenes abiertas con fecha de entrega vencida a hoy, # órdenes abiertas). Excluye canceladas.'},
-    {n:'R3', t:'PO Spend USD', v:'$'+a.spend.toFixed(1)+'M', u:'USD', pct:100, tick:0, noTick:true,
-     l:'var(--pen)', fill:'var(--blue2)', sub:'Monto total facturado · no canceladas',
-     f:'SUMA del monto facturado en USD sobre órdenes no canceladas con fecha de creación válida.'}];
+    {n:'R1', t:window.T('PR Backlog %'), v:fmt1(a.prBacklogPct), u:`% · ${fmt0(a.prBacklogQty)} PRs`, pct:a.prBacklogPct, tick:10,
+     l:light(a.prBacklogPct,10,20), fill:light(a.prBacklogPct,10,20), sub:window.T('Abiertas fuera de SLA a hoy · meta ≤ 10%'),
+     f:window.T('DIVIDE(# PRs abiertas con antigüedad > SLA a hoy, # PRs abiertas totales). El denominador no se filtra por el periodo del reporte.')},
+    {n:'R2', t:window.T('PO Backlog %'), v:fmt1(a.poBacklogPct), u:`% · ${fmt0(a.poBacklogQty)} POs`, pct:a.poBacklogPct, tick:10,
+     l:light(a.poBacklogPct,10,18), fill:light(a.poBacklogPct,10,18), sub:window.T('Entrega vencida vs ETA · meta ≤ 10%'),
+     f:window.T('DIVIDE(# órdenes abiertas con fecha de entrega vencida a hoy, # órdenes abiertas). Excluye canceladas.')},
+    {n:'R3', t:window.T('PO Spend USD'), v:'$'+a.spend.toFixed(1)+'M', u:'USD', pct:100, tick:0, noTick:true,
+     l:'var(--pen)', fill:'var(--blue2)', sub:window.T('Monto total facturado · no canceladas'),
+     f:window.T('SUMA del monto facturado en USD sobre órdenes no canceladas con fecha de creación válida.')}];
   document.getElementById('kpis-cycle').innerHTML = cycle.map(kcardHTML).join('');
   document.getElementById('kpis-vol').innerHTML   = vol.map(kcardHTML).join('');
   document.getElementById('kpis-risk').innerHTML  = risk.map(kcardHTML).join('');
@@ -781,14 +797,14 @@ function chartTrend(){
     el('text',{x:L-8,y:y(g)+4,'text-anchor':'end','font-size':10,fill:SOFT},svg,g);
   });
   el('line',{x1:L,x2:W-R,y1:y(15),y2:y(15),stroke:TGc,'stroke-width':2.2,'stroke-dasharray':'7 6'},svg);
-  el('text',{x:W-R,y:y(15)-6,'text-anchor':'end','font-size':10,'font-weight':700,fill:TGc},svg,'meta 15 d');
+  el('text',{x:W-R,y:y(15)-6,'text-anchor':'end','font-size':10,'font-weight':700,fill:TGc},svg,window.T('meta 15 d'));
   const pts=data.map((d,i)=>[x(i),y(d.cycle)]);
   el('path',{d:'M'+pts.map(p=>p.join(',')).join(' L ')+` L ${x(data.length-1)},${y(0)} L ${x(0)},${y(0)} Z`,fill:'rgba(255,216,77,.32)'},svg);
   el('path',{d:'M'+pts.map(p=>p.join(',')).join(' L '),fill:'none',stroke:INK,'stroke-width':2.4,'stroke-linecap':'round','stroke-linejoin':'round'},svg);
   data.forEach((d,i)=>{
     el('circle',{cx:x(i),cy:y(d.cycle),r:4,fill:d.cycle<=15?'#77bd42':'#E24B4A',stroke:'#fff','stroke-width':1.6},svg);
     el('text',{x:x(i),y:y(d.cycle)-10,'text-anchor':'middle','font-size':10,'font-weight':700,fill:INK},svg,d.cycle.toFixed(1));
-    el('text',{x:x(i),y:H-10,'text-anchor':'middle','font-size':10,fill:SOFT},svg,d.m);
+    el('text',{x:x(i),y:H-10,'text-anchor':'middle','font-size':10,fill:SOFT},svg,window.T(d.m));
   });
 }
 function chartBG(){
@@ -825,17 +841,17 @@ function donut(id, parts, centerTxt, centerSub){
 function chartPipe(a){
   const open=a.prBacklogQty + Math.round(a.prQty*0.06);
   const closed=Math.max(a.prQty-open,0);
-  donut('ch-pipe',[{v:closed,c:HLc},{v:open,c:GRAY2}], (a.prQty).toLocaleString('en-US'),'PRs totales');
+  donut('ch-pipe',[{v:closed,c:HLc},{v:open,c:GRAY2}], (a.prQty).toLocaleString('en-US'),window.T('PRs totales'));
   const svg=document.getElementById('ch-pipe');
   el('text',{x:150,y:222,'text-anchor':'middle','font-size':10.5,'font-weight':700,fill:SOFT},svg,
-     `cerradas ${closed.toLocaleString('en-US')} · abiertas ${open.toLocaleString('en-US')}`);
+     `${window.T('cerradas')} ${closed.toLocaleString('en-US')} · ${window.T('abiertas')} ${open.toLocaleString('en-US')}`);
 }
 function chartContract(a){
   const svg=clear('ch-contract');
   const yes=a.contractYes, no=Math.max(a.prQty-yes,0);
   const W=300,H=240,base=192,maxV=Math.max(no,yes,1);
   const bh=v=>Math.max(v/maxV*130,4);
-  [['NO',no,HLc,86],['SÍ',yes,'#f6c9a6',186]].forEach(([lb,v,c,x])=>{
+  [[window.T('no').toUpperCase(),no,HLc,86],[window.T('sí').toUpperCase(),yes,'#f6c9a6',186]].forEach(([lb,v,c,x])=>{
     el('rect',{x, y:base-bh(v), width:36, height:bh(v), rx:4, fill:c, stroke:INK,'stroke-width':1.6},svg);
     el('text',{x:x+18,y:base-bh(v)-8,'text-anchor':'middle','font-size':12,'font-weight':800,fill:INK},svg,v.toLocaleString('en-US'));
     el('text',{x:x+18,y:base+18,'text-anchor':'middle','font-size':11,'font-weight':700,fill:SOFT},svg,lb);
@@ -856,12 +872,12 @@ function chartSeg(){
       acc+=v;
     });
     el('text',{x:x0+w/2,y:y(acc)-6,'text-anchor':'middle','font-size':9.5,'font-weight':700,fill:INK},svg,acc.toFixed(0));
-    el('text',{x:x0+w/2,y:H-8,'text-anchor':'middle','font-size':9.5,fill:SOFT},svg,d.m);
+    el('text',{x:x0+w/2,y:H-8,'text-anchor':'middle','font-size':9.5,fill:SOFT},svg,window.T(d.m));
   });
 }
 function chartCat(a){
   const svg=clear('ch-cat');
-  const cats=[['Directo a proyecto',.58],['RO · proyecto',.24],['CapEx',.08],['Alto valor fijo',.06],['Inventario',.04]];
+  const cats=[['Directo a proyecto',.58],['RO · proyecto',.24],['CapEx',.08],['Alto valor fijo',.06],['Inventario',.04]].map(function(c){return [window.T(c[0]),c[1]];});
   const W=460,H=230,L=150,R=64,T=18,rowH=38;
   const maxV=a.spend*cats[0][1]||1;
   cats.forEach(([lb,f],i)=>{
@@ -884,7 +900,7 @@ function chartSpend(){
     const bx=L+i*bw+bw*.2;
     el('rect',{x:bx,y:yQ(d.poQty),width:bw*.6,height:Math.max(yQ(0)-yQ(d.poQty),1),rx:4,fill:HLc,stroke:INK,'stroke-width':1.3},svg);
     el('text',{x:bx+bw*.3,y:yQ(d.poQty)-6,'text-anchor':'middle','font-size':9.5,'font-weight':700,fill:INK},svg,d.poQty);
-    el('text',{x:bx+bw*.3,y:H-10,'text-anchor':'middle','font-size':10,fill:SOFT},svg,d.m);
+    el('text',{x:bx+bw*.3,y:H-10,'text-anchor':'middle','font-size':10,fill:SOFT},svg,window.T(d.m));
   });
   const pts=data.map((d,i)=>[L+i*bw+bw*.5,yS(d.spend)]);
   el('path',{d:'M'+pts.map(p=>p.join(',')).join(' L '),fill:'none',stroke:PENc,'stroke-width':2.4,'stroke-linecap':'round','stroke-linejoin':'round'},svg);
@@ -895,7 +911,7 @@ function chartSpend(){
 }
 function chartPOStatus(a){
   const inv=Math.round(a.poQty*.79), rec=Math.round(a.poQty*.012), open=Math.max(a.poQty-inv-rec,0);
-  donut('ch-postatus',[{v:inv,c:HLc},{v:open,c:BLUE2},{v:rec,c:GRAY2}],(a.poQty).toLocaleString('en-US'),'POs totales');
+  donut('ch-postatus',[{v:inv,c:HLc},{v:open,c:BLUE2},{v:rec,c:GRAY2}],(a.poQty).toLocaleString('en-US'),window.T('POs totales'));
 }
 
 /* ---------- slicers + tabs ---------- */
@@ -918,14 +934,20 @@ document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on', v.id==='v-'+state.view));
 });
 
-function update(){
+window.update = function update(){
   const a=agg();
   renderSlicers();
   renderKPIs(a);
   chartTrend(); chartBG(); chartPipe(a); chartContract(a);
   chartSeg(); chartCat(a); chartSpend(); chartPOStatus(a);
 }
-update();
+window.update();
+</script>
+<script src="../assets/i18n.js"></script>
+<script src="../assets/lang-procurement.js"></script>
+<script>
+  I18N.init();
+  document.addEventListener('languagechange', function(){ if(window.update) window.update(); I18N.refresh(); });
 </script>
 </body>
 </html>

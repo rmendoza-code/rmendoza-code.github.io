@@ -19,14 +19,34 @@ a{font-weight:700;font-size:.9rem;color:#2b2822;text-decoration:none;border:2px 
 border-radius:255px 18px 225px 18px/18px 225px 18px 255px;padding:10px 24px;background:#ffd84d;
 box-shadow:3px 4px 0 #2b2822;display:inline-block;transition:all .2s}
 a:hover{transform:translate(-2px,-2px);box-shadow:5px 6px 0 #2b2822}
+
+.lang-toggle{display:inline-flex;align-items:center;gap:5px;font-family:'Plus Jakarta Sans',sans-serif;
+font-size:.72rem;font-weight:800;letter-spacing:.06em;border:2px solid #2b2822;border-radius:999px;
+padding:5px 13px;background:#fffdf7;color:#6d6759;cursor:pointer;box-shadow:2.5px 3px 0 #2b2822;
+transition:all .2s;transform:rotate(.8deg);margin-bottom:18px}
+.lang-toggle:hover{transform:rotate(.8deg) translate(-1px,-1px);box-shadow:4px 5px 0 #2b2822;background:#ffd84d}
+.lang-toggle [data-lang]{opacity:.42}.lang-toggle [data-lang].on{opacity:1;color:#2b2822}
+.lang-sep{opacity:.4;font-weight:600}
 </style>
 </head>
 <body>
 <div class="note">
+<span data-lang-toggle-here></span>
 <span class="hand">en construcción ✎</span>
 <h1>Financial Execution Report</h1>
 <p>Este caso de estudio se está dibujando en este momento — del levantamiento del requerimiento al dashboard interactivo, igual que el de Procurement.</p>
 <a href="../index.html">← Volver al portafolio</a>
 </div>
+<script src="../assets/i18n.js"></script>
+<script>
+I18N.register({
+  "en construcción ✎": "in progress ✎",
+  "Financial Execution Report": "Financial Execution Report",
+  "Este caso de estudio se está dibujando en este momento — del levantamiento del requerimiento al dashboard interactivo, igual que el de Procurement.":
+    "This case study is being drawn right now — from requirement gathering to the interactive dashboard, just like the Procurement one.",
+  "← Volver al portafolio": "← Back to portfolio"
+});
+I18N.init();
+</script>
 </body>
 </html>

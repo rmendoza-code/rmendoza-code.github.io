@@ -99,7 +99,8 @@ header.scrolled{
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   box-shadow:0 2px 0 rgba(43,40,34,.9); /* línea de tinta */
 }
-.nav{display:flex;align-items:center;justify-content:space-between;height:70px}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:14px;height:70px}
+[data-lang-toggle-here]{display:inline-flex;margin-left:auto}
 .logo{
   font-family:var(--font-hand);font-weight:700;font-size:1.6rem;
   display:flex;align-items:center;gap:10px;transform:rotate(-1.5deg);
@@ -385,6 +386,21 @@ footer{border-top:2.5px solid var(--ink);padding:30px 0;margin-top:40px;backgrou
 }
 .foot a:hover{color:var(--pen)}
 
+
+/* ---------- toggle de idioma ES · EN ---------- */
+.lang-toggle{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.72rem;font-weight:800;letter-spacing:.06em;
+  border:2px solid var(--ink);border-radius:999px;padding:5px 13px;
+  background:var(--card);color:var(--ink-soft);cursor:pointer;
+  box-shadow:2.5px 3px 0 var(--ink);transition:all .2s var(--ease);transform:rotate(.8deg);
+}
+.lang-toggle:hover{transform:rotate(.8deg) translate(-1px,-1px);box-shadow:4px 5px 0 var(--ink);background:var(--hl)}
+.lang-toggle:active{transform:rotate(.8deg) translate(1px,2px);box-shadow:1px 1px 0 var(--ink)}
+.lang-toggle [data-lang]{opacity:.42;transition:opacity .2s,color .2s}
+.lang-toggle [data-lang].on{opacity:1;color:var(--ink)}
+.lang-sep{opacity:.4;font-weight:600}
+
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
   html{scroll-behavior:auto}
@@ -408,6 +424,7 @@ footer{border-top:2.5px solid var(--ink);padding:30px 0;margin-top:40px;backgrou
       <a href="#experiencia">Trayectoria</a>
       <a href="#sobre">Sobre mí</a>
     </nav>
+    <span data-lang-toggle-here></span>
     <a class="nav-cta" href="#contacto">Di hola 👋</a>
   </div>
 </header>
@@ -1009,5 +1026,8 @@ const statIO = new IntersectionObserver(entries=>{
 },{threshold:.6});
 document.querySelectorAll('.stat .num').forEach(el=>statIO.observe(el));
 </script>
+<script src="assets/i18n.js"></script>
+<script src="assets/lang-index.js"></script>
+<script>I18N.init();</script>
 </body>
 </html>
