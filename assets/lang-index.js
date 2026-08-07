@@ -134,5 +134,19 @@ I18N.register({
   "Escríbeme": "Email me",
   "descargar CV ⤓": "download CV ⤓",
   "Dibujado y construido con cuidado ✎": "Drawn and built with care ✎",
-  "Volver arriba ↑": "Back to top ↑"
+  "Volver arriba ↑": "Back to top ↑",
+
+  /* FAQ */
+  "FAQ": "FAQ",
+  "Saltar al contenido": "Skip to content",
+  "preguntas frecuentes": "frequently asked questions",
+  "Antes de que preguntes": "Before you ask",
+  "¿Los dashboards del portafolio usan datos reales?": "Do the portfolio dashboards use real data?",
+  "No. Todos los datos son de muestra, generados para ilustrar. Lo fiel a los proyectos reales es el diseño, la lógica de medidas y el proceso — que es lo que realmente demuestra el trabajo.": "No. All data is sample data, generated for illustration. What stays faithful to the real projects is the design, the measure logic and the process — which is what actually demonstrates the work.",
+  "¿Trabajas proyectos freelance o solo tiempo completo?": "Do you take freelance projects or full-time only?",
+  "Ambos. Tomo proyectos de BI y consultoría de datos por entregable, y también colaboraciones de largo plazo. El primer paso siempre es una llamada corta para entender la necesidad.": "Both. I take BI and data consulting projects per deliverable, as well as long-term collaborations. The first step is always a short call to understand the need.",
+  "¿Cómo es tu proceso de trabajo?": "What does your work process look like?",
+  "El mismo que ves en los casos de estudio: levantar el requerimiento con el área usuaria, diseñar en papel, construir sobre una arquitectura sólida y validar contra las cifras del stakeholder antes de entregar.": "The same one you see in the case studies: gather the requirement with the business team, design on paper, build on a solid architecture and validate against the stakeholder's figures before delivering.",
+  "¿Trabajas en inglés?": "Do you work in English?",
+  "Sí — documentación, reuniones y entregables en inglés o español. Este portafolio completo está disponible en ambos idiomas con el botón ES · EN.": "Yes — documentation, meetings and deliverables in English or Spanish. This entire portfolio is available in both languages via the ES · EN toggle."
 });

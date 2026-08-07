@@ -4,12 +4,31 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Rodrigo Mendoza Cortés — Power BI Developer & Data Engineer</title>
-<meta name="description" content="Portafolio de Rodrigo Mendoza Cortés: dashboards en Power BI, Microsoft Fabric, DAX, PySpark y automatización de datos. Datos conectados, dibujados a mano." />
-<meta property="og:title" content="Rodrigo Mendoza Cortés — Power BI Developer" />
-<meta property="og:description" content="Dashboards, arquitectura de datos y automatización. Un cuaderno de datos conectados." />
+<meta name="description" content="Portafolio de Rodrigo Mendoza Cortés: dashboards en Power BI, Microsoft Fabric, DAX, PySpark y automatización de datos. Casos de estudio interactivos con recreaciones HTML." />
+<meta name="keywords" content="Power BI Developer, Data Engineer, Microsoft Fabric, DAX, PySpark, dashboards, business intelligence, México" />
+<meta name="author" content="Rodrigo Mendoza Cortés" />
+<meta name="robots" content="index, follow" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta name="theme-color" content="#faf6ec" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+<link rel="canonical" href="https://rmendoza-code.github.io/" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://rmendoza-code.github.io/" />
+<meta property="og:site_name" content="Rodrigo Mendoza Cortés · Portafolio" />
+<meta property="og:title" content="Rodrigo Mendoza Cortés — Power BI Developer & Data Engineer" />
+<meta property="og:description" content="Dashboards, arquitectura de datos y automatización. Un cuaderno de datos conectados con casos de estudio interactivos." />
+<meta property="og:image" content="https://rmendoza-code.github.io/assets/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="es_MX" />
+<meta property="og:locale:alternate" content="en_US" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Rodrigo Mendoza Cortés — Power BI Developer" />
+<meta name="twitter:description" content="Dashboards, arquitectura de datos y automatización. Casos de estudio interactivos." />
+<meta name="twitter:image" content="https://rmendoza-code.github.io/assets/og-image.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 <style>
 /* ============================================================
    DESIGN SYSTEM — "Cuaderno de datos"
@@ -351,6 +370,27 @@ section{padding:clamp(80px,11vh,130px) 0;position:relative}
 .fact .k{font-family:var(--font-body);font-weight:700;font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft);padding-top:4px;white-space:nowrap}
 .fact .v{text-align:right;color:var(--ink);font-weight:500}
 
+
+/* ---------- FAQ ---------- */
+#faq .faq-list{max-width:760px;display:flex;flex-direction:column;gap:14px}
+#faq details{
+  background:var(--card);border:2px solid var(--ink);border-radius:var(--wobble);
+  box-shadow:3px 4px 0 rgba(43,40,34,.75);padding:0;overflow:hidden;
+  transition:box-shadow .2s var(--ease);
+}
+#faq details[open]{box-shadow:5px 6px 0 rgba(43,40,34,.75)}
+#faq summary{
+  cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:16px 22px;font-weight:800;font-size:.95rem;
+}
+#faq summary::-webkit-details-marker{display:none}
+#faq summary::after{
+  content:"+";font-family:var(--hand);font-weight:700;font-size:1.6rem;color:var(--pen);
+  transition:transform .25s var(--ease);flex:none;line-height:1;
+}
+#faq details[open] summary::after{transform:rotate(45deg)}
+#faq details p{padding:0 22px 18px;color:var(--ink-soft);font-size:.9rem}
+
 /* ---------- CTA FINAL ---------- */
 #contacto{text-align:center}
 #contacto .paper-note{
@@ -407,9 +447,28 @@ footer{border-top:2.5px solid var(--ink);padding:30px 0;margin-top:40px;backgrou
   .reveal{opacity:1;transform:none}
 }
 :focus-visible{outline:3px solid var(--pen);outline-offset:3px;border-radius:6px}
+
+/* ---------- skip link ---------- */
+.skip-link{position:absolute;left:-9999px;top:0;z-index:100;background:var(--hl);color:var(--ink);
+font-weight:800;font-size:.9rem;padding:12px 22px;border:2px solid var(--ink);border-radius:0 0 12px 0}
+.skip-link:focus{left:0}
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Rodrigo Mendoza Cortés",
+  "jobTitle": "Data Analytics Specialist · Power BI Developer",
+  "url": "https://rmendoza-code.github.io/",
+  "sameAs": ["https://github.com/rmendoza-code"],
+  "knowsAbout": ["Power BI","DAX","Microsoft Fabric","PySpark","SQL","Python","Data Engineering","Supply Chain Analytics"],
+  "address": {"@type": "PostalAddress", "addressLocality": "Ciudad de México", "addressCountry": "MX"},
+  "alumniOf": {"@type": "CollegeOrUniversity", "name": "Universidad Nacional Autónoma de México"}
+}
+</script>
 </head>
 <body>
+<a class="skip-link" href="#main">Saltar al contenido</a>
 
 <!-- ================= HEADER ================= -->
 <header id="header">
@@ -423,12 +482,14 @@ footer{border-top:2.5px solid var(--ink);padding:30px 0;margin-top:40px;backgrou
       <a href="#especialidades">Especialidades</a>
       <a href="#experiencia">Trayectoria</a>
       <a href="#sobre">Sobre mí</a>
+      <a href="#faq">FAQ</a>
     </nav>
     <span data-lang-toggle-here></span>
     <a class="nav-cta" href="#contacto">Di hola 👋</a>
   </div>
 </header>
 
+<main id="main">
 <!-- ================= HERO ================= -->
 <section class="hero" id="top">
   <canvas id="graph" aria-hidden="true"></canvas>
@@ -693,6 +754,35 @@ footer{border-top:2.5px solid var(--ink);padding:30px 0;margin-top:40px;backgrou
   </div>
 </section>
 
+
+<!-- ================= FAQ ================= -->
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">preguntas frecuentes</div>
+      <h2>Antes de que preguntes</h2>
+    </div>
+    <div class="faq-list reveal">
+      <details>
+        <summary>¿Los dashboards del portafolio usan datos reales?</summary>
+        <p>No. Todos los datos son de muestra, generados para ilustrar. Lo fiel a los proyectos reales es el diseño, la lógica de medidas y el proceso — que es lo que realmente demuestra el trabajo.</p>
+      </details>
+      <details>
+        <summary>¿Trabajas proyectos freelance o solo tiempo completo?</summary>
+        <p>Ambos. Tomo proyectos de BI y consultoría de datos por entregable, y también colaboraciones de largo plazo. El primer paso siempre es una llamada corta para entender la necesidad.</p>
+      </details>
+      <details>
+        <summary>¿Cómo es tu proceso de trabajo?</summary>
+        <p>El mismo que ves en los casos de estudio: levantar el requerimiento con el área usuaria, diseñar en papel, construir sobre una arquitectura sólida y validar contra las cifras del stakeholder antes de entregar.</p>
+      </details>
+      <details>
+        <summary>¿Trabajas en inglés?</summary>
+        <p>Sí — documentación, reuniones y entregables en inglés o español. Este portafolio completo está disponible en ambos idiomas con el botón ES · EN.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
 <!-- ================= CTA FINAL ================= -->
 <section id="contacto">
   <div class="wrap reveal">
@@ -703,19 +793,20 @@ footer{border-top:2.5px solid var(--ink);padding:30px 0;margin-top:40px;backgrou
       </span> de tu proyecto</h2>
       <p>Si tu organización necesita ver sus datos con claridad — hablemos. Respondo en menos de 24 horas.</p>
       <div class="contact-row">
-        <a class="btn btn-primary" href="mailto:rdgo.mendoza@gmail.com">Escríbeme <span class="arr">→</span></a>
-        <a class="btn btn-ghost" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn btn-primary" href="#" data-em data-u="rdgo.mendoza" data-d="gmail.com">Escríbeme <span class="arr">→</span></a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </div>
       <div class="contact-links">
-        <a href="mailto:rdgo.mendoza@gmail.com">rdgo.mendoza@gmail.com</a>
-        <a href="https://github.com/rmendoza-code" target="_blank" rel="noopener">github</a>
-        <a href="https://public.tableau.com/" target="_blank" rel="noopener">tableau</a>
+        <a href="#" data-em data-u="rdgo.mendoza" data-d="gmail.com"><span data-em-text></span></a>
+        <a href="https://github.com/rmendoza-code" target="_blank" rel="noopener noreferrer">github</a>
+        <a href="https://public.tableau.com/" target="_blank" rel="noopener noreferrer">tableau</a>
         <a href="CV_Rodrigo_Mendoza_Cortes.pdf" download>descargar CV ⤓</a>
       </div>
     </div>
   </div>
 </section>
 
+</main>
 <!-- ================= FOOTER ================= -->
 <footer>
   <div class="wrap foot">
@@ -979,7 +1070,6 @@ footer{border-top:2.5px solid var(--ink);padding:30px 0;margin-top:40px;backgrou
         ctx.beginPath(); ctx.arc(n.x,n.y,n.r+wob*.3,0,7); ctx.fill();
       }
     });
-    if(!reduced) requestAnimationFrame(step);
   }
 
   window.addEventListener('resize', ()=>{ resize(); build(); if(reduced) step(); });
@@ -995,7 +1085,18 @@ footer{border-top:2.5px solid var(--ink);padding:30px 0;margin-top:40px;backgrou
     if(reduced) step();
   });
 
-  resize(); build(); requestAnimationFrame(step);
+  let running = true, raf = 0;
+  function loop(now){ step(now); if(running && !reduced) raf = requestAnimationFrame(loop); }
+  function setRunning(on){
+    if(on === running) return;
+    running = on;
+    if(on && !reduced){ cancelAnimationFrame(raf); raf = requestAnimationFrame(loop); }
+  }
+  document.addEventListener('visibilitychange', ()=> setRunning(!document.hidden));
+  new IntersectionObserver(es=> es.forEach(e=> setRunning(e.isIntersecting && !document.hidden)),
+    {threshold:.02}).observe(canvas);
+  resize(); build();
+  if(reduced) step(); else raf = requestAnimationFrame(loop);
 })();
 
 /* ---------- header scroll ---------- */
@@ -1025,6 +1126,15 @@ const statIO = new IntersectionObserver(entries=>{
   });
 },{threshold:.6});
 document.querySelectorAll('.stat .num').forEach(el=>statIO.observe(el));
+</script>
+<script>
+/* ensamblar mailto en runtime (mitiga harvesting de bots) */
+document.querySelectorAll('[data-em]').forEach(function(a){
+  var addr = a.dataset.u + '@' + a.dataset.d;
+  a.setAttribute('href', 'mailto:' + addr);
+  var t = a.querySelector('[data-em-text]');
+  if (t) t.textContent = addr;
+});
 </script>
 <script src="assets/i18n.js"></script>
 <script src="assets/lang-index.js"></script>

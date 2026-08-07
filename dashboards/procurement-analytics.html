@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Supply Chain Procurement and Sourcing Performance · Rodrigo Mendoza Cortés</title>
 <meta name="description" content="Caso de estudio: del levantamiento de requerimientos al dashboard interactivo de desempeño de compras y abastecimiento. Recreación HTML con datos de muestra." />
+<meta name="robots" content="index, follow" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta name="theme-color" content="#faf6ec" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+<link rel="canonical" href="https://rmendoza-code.github.io/dashboards/procurement-analytics.html" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://rmendoza-code.github.io/dashboards/procurement-analytics.html" />
+<meta property="og:title" content="Supply Chain Procurement & Sourcing Performance — caso de estudio" />
+<meta property="og:description" content="Del levantamiento del requerimiento al dashboard interactivo: diseño en papel, arquitectura lakehouse y entrega. Datos de muestra." />
+<meta property="og:image" content="https://rmendoza-code.github.io/assets/og-image.png" />
+<meta name="twitter:card" content="summary_large_image" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet" />
@@ -204,9 +215,14 @@ section.spec-sec{margin:60px 0}
 footer{padding:26px 0 40px;font-family:var(--hand);font-weight:600;font-size:1.1rem;color:var(--ink-soft);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 @media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
 :focus-visible{outline:3px solid var(--pen);outline-offset:2px;border-radius:6px}
+
+.skip-link{position:absolute;left:-9999px;top:0;z-index:100;background:var(--hl);color:var(--ink);
+font-weight:800;font-size:.9rem;padding:12px 22px;border:2px solid var(--ink);border-radius:0 0 12px 0}
+.skip-link:focus{left:0}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#s1">Saltar al contenido</a>
 <div class="wrap">
 
   <div class="topbar">
@@ -778,7 +794,7 @@ function renderKPIs(a){
 
 /* ---------- charts (tema cuaderno) ---------- */
 const NS='http://www.w3.org/2000/svg';
-const INK='#2b2822', SOFT='#8a8375', GRID='#efe8d4', HLc='#ffd84d', PENc='#3556c7', TGc='#f29657', BLUE2='#a8b8ea', GRAY2='#d8d2bf';
+const INK='#2b2822', SOFT='#71695c', GRID='#efe8d4', HLc='#ffd84d', PENc='#3556c7', TGc='#f29657', BLUE2='#a8b8ea', GRAY2='#d8d2bf';
 function el(t,attrs,parent,txt){
   const e=document.createElementNS(NS,t);
   for(const k in attrs) e.setAttribute(k,attrs[k]);
