@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rodrigo Mendoza Cortés — Power BI Developer & Data Engineer</title>
+<meta name="description" content="Portafolio de Rodrigo Mendoza Cortés: dashboards en Power BI, Microsoft Fabric, DAX, PySpark y automatización de datos. Datos conectados, dibujados a mano." />
+<meta property="og:title" content="Rodrigo Mendoza Cortés — Power BI Developer" />
+<meta property="og:description" content="Dashboards, arquitectura de datos y automatización. Un cuaderno de datos conectados." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   DESIGN SYSTEM — "Cuaderno de datos"
+   Papel crema con retícula de puntos · tinta · marcatextos
+   Display/Body: Plus Jakarta Sans · Anotaciones/Grafo: Caveat
+   Grafo Obsidian re-dibujado como tinta sobre papel
+   ============================================================ */
+:root{
+  --paper:     #faf6ec;
+  --paper-2:   #f4efe2;
+  --dot:       #d9d2bf;
+  --ink:       #2b2822;
+  --ink-soft:  #6d6759;
+  --ink-faint: #a39b88;
+  --hl:        #ffd84d;          /* marcatextos amarillo */
+  --hl-soft:   rgba(255,216,77,.45);
+  --pen:       #3556c7;          /* azul bolígrafo */
+  --card:      #fffdf7;
+  --font-display:'Plus Jakarta Sans',sans-serif;  /* títulos y UI */
+  --font-body:'Plus Jakarta Sans',sans-serif;     /* cuerpo */
+  --font-hand:'Caveat',cursive;                   /* anotaciones de cuaderno + grafo */
+  --max:1080px;
+  --ease:cubic-bezier(.4,0,.2,1);
+  /* borde "dibujado a mano" */
+  --wobble: 255px 18px 225px 18px/18px 225px 18px 255px;
+  --wobble-2: 18px 205px 22px 255px/255px 18px 225px 20px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background-color:var(--paper);
+  background-image:radial-gradient(var(--dot) 1.15px, transparent 1.15px);
+  background-size:22px 22px;
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-weight:400;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+::selection{background:var(--hl);color:var(--ink)}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+
+h1,h2,h3{font-family:var(--font-display);font-weight:800;line-height:1.12;color:var(--ink);letter-spacing:-.025em}
+h2{font-size:clamp(1.9rem,3.6vw,2.8rem)}
+
+/* ---------- resaltado marcatextos ---------- */
+.hl{
+  background-image:linear-gradient(104deg, transparent 2%, var(--hl-soft) 4%, var(--hl-soft) 96%, transparent 98%);
+  background-size:100% 62%;
+  background-position:0 68%;
+  background-repeat:no-repeat;
+  padding:0 .15em;
+}
+
+/* ---------- subrayado garabato (SVG inline) ---------- */
+.squiggle{position:relative;display:inline-block}
+.squiggle svg{
+  position:absolute;left:-2%;bottom:-.28em;width:104%;height:.5em;
+  overflow:visible;
+}
+.squiggle svg path{
+  fill:none;stroke:var(--pen);stroke-width:3;stroke-linecap:round;
+}
+
+/* ---------- eyebrow manuscrito ---------- */
+.eyebrow{
+  font-family:var(--font-hand);font-weight:600;
+  font-size:1.35rem;color:var(--pen);
+  display:flex;align-items:center;gap:12px;margin-bottom:1rem;
+  transform:rotate(-1.2deg);
+}
+.eyebrow::before{
+  content:"";width:34px;height:12px;
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 14'%3E%3Cpath d='M2 8 C10 3, 16 11, 24 6 S 36 4, 38 7' fill='none' stroke='%233556c7' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  transition:background .35s var(--ease), box-shadow .35s var(--ease);
+}
+header.scrolled{
+  background:rgba(250,246,236,.9);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:0 2px 0 rgba(43,40,34,.9); /* línea de tinta */
+}
+.nav{display:flex;align-items:center;justify-content:space-between;height:70px}
+.logo{
+  font-family:var(--font-hand);font-weight:700;font-size:1.6rem;
+  display:flex;align-items:center;gap:10px;transform:rotate(-1.5deg);
+}
+.logo .dot-node{
+  width:12px;height:12px;border-radius:50% 45% 55% 48%;
+  background:var(--ink);position:relative;flex:none;
+}
+.logo .dot-node::after{
+  content:"";position:absolute;left:11px;top:5px;width:18px;height:5px;
+  background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 6'%3E%3Cpath d='M1 4 C6 1, 12 5, 19 2' fill='none' stroke='%232b2822' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+nav.menu{display:flex;gap:30px}
+nav.menu a{
+  font-family:var(--font-body);font-weight:600;font-size:.88rem;letter-spacing:.01em;
+  color:var(--ink-soft);transition:color .2s;position:relative;
+}
+nav.menu a:hover,nav.menu a:focus-visible{color:var(--ink)}
+nav.menu a::after{
+  content:"";position:absolute;left:0;right:100%;bottom:-2px;height:3px;
+  background:var(--hl);transition:right .25s var(--ease);z-index:-1;
+}
+nav.menu a:hover::after{right:0}
+.nav-cta{
+  font-family:var(--font-body);font-weight:700;font-size:.85rem;
+  border:2px solid var(--ink);border-radius:var(--wobble);
+  padding:8px 20px;background:var(--card);
+  box-shadow:2.5px 3px 0 var(--ink);
+  transition:all .2s var(--ease);transform:rotate(1deg);
+}
+.nav-cta:hover{transform:rotate(1deg) translate(-1px,-1px);box-shadow:4px 5px 0 var(--ink);background:var(--hl)}
+@media(max-width:760px){nav.menu{display:none}}
+
+/* ============================================================
+   HERO + GRAFO DE TINTA
+   ============================================================ */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden}
+#graph{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.hero::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 62% 62% at 26% 52%, rgba(250,246,236,.92) 0%, rgba(250,246,236,.4) 55%, transparent 100%),
+    linear-gradient(to bottom, rgba(250,246,236,.55), transparent 25%, transparent 75%, var(--paper) 100%);
+}
+.hero-inner{position:relative;z-index:2;width:100%;padding-top:70px}
+.hero-tag{
+  font-family:var(--font-hand);font-weight:600;font-size:clamp(1.3rem,2vw,1.6rem);
+  color:var(--pen);transform:rotate(-1.6deg);margin-bottom:.9rem;
+  opacity:0;animation:rise .8s var(--ease) .15s both;
+}
+.hero h1{
+  font-size:clamp(2.7rem,6.6vw,4.8rem);
+  max-width:14ch;
+}
+.hero h1 .w{display:inline-block;opacity:0;animation:rise .9s var(--ease) both}
+.hero h1 .w:nth-child(1){animation-delay:.25s;transform-origin:left bottom}
+.hero h1 .w:nth-child(2){animation-delay:.38s}
+.hero h1 .w:nth-child(3){animation-delay:.5s}
+.hero p.sub{
+  margin-top:1.6rem;max-width:50ch;
+  font-size:clamp(1rem,1.5vw,1.15rem);color:var(--ink-soft);
+  opacity:0;animation:rise .9s var(--ease) .65s both;
+}
+.hero p.sub strong{color:var(--ink);font-weight:600}
+.hero-ctas{display:flex;gap:20px;flex-wrap:wrap;margin-top:2.2rem;opacity:0;animation:rise .9s var(--ease) .85s both}
+.btn{
+  font-family:var(--font-body);font-weight:700;font-size:.95rem;
+  padding:13px 30px;border-radius:var(--wobble);
+  display:inline-flex;align-items:center;gap:10px;
+  border:2.5px solid var(--ink);cursor:pointer;
+  transition:all .2s var(--ease);
+}
+.btn-primary{
+  background:var(--hl);color:var(--ink);
+  box-shadow:3px 4px 0 var(--ink);transform:rotate(-.8deg);
+}
+.btn-primary:hover{transform:rotate(-.8deg) translate(-2px,-2px);box-shadow:6px 7px 0 var(--ink)}
+.btn-primary:active{transform:rotate(-.8deg) translate(1px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn-ghost{background:var(--card);color:var(--ink);box-shadow:3px 4px 0 rgba(43,40,34,.25);transform:rotate(.7deg)}
+.btn-ghost:hover{transform:rotate(.7deg) translate(-1px,-1px);box-shadow:4px 5px 0 rgba(43,40,34,.35);background:var(--paper-2)}
+.btn .arr{transition:transform .25s var(--ease)}
+.btn:hover .arr{transform:translateX(5px)}
+
+.hero-stats{
+  display:flex;gap:clamp(24px,4.5vw,56px);flex-wrap:wrap;
+  margin-top:3.6rem;padding-top:1.6rem;max-width:660px;
+  border-top:2px dashed var(--ink-faint);
+  opacity:0;animation:rise .9s var(--ease) 1.05s both;
+}
+.stat .num{
+  font-family:var(--font-display);font-weight:800;letter-spacing:-.03em;
+  font-size:clamp(1.6rem,2.8vw,2.2rem);line-height:1;
+}
+.stat .num sup{color:var(--pen)}
+.stat .lbl{font-size:.78rem;color:var(--ink-soft);margin-top:2px;font-weight:400}
+@keyframes rise{from{opacity:0;transform:translateY(22px) rotate(.5deg)}to{opacity:1;transform:none}}
+
+/* flecha doodle que apunta al grafo */
+.doodle-arrow{
+  position:absolute;z-index:2;right:8%;bottom:14%;
+  width:130px;opacity:0;animation:rise 1s var(--ease) 1.3s both;
+  pointer-events:none;
+}
+.doodle-arrow .note{
+  font-family:var(--font-hand);font-weight:600;font-size:1.25rem;
+  color:var(--ink-soft);transform:rotate(-6deg);display:block;margin-bottom:4px;
+}
+@media(max-width:900px){.doodle-arrow{display:none}}
+
+/* ============================================================
+   SECCIONES
+   ============================================================ */
+section{padding:clamp(80px,11vh,130px) 0;position:relative}
+.section-head{max-width:640px;margin-bottom:3.2rem}
+.section-head p{color:var(--ink-soft);margin-top:.8rem}
+.reveal{opacity:0;transform:translateY(26px) rotate(.3deg);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+
+/* ---------- DASHBOARDS (polaroids con cinta) ---------- */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:34px 28px}
+.dash-card{
+  background:var(--card);
+  border:2px solid var(--ink);
+  border-radius:var(--wobble-2);
+  box-shadow:4px 5px 0 rgba(43,40,34,.85);
+  padding:14px 14px 20px;
+  display:flex;flex-direction:column;position:relative;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease);
+}
+.dash-card:nth-child(1){transform:rotate(-1.1deg)}
+.dash-card:nth-child(2){transform:rotate(.9deg)}
+.dash-card:nth-child(3){transform:rotate(-.6deg)}
+.dash-card:hover{transform:rotate(0deg) translateY(-6px);box-shadow:7px 9px 0 rgba(43,40,34,.85);z-index:2}
+/* cinta adhesiva */
+.dash-card::before{
+  content:"";position:absolute;top:-14px;left:50%;
+  width:96px;height:28px;transform:translateX(-50%) rotate(-2deg);
+  background:rgba(255,216,77,.55);
+  border-left:1px dashed rgba(43,40,34,.25);
+  border-right:1px dashed rgba(43,40,34,.25);
+  box-shadow:0 1px 2px rgba(43,40,34,.12);
+}
+.dash-card:nth-child(2)::before{transform:translateX(-50%) rotate(2.5deg);background:rgba(53,86,199,.18)}
+.dash-preview{
+  border:1.5px solid var(--ink);
+  border-radius:14px 10px 16px 8px/8px 16px 10px 14px;
+  background:#fffef9;
+  padding:16px 16px 12px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.kpi-row{display:flex;gap:12px}
+.kpi{
+  border:1.5px dashed var(--ink-faint);border-radius:10px 6px 12px 8px/8px 12px 6px 10px;
+  padding:6px 12px;flex:1;min-width:0;background:var(--paper);
+}
+.kpi .v{font-family:var(--font-display);font-weight:800;font-size:1.05rem;line-height:1.2;letter-spacing:-.02em}
+.kpi .k{font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft)}
+.dash-preview svg{width:100%;height:auto;display:block}
+.dash-body{padding:18px 8px 0;flex:1;display:flex;flex-direction:column;gap:8px}
+.dash-body h3{font-size:1.15rem;line-height:1.3}
+.dash-body p{font-size:.9rem;color:var(--ink-soft);flex:1}
+.dash-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.chip{
+  font-family:var(--font-body);font-weight:600;font-size:.68rem;letter-spacing:.02em;
+  border:1.5px solid var(--ink);border-radius:999px;padding:3px 12px;
+  color:var(--ink);background:var(--paper);
+}
+.dash-card:hover .chip{background:var(--hl-soft)}
+.dash-link{
+  font-family:var(--font-body);font-weight:700;font-size:.88rem;
+  color:var(--pen);display:inline-flex;align-items:center;gap:8px;margin-top:10px;
+}
+.dash-link .arr{transition:transform .25s var(--ease)}
+.dash-card:hover .dash-link .arr{transform:translateX(5px)}
+.dash-note{
+  margin-top:2.6rem;font-family:var(--font-hand);font-weight:600;
+  font-size:1.3rem;color:var(--ink-soft);max-width:56ch;
+  transform:rotate(-.8deg);display:flex;gap:10px;
+}
+.dash-note::before{content:"✎";color:var(--pen)}
+
+/* ---------- ESPECIALIDADES ---------- */
+#especialidades{background:var(--paper-2);background-image:radial-gradient(var(--dot) 1.15px, transparent 1.15px);background-size:22px 22px}
+.spec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:26px}
+.spec{
+  background:var(--card);border:2px solid var(--ink);
+  border-radius:var(--wobble);
+  box-shadow:3px 4px 0 rgba(43,40,34,.8);
+  padding:28px 26px;position:relative;
+  transition:transform .25s var(--ease),box-shadow .25s var(--ease);
+}
+.spec:nth-child(odd){transform:rotate(-.7deg)}
+.spec:nth-child(even){transform:rotate(.7deg)}
+.spec:hover{transform:rotate(0) translateY(-4px);box-shadow:5px 7px 0 rgba(43,40,34,.8)}
+.spec .node-ico{width:52px;height:30px;margin-bottom:14px}
+.spec .node-ico svg{width:100%;height:100%;overflow:visible}
+.spec h3{font-size:1.12rem;margin-bottom:8px}
+.spec p{font-size:.9rem;color:var(--ink-soft)}
+.spec .tools{
+  margin-top:14px;font-family:var(--font-hand);font-weight:600;
+  font-size:1.05rem;color:var(--pen);transform:rotate(-.5deg);
+}
+
+/* ---------- EXPERIENCIA (timeline a mano) ---------- */
+.timeline{
+  position:relative;margin-left:8px;padding-left:40px;
+  display:flex;flex-direction:column;gap:44px;max-width:700px;
+}
+.timeline::before{
+  content:"";position:absolute;left:5px;top:6px;bottom:6px;width:0;
+  border-left:2.5px dashed var(--ink-faint);
+}
+.t-item{position:relative}
+.t-item::before{
+  content:"";position:absolute;left:-41.5px;top:10px;
+  width:13px;height:13px;border-radius:55% 45% 50% 50%;
+  background:var(--hl);border:2.5px solid var(--ink);
+}
+.t-item .when{font-family:var(--font-hand);font-weight:700;font-size:1.2rem;color:var(--pen);transform:rotate(-1deg);display:inline-block}
+.t-item h3{font-size:1.3rem;margin:6px 0 2px}
+.t-item .role{color:var(--ink-soft);font-size:.85rem;font-weight:500;margin-bottom:6px}
+.t-item p{color:var(--ink-soft);font-size:.92rem;max-width:58ch}
+
+/* ---------- SOBRE MÍ ---------- */
+#sobre .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:60px;align-items:start}
+@media(max-width:860px){#sobre .grid{grid-template-columns:1fr}}
+#sobre p.big{
+  font-family:var(--font-display);font-weight:700;letter-spacing:-.02em;
+  font-size:clamp(1.25rem,2.2vw,1.6rem);line-height:1.45;
+}
+#sobre p{color:var(--ink-soft)}
+.about-facts{
+  background:var(--card);border:2px solid var(--ink);
+  border-radius:var(--wobble-2);box-shadow:4px 5px 0 rgba(43,40,34,.8);
+  overflow:hidden;transform:rotate(1deg);position:relative;
+}
+.about-facts::before{ /* cinta */
+  content:"";position:absolute;top:-12px;right:34px;
+  width:80px;height:24px;transform:rotate(4deg);
+  background:rgba(53,86,199,.16);
+  border-left:1px dashed rgba(43,40,34,.25);border-right:1px dashed rgba(43,40,34,.25);
+}
+.fact{
+  display:flex;justify-content:space-between;gap:20px;
+  padding:14px 22px;border-bottom:1.5px dashed var(--ink-faint);font-size:.86rem;
+}
+.fact:last-child{border-bottom:none}
+.fact .k{font-family:var(--font-body);font-weight:700;font-size:.68rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft);padding-top:4px;white-space:nowrap}
+.fact .v{text-align:right;color:var(--ink);font-weight:500}
+
+/* ---------- CTA FINAL ---------- */
+#contacto{text-align:center}
+#contacto .paper-note{
+  max-width:760px;margin:0 auto;position:relative;
+  background:var(--card);border:2.5px solid var(--ink);
+  border-radius:var(--wobble);box-shadow:5px 7px 0 rgba(43,40,34,.85);
+  padding:clamp(44px,7vw,72px) clamp(24px,5vw,60px);
+  transform:rotate(-.4deg);
+}
+#contacto .paper-note::before,#contacto .paper-note::after{
+  content:"";position:absolute;width:92px;height:26px;
+  background:rgba(255,216,77,.55);
+  border-left:1px dashed rgba(43,40,34,.25);border-right:1px dashed rgba(43,40,34,.25);
+  top:-14px;
+}
+#contacto .paper-note::before{left:10%;transform:rotate(-4deg)}
+#contacto .paper-note::after{right:10%;transform:rotate(3deg)}
+#contacto h2{font-size:clamp(1.9rem,4.2vw,2.9rem);max-width:18ch;margin:0 auto}
+#contacto p{color:var(--ink-soft);max-width:44ch;margin:1.2rem auto 2.2rem}
+.contact-row{display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+.contact-links{
+  margin-top:2.4rem;display:flex;gap:26px;justify-content:center;flex-wrap:wrap;
+  font-family:var(--font-body);font-weight:600;font-size:.88rem;color:var(--ink-soft);
+}
+.contact-links a{transition:color .2s;border-bottom:2px dashed transparent}
+.contact-links a:hover{color:var(--pen);border-bottom-color:var(--pen)}
+
+/* ---------- FOOTER ---------- */
+footer{border-top:2.5px solid var(--ink);padding:30px 0;margin-top:40px;background:var(--paper)}
+.foot{
+  display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+  font-family:var(--font-body);font-weight:500;font-size:.82rem;color:var(--ink-soft);
+}
+.foot a:hover{color:var(--pen)}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none}
+}
+:focus-visible{outline:3px solid var(--pen);outline-offset:3px;border-radius:6px}
+</style>
+</head>
+<body>
+
+<!-- ================= HEADER ================= -->
+<header id="header">
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="Inicio — Rodrigo Mendoza Cortés">
+      <span class="dot-node" aria-hidden="true"></span>
+      Rodrigo M. Cortés
+    </a>
+    <nav class="menu" aria-label="Navegación principal">
+      <a href="#dashboards">Dashboards</a>
+      <a href="#especialidades">Especialidades</a>
+      <a href="#experiencia">Trayectoria</a>
+      <a href="#sobre">Sobre mí</a>
+    </nav>
+    <a class="nav-cta" href="#contacto">Di hola 👋</a>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero" id="top">
+  <canvas id="graph" aria-hidden="true"></canvas>
+  <div class="wrap hero-inner">
+    <div class="hero-tag">✦ Data Analytics Specialist · Power BI Developer</div>
+    <h1>
+      <span class="w">Hola, soy</span><br/>
+      <span class="w squiggle">Rodrigo
+        <svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9 C 30 3, 55 13, 85 7 S 145 3, 170 9 S 192 6, 197 8"/></svg>
+      </span>
+      <span class="w">Mendoza.</span>
+    </h1>
+    <p class="sub">
+      Conecto datos dispersos en <strong>sistemas de decisión</strong>: dashboards en
+      <span class="hl">Power BI</span>, arquitecturas lakehouse en Microsoft Fabric y
+      automatización de pipelines — para que cada indicador cuente una historia accionable.
+    </p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="#dashboards">Ver dashboards <span class="arr">→</span></a>
+      <a class="btn btn-ghost" href="#contacto">Hablemos</a>
+      <a class="btn btn-ghost" href="CV_Rodrigo_Mendoza_Cortes.pdf" download>Descargar CV <span class="arr">⤓</span></a>
+    </div>
+    <div class="hero-stats" aria-label="Cifras destacadas">
+      <div class="stat"><div class="num" data-count="5" data-suffix="+">0</div><div class="lbl">años entre supply chain y datos</div></div>
+      <div class="stat"><div class="num" data-count="30" data-suffix="%">0</div><div class="lbl">menos incidentes críticos con analítica predictiva</div></div>
+      <div class="stat"><div class="num" data-count="20" data-suffix=" h">0</div><div class="lbl">de reporte manual eliminadas al mes</div></div>
+      <div class="stat"><div class="num" data-count="28" data-suffix="+">0</div><div class="lbl">medidas DAX enseñadas en capacitación</div></div>
+    </div>
+  </div>
+  <div class="doodle-arrow" aria-hidden="true">
+    <span class="note">mi mapa mental →</span>
+    <svg viewBox="0 0 120 60"><path d="M8 8 C 40 2, 78 14, 100 40 M100 40 l-16 -4 M100 40 l2 -16"
+      fill="none" stroke="#3556c7" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+</section>
+
+<!-- ================= DASHBOARDS ================= -->
+<section id="dashboards">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">dashboards · recreaciones html</div>
+      <h2>El trabajo, <span class="hl">navegable</span> en tu navegador</h2>
+      <p>Recreaciones interactivas en HTML de dashboards construidos originalmente en Power BI — misma lógica de medidas, mismos KPIs, sin necesidad de licencia para explorarlos.</p>
+    </div>
+
+    <div class="dash-grid">
+      <!-- Card 1 -->
+      <a class="dash-card reveal" href="dashboards/procurement-analytics.html">
+        <div class="dash-preview" aria-hidden="true">
+          <div class="kpi-row">
+            <div class="kpi"><div class="v">18.4 d</div><div class="k">Ciclo PR→PO</div></div>
+            <div class="kpi"><div class="v">92%</div><div class="k">On-time</div></div>
+          </div>
+          <svg viewBox="0 0 280 74">
+            <g fill="none" stroke="#2b2822" stroke-width="1.8">
+              <rect x="10"  y="36" width="22" height="32" rx="3" fill="#ffd84d" fill-opacity=".55"/>
+              <rect x="44"  y="28" width="22" height="40" rx="3" fill="#ffd84d" fill-opacity=".7"/>
+              <rect x="78"  y="42" width="22" height="26" rx="3" fill="#ffd84d" fill-opacity=".45"/>
+              <rect x="112" y="20" width="22" height="48" rx="3" fill="#ffd84d" fill-opacity=".85"/>
+              <rect x="146" y="32" width="22" height="36" rx="3" fill="#ffd84d" fill-opacity=".6"/>
+              <rect x="180" y="12" width="22" height="56" rx="3" fill="#ffd84d"/>
+              <rect x="214" y="26" width="22" height="42" rx="3" fill="#ffd84d" fill-opacity=".65"/>
+            </g>
+            <path d="M21 32 C 40 22, 50 26, 55 24 S 84 40, 89 38 S 118 12, 123 16 S 152 30, 157 28 S 186 4, 191 8 S 220 22, 225 22"
+              fill="none" stroke="#3556c7" stroke-width="2.4" stroke-linecap="round"/>
+            <line x1="6" y1="68.5" x2="274" y2="68.5" stroke="#2b2822" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="dash-body">
+          <h3>Procurement Analytics — PR a PO</h3>
+          <p>Seguimiento del ciclo de compras sobre una arquitectura Bronze/Silver/Gold con D365 F&amp;O como fuente. Cycle-time triangulado contra datos de stakeholders.</p>
+          <div class="dash-meta">
+            <span class="chip">Power BI</span><span class="chip">Fabric</span><span class="chip">PySpark</span><span class="chip">DAX</span>
+          </div>
+          <span class="dash-link">Explorar dashboard <span class="arr">→</span></span>
+        </div>
+      </a>
+
+      <!-- Card 2 -->
+      <a class="dash-card reveal" href="dashboards/financial-execution.html">
+        <div class="dash-preview" aria-hidden="true">
+          <div class="kpi-row">
+            <div class="kpi"><div class="v">$84.2M</div><div class="k">Ejecutado</div></div>
+            <div class="kpi"><div class="v">96.1%</div><div class="k">vs. presupuesto</div></div>
+          </div>
+          <svg viewBox="0 0 280 74">
+            <path d="M8,58 C40,52 60,40 92,42 C124,44 140,24 172,26 C204,28 230,12 272,10 L272,68 L8,68 Z"
+              fill="#ffd84d" fill-opacity=".35"/>
+            <path d="M8,58 C40,52 60,40 92,42 C124,44 140,24 172,26 C204,28 230,12 272,10"
+              fill="none" stroke="#2b2822" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M8,62 C48,60 80,54 112,52 C150,50 190,44 272,38"
+              fill="none" stroke="#3556c7" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round"/>
+            <line x1="6" y1="68.5" x2="274" y2="68.5" stroke="#2b2822" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="dash-body">
+          <h3>Financial Execution Report</h3>
+          <p>Reporte de ejecución financiera con página de comentarios integrada vía Microsoft Forms → Power Automate → SharePoint, renderizada con HTML Viewer.</p>
+          <div class="dash-meta">
+            <span class="chip">Power BI</span><span class="chip">Power Automate</span><span class="chip">SharePoint</span>
+          </div>
+          <span class="dash-link">Explorar dashboard <span class="arr">→</span></span>
+        </div>
+      </a>
+
+      <!-- Card 3 -->
+      <a class="dash-card reveal" href="dashboards/rams-mantenimiento.html">
+        <div class="dash-preview" aria-hidden="true">
+          <div class="kpi-row">
+            <div class="kpi"><div class="v">98.6%</div><div class="k">Disponibilidad</div></div>
+            <div class="kpi"><div class="v">4.2 h</div><div class="k">MTTR</div></div>
+          </div>
+          <svg viewBox="0 0 280 74">
+            <circle cx="46" cy="40" r="25" fill="none" stroke="#e8e1cf" stroke-width="9"/>
+            <circle cx="46" cy="40" r="25" fill="none" stroke="#ffd84d" stroke-width="9"
+              stroke-dasharray="138 157" stroke-linecap="round" transform="rotate(-90 46 40)"/>
+            <circle cx="46" cy="40" r="25" fill="none" stroke="#2b2822" stroke-width="1.6"
+              stroke-dasharray="3 5" opacity=".5"/>
+            <text x="46" y="44" text-anchor="middle" fill="#2b2822" font-family="Plus Jakarta Sans, sans-serif" font-weight="800" font-size="11">88%</text>
+            <g fill="#ffd84d" stroke="#2b2822" stroke-width="1.6">
+              <rect x="102" y="46" width="14" height="22" rx="3" fill-opacity=".5"/>
+              <rect x="124" y="34" width="14" height="34" rx="3" fill-opacity=".65"/>
+              <rect x="146" y="52" width="14" height="16" rx="3" fill-opacity=".4"/>
+              <rect x="168" y="26" width="14" height="42" rx="3" fill-opacity=".85"/>
+              <rect x="190" y="40" width="14" height="28" rx="3" fill-opacity=".55"/>
+              <rect x="212" y="20" width="14" height="48" rx="3"/>
+              <rect x="234" y="44" width="14" height="24" rx="3" fill-opacity=".5"/>
+            </g>
+            <line x1="96" y1="68.5" x2="256" y2="68.5" stroke="#2b2822" stroke-width="1.8" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="dash-body">
+          <h3>RAMS — Mantenimiento ferroviario</h3>
+          <p>Indicadores MTBF, MTTR y disponibilidad de activos para operación ferroviaria, con pipelines de Dataverse a SQL Server y monitoreo de flota en tiempo casi real.</p>
+          <div class="dash-meta">
+            <span class="chip">Power BI</span><span class="chip">SQL Server</span><span class="chip">Dataverse</span>
+          </div>
+          <span class="dash-link">Explorar dashboard <span class="arr">→</span></span>
+        </div>
+      </a>
+    </div>
+
+    <p class="dash-note reveal">Cada tarjeta abre una recreación en HTML/JS del dashboard original. Los datos son ilustrativos y anonimizados; la lógica de negocio es fiel al diseño real.</p>
+  </div>
+</section>
+
+<!-- ================= ESPECIALIDADES ================= -->
+<section id="especialidades">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">especialidades</div>
+      <h2>Nodos de un <span class="hl">mismo sistema</span></h2>
+      <p>Cada capacidad es un nodo; el valor está en cómo se conectan para llevar el dato desde la fuente hasta la decisión.</p>
+    </div>
+    <div class="spec-grid">
+      <div class="spec reveal">
+        <div class="node-ico" aria-hidden="true">
+          <svg viewBox="0 0 52 30"><circle cx="8" cy="20" r="5" fill="#ffd84d" stroke="#2b2822" stroke-width="2"/><circle cx="42" cy="9" r="4" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/><path d="M13 17 C 22 12, 30 14, 38 11" fill="none" stroke="#2b2822" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 5"/></svg>
+        </div>
+        <h3>Business Intelligence</h3>
+        <p>Dashboards ejecutivos y operativos en Power BI: modelado en estrella, medidas DAX robustas y UX de datos que la gente realmente usa.</p>
+        <div class="tools">Power BI · DAX · modelado dimensional</div>
+      </div>
+      <div class="spec reveal">
+        <div class="node-ico" aria-hidden="true">
+          <svg viewBox="0 0 52 30"><circle cx="10" cy="9" r="4.5" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/><circle cx="26" cy="22" r="5" fill="#ffd84d" stroke="#2b2822" stroke-width="2"/><circle cx="44" cy="8" r="4" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/><path d="M13 12 C 18 16, 20 18, 22 19 M30 19 C 35 15, 38 12, 41 10" fill="none" stroke="#2b2822" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 5"/></svg>
+        </div>
+        <h3>Data Engineering</h3>
+        <p>Arquitecturas lakehouse Bronze/Silver/Gold en Microsoft Fabric, transformaciones en PySpark y pipelines confiables desde ERP hasta reporte.</p>
+        <div class="tools">Microsoft Fabric · PySpark · SQL · D365 F&amp;O</div>
+      </div>
+      <div class="spec reveal">
+        <div class="node-ico" aria-hidden="true">
+          <svg viewBox="0 0 52 30"><circle cx="8" cy="15" r="4.5" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/><circle cx="27" cy="8" r="4" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/><circle cx="44" cy="20" r="5" fill="#ffd84d" stroke="#2b2822" stroke-width="2"/><path d="M12 13 C 17 11, 20 10, 23 9 M31 10 C 35 13, 37 15, 39 17" fill="none" stroke="#2b2822" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 5"/></svg>
+        </div>
+        <h3>Automatización &amp; IA</h3>
+        <p>Flujos que eliminan trabajo manual: integraciones con Azure Logic Apps, agentes de datos en lenguaje natural y automatización con n8n.</p>
+        <div class="tools">Azure Logic Apps · n8n · data agents · Python</div>
+      </div>
+      <div class="spec reveal">
+        <div class="node-ico" aria-hidden="true">
+          <svg viewBox="0 0 52 30"><circle cx="12" cy="22" r="5" fill="#ffd84d" stroke="#2b2822" stroke-width="2"/><circle cx="26" cy="8" r="4" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/><circle cx="42" cy="22" r="4" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/><path d="M15 18 C 19 14, 21 12, 23 11 M29 10 C 34 14, 37 17, 39 19" fill="none" stroke="#2b2822" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 5"/></svg>
+        </div>
+        <h3>Analítica aplicada</h3>
+        <p>KPIs de negocio bien definidos y triangulados: ciclo de compras, ejecución financiera, confiabilidad de activos (MTBF, MTTR, disponibilidad).</p>
+        <div class="tools">KPI design · RAMS · Lean Six Sigma</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= EXPERIENCIA ================= -->
+<section id="experiencia">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">trayectoria</div>
+      <h2>Experiencia <span class="hl">conectada</span></h2>
+    </div>
+    <div class="timeline">
+      <div class="t-item reveal">
+        <span class="when">2026 — actual</span>
+        <h3>CIMMYT</h3>
+        <div class="role">Data Analytics Specialist · Centro Internacional de Mejoramiento de Maíz y Trigo</div>
+        <p>Agentes de datos con IA en Microsoft Fabric conectados a modelos semánticos en vivo con respuestas gobernadas. Migración de un reporte Excel de 16–20 h/mes de preparación manual a Power BI Service con refresh de 2 h y Row-Level Security por rol. Captura de comentarios en el reporte vía Power Automate y capacitación interna de 2 días (star schema, 28+ medidas DAX).</p>
+      </div>
+      <div class="t-item reveal">
+        <span class="when">2025 — 2026</span>
+        <h3>GCG Consulting · Tren Maya</h3>
+        <div class="role">Supply Chain &amp; Power BI Consultant</div>
+        <p>Solución integral de gestión de mantenimiento de activos con D365 F&amp;O, CRM Field Service y Power BI para el proyecto Tren Maya, coordinando con proveedores nacionales e internacionales y traduciendo requerimientos de negocio en especificaciones técnicas.</p>
+      </div>
+      <div class="t-item reveal">
+        <span class="when">2024</span>
+        <h3>BPC Consulting</h3>
+        <div class="role">Supply Chain &amp; D365 F&amp;O Consultant</div>
+        <p>Implementación de ERP Microsoft Dynamics 365 F&amp;O en manufactura: módulos de Procurement &amp; Sourcing, Warehouse Management y Ventas para optimizar la cadena de suministro.</p>
+      </div>
+      <div class="t-item reveal">
+        <span class="when">2022 — 2024</span>
+        <h3>Indep Business Partner</h3>
+        <div class="role">Supply Chain &amp; Operations Consultant</div>
+        <p>Caso de éxito de transformación digital reconocido por Microsoft (BACO): del levantamiento de requerimientos al go-live. Modelo SCOR de APICS para optimizar procesos y WMS end-to-end en D365 F&amp;O.</p>
+      </div>
+      <div class="t-item reveal">
+        <span class="when">2021 — 2022</span>
+        <h3>Johnson &amp; Johnson</h3>
+        <div class="role">Health Care Compliance</div>
+        <p>Dashboards en Power BI y automatización de reportes que redujeron incidentes críticos en 30% mediante analítica predictiva, mejorando calidad y gobernanza de datos.</p>
+      </div>
+      <div class="t-item reveal">
+        <span class="when">Formación</span>
+        <h3>UNAM · Tecnológico de Monterrey</h3>
+        <div class="role">Ing. Industrial · Lean Six Sigma Black Belt · Especialidad en IA</div>
+        <p>Ingeniero Industrial por la UNAM (2017–2022) y Lean Six Sigma Black Belt (UNAM, 2024). Actualmente cursando la especialidad en Tecnologías de Inteligencia Artificial en el Tec de Monterrey: LLMs, RAG, sistemas multi-agente, LangChain, LangGraph y MCP.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= SOBRE MÍ ================= -->
+<section id="sobre">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">sobre mí</div>
+    </div>
+    <div class="grid">
+      <div class="reveal">
+        <p class="big">Pienso los datos como un grafo: cada tabla, cada medida y cada decisión son <span class="hl">nodos que solo generan valor cuando se conectan</span>.</p>
+        <p style="margin-top:1.4rem">Soy Ingeniero Industrial por la UNAM y Lean Six Sigma Black Belt, con 5+ años haciendo puente entre operaciones de supply chain y decisiones basadas en datos. Construyo la ruta completa del dato: la fuente, la transformación, el modelo y la historia que el negocio necesita ver — con la premisa de que un buen dashboard no muestra datos, responde preguntas.</p>
+        <p style="margin-top:1rem">Fuera del código: salsa y bachata, calistenia, mercados financieros y proyectos de emprendimiento en datos para pymes mexicanas.</p>
+      </div>
+      <div class="about-facts reveal">
+        <div class="fact"><span class="k">Base</span><span class="v">Ciudad de México</span></div>
+        <div class="fact"><span class="k">Rol</span><span class="v">Data Analytics Specialist · Power BI Developer</span></div>
+        <div class="fact"><span class="k">Stack BI</span><span class="v">Power BI · DAX · Power Query (M) · SQL · Python · Tableau</span></div>
+        <div class="fact"><span class="k">Data &amp; IA</span><span class="v">Fabric · Databricks · LLMs · RAG · LangChain · LangGraph · MCP · n8n</span></div>
+        <div class="fact"><span class="k">Certificación</span><span class="v">Lean Six Sigma Black Belt (UNAM)</span></div>
+        <div class="fact"><span class="k">Idiomas</span><span class="v">Español · Inglés (B2) · Italiano · Portugués</span></div>
+        <div class="fact"><span class="k">Disponible</span><span class="v">Proyectos BI · Consultoría · Freelance</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA FINAL ================= -->
+<section id="contacto">
+  <div class="wrap reveal">
+    <div class="paper-note">
+      <div class="eyebrow" style="justify-content:center">di hola ✦</div>
+      <h2>Conectemos el <span class="squiggle">siguiente nodo
+        <svg viewBox="0 0 200 14" preserveAspectRatio="none" aria-hidden="true"><path d="M3 9 C 30 3, 55 13, 85 7 S 145 3, 170 9 S 192 6, 197 8"/></svg>
+      </span> de tu proyecto</h2>
+      <p>Si tu organización necesita ver sus datos con claridad — hablemos. Respondo en menos de 24 horas.</p>
+      <div class="contact-row">
+        <a class="btn btn-primary" href="mailto:rdgo.mendoza@gmail.com">Escríbeme <span class="arr">→</span></a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <div class="contact-links">
+        <a href="mailto:rdgo.mendoza@gmail.com">rdgo.mendoza@gmail.com</a>
+        <a href="https://github.com/rmendoza-code" target="_blank" rel="noopener">github</a>
+        <a href="https://public.tableau.com/" target="_blank" rel="noopener">tableau</a>
+        <a href="CV_Rodrigo_Mendoza_Cortes.pdf" download>descargar CV ⤓</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Rodrigo Mendoza Cortés</span>
+    <span>Dibujado y construido con cuidado ✎</span>
+    <span><a href="#top">Volver arriba ↑</a></span>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   GRAFO ESTILO OBSIDIAN — versión tinta sobre papel
+   Nodos = puntos de tinta · Aristas = trazos de lápiz curvos
+   Hover = "marcatextos" amarillo detrás de la etiqueta
+   ============================================================ */
+(function(){
+  const canvas = document.getElementById('graph');
+  const ctx = canvas.getContext('2d');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let W, H, dpr;
+
+  const INK  = '43,40,34';    /* --ink  */
+  const PEN  = '53,86,199';   /* --pen  */
+  const HL   = '255,216,77';  /* --hl   */
+
+  /* ------------------------------------------------------------
+     Grafo semántico: 4 constelaciones (hubs) + habilidades del CV
+     bi = Business Intelligence · eng = Data Engineering
+     ai = IA agéntica · ops = Supply Chain & mejora continua
+     ------------------------------------------------------------ */
+  const DEF = [
+    /* hubs (relleno amarillo) */
+    {t:'Power BI',          s:1.5, g:'bi',  hub:true},
+    {t:'Microsoft Fabric',  s:1.3, g:'eng', hub:true},
+    {t:'IA Agéntica',       s:1.2, g:'ai',  hub:true},
+    {t:'Supply Chain',      s:1.1, g:'ops', hub:true},
+    /* bi */
+    {t:'DAX',             s:1.0, g:'bi'},
+    {t:'Power Query (M)', s:.85, g:'bi'},
+    {t:'Star Schema',     s:.8,  g:'bi'},
+    {t:'Tableau',         s:.8,  g:'bi'},
+    {t:'RLS',             s:.7,  g:'bi'},
+    /* eng */
+    {t:'SQL',        s:.95, g:'eng'},
+    {t:'Python',     s:.95, g:'eng'},
+    {t:'Databricks', s:.9,  g:'eng'},
+    {t:'Delta Lake', s:.8,  g:'eng'},
+    {t:'ETL/ELT',    s:.8,  g:'eng'},
+    {t:'D365 F&O',   s:.9,  g:'eng'},
+    /* ai */
+    {t:'Data Agents', s:.95, g:'ai'},
+    {t:'LLMs',        s:.9,  g:'ai'},
+    {t:'RAG',         s:.85, g:'ai'},
+    {t:'LangChain',   s:.85, g:'ai'},
+    {t:'LangGraph',   s:.8,  g:'ai'},
+    {t:'MCP',         s:.8,  g:'ai'},
+    {t:'n8n',         s:.8,  g:'ai'},
+    /* ops */
+    {t:'Six Sigma Black Belt', s:.85, g:'ops'},
+    {t:'SCOR',                 s:.75, g:'ops'},
+    {t:'Power Automate',       s:.85, g:'ops'}
+  ];
+  /* puentes semánticos entre constelaciones (la historia del CV) */
+  const BRIDGES = [
+    ['Power BI','Microsoft Fabric'],
+    ['Microsoft Fabric','IA Agéntica'],
+    ['Power BI','Supply Chain'],
+    ['Supply Chain','D365 F&O'],
+    ['DAX','SQL'],
+    ['Python','LLMs'],
+    ['Databricks','Python'],
+    ['Data Agents','Microsoft Fabric'],
+    ['Power Automate','n8n'],
+    ['Power Automate','Power BI']
+  ];
+
+  let nodes = [], edges = [], adj = [], ripples = [];
+  const mouse = {x:-9999, y:-9999};
+  let grabbed = -1;   /* nodo "imantado" al cursor */
+
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio||1, 2);
+    W = canvas.offsetWidth; H = canvas.offsetHeight;
+    canvas.width = W*dpr; canvas.height = H*dpr;
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+
+  function build(){
+    nodes = []; edges = []; adj = []; ripples = [];
+    const small = W < 720;
+    /* en móvil: hubs + habilidades principales (s>=.85) */
+    const defs = small ? DEF.filter(d=>d.hub || d.s>=.85) : DEF;
+
+    /* centros de constelación: cuadrantes de la zona derecha (o toda la pantalla en móvil) */
+    const zx0 = small ? .08 : .42, zx1 = small ? .92 : .96;
+    const cx = (a)=> W*(zx0 + (zx1-zx0)*a), cy = (a)=> H*a;
+    const CENTERS = {
+      bi:  {x:cx(.22), y:cy(.30)},
+      eng: {x:cx(.75), y:cy(.26)},
+      ai:  {x:cx(.72), y:cy(.72)},
+      ops: {x:cx(.22), y:cy(.76)}
+    };
+
+    defs.forEach(d=>{
+      const c = CENTERS[d.g];
+      const spread = d.hub ? 20 : (small? 70 : 110);
+      nodes.push({
+        x: c.x + (Math.random()-.5)*spread*2,
+        y: c.y + (Math.random()-.5)*spread*1.6,
+        vx:(Math.random()-.5)*.14, vy:(Math.random()-.5)*.14,
+        r: 3.2 + d.s*(d.hub?3.4:2.4),
+        label:d.t, s:d.s, g:d.g, hub:!!d.hub,
+        wob: Math.random()*6.28
+      });
+    });
+    /* puntos de textura sin etiqueta */
+    const extra = small ? 7 : 14;
+    for(let i=0;i<extra;i++){
+      nodes.push({
+        x: W*Math.random(), y: H*Math.random(),
+        vx:(Math.random()-.5)*.1, vy:(Math.random()-.5)*.1,
+        r: 1.5+Math.random()*1.7, label:null, s:.5, g:null, hub:false,
+        wob: Math.random()*6.28
+      });
+    }
+
+    const byLabel = {}; nodes.forEach((n,i)=>{ if(n.label) byLabel[n.label]=i; });
+    const hubOf = {}; nodes.forEach((n,i)=>{ if(n.hub) hubOf[n.g]=i; });
+    const addEdge=(a,b,type)=>{
+      if(a==null||b==null||a===b) return;
+      if(edges.some(e=>(e.a===a&&e.b===b)||(e.a===b&&e.b===a))) return;
+      edges.push({a,b,type, bow:(Math.random()-.5)*24});
+    };
+
+    /* cada habilidad → su hub, y algunas con su hermana más cercana */
+    nodes.forEach((n,i)=>{
+      if(!n.label || n.hub) return;
+      addEdge(i, hubOf[n.g], 'spoke');
+      const sib = nodes.map((m,j)=>({j,d:(m.label&&m.g===n.g&&j!==i&&!m.hub)?(n.x-m.x)**2+(n.y-m.y)**2:1e18}))
+                       .sort((p,q)=>p.d-q.d)[0];
+      if(sib.d<1e17 && Math.random()<.55) addEdge(i, sib.j, 'sib');
+    });
+    /* puentes semánticos */
+    BRIDGES.forEach(([p,q])=> addEdge(byLabel[p], byLabel[q], 'bridge'));
+    /* textura: cada punto suelto se ata a su vecino más cercano */
+    nodes.forEach((n,i)=>{
+      if(n.label) return;
+      const nn = nodes.map((m,j)=>({j,d:i===j?1e18:(n.x-m.x)**2+(n.y-m.y)**2})).sort((p,q)=>p.d-q.d)[0];
+      addEdge(i, nn.j, 'dust');
+    });
+
+    adj = nodes.map(()=>new Set());
+    edges.forEach(e=>{ adj[e.a].add(e.b); adj[e.b].add(e.a); });
+  }
+
+  function hoveredNode(){
+    let best=-1, bd=70;
+    nodes.forEach((n,i)=>{
+      if(!n.label) return;
+      const d = Math.hypot(mouse.x-n.x, mouse.y-n.y);
+      if(d<bd){ bd=d; best=i; }
+    });
+    return best;
+  }
+
+  function step(now){
+    ctx.clearRect(0,0,W,H);
+    const t=(now||0)/1000;
+    grabbed = hoveredNode();
+    const focus = grabbed>=0;
+    const nbrs = focus ? adj[grabbed] : null;
+
+    /* aristas */
+    edges.forEach(e=>{
+      const a=nodes[e.a], b=nodes[e.b];
+      const dx=b.x-a.x, dy=b.y-a.y, d=Math.hypot(dx,dy)||1;
+      const lit = focus && (e.a===grabbed || e.b===grabbed);
+      const dim = focus && !lit;
+      const mx=(a.x+b.x)/2 - (dy/d)*e.bow;
+      const my=(a.y+b.y)/2 + (dx/d)*e.bow;
+      if(lit){
+        ctx.strokeStyle=`rgba(${PEN},.65)`; ctx.lineWidth=1.7; ctx.setLineDash([]);
+      } else {
+        ctx.strokeStyle=`rgba(${INK},${dim? .06 : (e.type==='bridge'? .20 : .13)})`;
+        ctx.lineWidth = e.type==='bridge'? 1.3 : 1.0;
+        ctx.setLineDash(e.type==='bridge' ? [] : [1,6]);
+      }
+      ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.quadraticCurveTo(mx,my,b.x,b.y); ctx.stroke();
+      ctx.setLineDash([]);
+      if(!reduced){
+        const target = e.type==='bridge'? 200 : e.type==='spoke'? 120 : 140;
+        const f = (d-target)*0.000022;
+        a.vx += dx*f; a.vy += dy*f; b.vx -= dx*f; b.vy -= dy*f;
+      }
+    });
+
+    /* ondas de tinta al hacer clic */
+    for(let i=ripples.length-1;i>=0;i--){
+      const rp=ripples[i]; rp.r += 1.8; rp.o -= .018;
+      if(rp.o<=0){ ripples.splice(i,1); continue; }
+      ctx.strokeStyle=`rgba(${PEN},${rp.o})`; ctx.lineWidth=1.6;
+      ctx.beginPath(); ctx.arc(rp.x,rp.y,rp.r,0,7); ctx.stroke();
+    }
+
+    /* nodos */
+    nodes.forEach((n,i)=>{
+      const isGrab = i===grabbed;
+      const isNbr = focus && nbrs.has(i);
+      const md = Math.hypot(mouse.x-n.x, mouse.y-n.y);
+      if(!reduced){
+        if(isGrab && md>2){
+          /* imán: el nodo se acerca al cursor y arrastra a sus vecinos vía resortes */
+          n.vx += (mouse.x-n.x)*0.012;
+          n.vy += (mouse.y-n.y)*0.012;
+        } else if(!focus && !n.label && md<100 && md>0.1){
+          /* los puntos sueltos sí huyen del cursor (polvo de tinta) */
+          n.vx += (n.x-mouse.x)/md * 0.03;
+          n.vy += (n.y-mouse.y)/md * 0.03;
+        }
+        n.x += n.vx; n.y += n.vy;
+        n.vx *= .984; n.vy *= .984;
+        n.vx += (Math.random()-.5)*.003; n.vy += (Math.random()-.5)*.003;
+        if(n.x<-30) n.x=W+30; if(n.x>W+30) n.x=-30;
+        if(n.y<-30) n.y=H+30; if(n.y>H+30) n.y=-30;
+      }
+      const wob = reduced ? 0 : Math.sin(t*1.4 + n.wob)*.5;
+
+      if(n.label){
+        const hot = isGrab ? 1 : isNbr ? .55 : 0;
+        const dimmed = focus && !isGrab && !isNbr;
+        const fs = (13 + n.s*3.5) * (isGrab?1.08:1);
+        ctx.font = `600 ${fs}px "Caveat", cursive`;
+        const tw = ctx.measureText(n.label).width;
+        const lx = n.x, ly = n.y - n.r - 9;
+        if(hot>0.04){
+          ctx.fillStyle = `rgba(${HL},${.12+.5*hot})`;
+          ctx.save(); ctx.translate(lx,ly); ctx.rotate(-0.025);
+          ctx.fillRect(-tw/2-5, -fs*.62, tw+10, fs*.78);
+          ctx.restore();
+        }
+        if(isGrab){
+          ctx.strokeStyle=`rgba(${PEN},.55)`; ctx.lineWidth=1.4;
+          ctx.beginPath(); ctx.arc(n.x,n.y,n.r+4+wob,0,7); ctx.stroke();
+        }
+        /* hubs rellenos de marcatextos con contorno de tinta */
+        if(n.hub){
+          ctx.fillStyle = `rgba(${HL},${dimmed? .35 : .9})`;
+          ctx.beginPath(); ctx.arc(n.x,n.y,n.r+wob*.4+(hot*1.4),0,7); ctx.fill();
+          ctx.strokeStyle = `rgba(${INK},${dimmed? .3 : .9})`; ctx.lineWidth=1.8;
+          ctx.beginPath(); ctx.arc(n.x,n.y,n.r+wob*.4+(hot*1.4),0,7); ctx.stroke();
+        } else {
+          ctx.fillStyle = hot>0.04 ? `rgba(${PEN},.95)` : `rgba(${INK},${dimmed? .3 : .88})`;
+          ctx.beginPath(); ctx.arc(n.x,n.y,n.r+wob*.4+(hot*1.2),0,7); ctx.fill();
+        }
+        ctx.fillStyle = `rgba(${INK},${dimmed? .22 : .55+.45*hot})`;
+        ctx.textAlign='center';
+        ctx.fillText(n.label, lx, ly);
+      } else {
+        ctx.fillStyle = `rgba(${INK},${focus? .18 : .36})`;
+        ctx.beginPath(); ctx.arc(n.x,n.y,n.r+wob*.3,0,7); ctx.fill();
+      }
+    });
+    if(!reduced) requestAnimationFrame(step);
+  }
+
+  window.addEventListener('resize', ()=>{ resize(); build(); if(reduced) step(); });
+  canvas.parentElement.addEventListener('pointermove', e=>{
+    const r = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
+    if(reduced) step();
+  });
+  canvas.parentElement.addEventListener('pointerleave', ()=>{ mouse.x=mouse.y=-9999; grabbed=-1; if(reduced) step(); });
+  canvas.parentElement.addEventListener('pointerdown', e=>{
+    const r = canvas.getBoundingClientRect();
+    ripples.push({x:e.clientX-r.left, y:e.clientY-r.top, r:6, o:.5});
+    if(reduced) step();
+  });
+
+  resize(); build(); requestAnimationFrame(step);
+})();
+
+/* ---------- header scroll ---------- */
+const header = document.getElementById('header');
+addEventListener('scroll', ()=> header.classList.toggle('scrolled', scrollY>24), {passive:true});
+
+/* ---------- reveal on scroll ---------- */
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ---------- count-up stats ---------- */
+const reducedM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const statIO = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const el = e.target, target = +el.dataset.count, suf = el.dataset.suffix||'';
+    if(reducedM){ el.textContent = target+suf; statIO.unobserve(el); return; }
+    const t0 = performance.now(), dur = 1400;
+    (function tick(t){
+      const p = Math.min(1,(t-t0)/dur), ease = 1-Math.pow(1-p,3);
+      el.textContent = Math.round(target*ease)+suf;
+      if(p<1) requestAnimationFrame(tick);
+    })(t0);
+    statIO.unobserve(el);
+  });
+},{threshold:.6});
+document.querySelectorAll('.stat .num').forEach(el=>statIO.observe(el));
+</script>
+</body>
+</html>
