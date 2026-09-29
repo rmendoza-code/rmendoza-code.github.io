@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#E8E8E8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'" />
+<title>Cloud billing unificado · Rodrigo Mendoza Cortés</title>
+<meta name="description" content="Caso: automatizar la consolidación de reportes mensuales de consumo cloud y un tablero analítico para dirección. Recreación con datos de muestra." />
+<link rel="canonical" href="https://rmendoza-code.github.io/dashboards/cloud-billing.html" />
+<meta property="og:image" content="https://rmendoza-code.github.io/assets/og-image.png" />
+<link rel="icon" href="../assets/site/img/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../assets/site/case.css" />
+<style>
+.db{padding:18px;display:grid;gap:14px}
+.db__top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.months{display:flex;gap:4px;flex-wrap:wrap;background:#0E0F11;padding:4px;border-radius:12px}
+.months button{font-family:"JBMono",monospace;font-size:12px;min-height:34px;padding:0 12px;border:0;border-radius:9px;background:transparent;color:var(--dk-muted);cursor:pointer}
+.months button.on{background:var(--lime);color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.k{background:var(--dk-2);border-radius:14px;padding:14px 16px}
+.k .mono{color:var(--dk-muted);font-size:10.5px}
+.k b{display:block;font-weight:800;font-stretch:66%;font-size:44px;line-height:1;margin-top:8px;font-variant-numeric:tabular-nums}
+.k small{font-family:"JBMono",monospace;font-size:11px;color:var(--dk-muted)}
+.up{color:#FF8A7A}.down{color:var(--lime)}
+.charts{display:grid;grid-template-columns:1.4fr 1fr;gap:10px}
+.panel{background:var(--dk-2);border-radius:14px;padding:14px 16px}
+.panel .mono{color:var(--dk-muted);font-size:10.5px}
+.panel svg{width:100%;height:auto;display:block;margin-top:8px}
+.panel svg text{font-family:"JBMono",monospace;font-size:10px;fill:var(--dk-muted)}
+.rank{list-style:none;display:grid;gap:10px;margin-top:12px}
+.rank li{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:13px}
+.rank li i{grid-column:1/-1;height:8px;border-radius:4px;background:#2D2E32;position:relative;overflow:hidden}
+.rank li i::after{content:"";position:absolute;inset:0;width:var(--w);background:var(--c);border-radius:4px;transition:width .8s var(--ease-out)}
+.rank b{font-family:"JBMono",monospace;font-size:11px}
+.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-family:"JBMono",monospace;font-size:10.5px;color:var(--dk-muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+@media(max-width:900px){.charts,.kpis{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="btn" href="../index.html#dashboards">← Volver al portafolio</a>
+  <span data-lang-toggle-here></span>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="kick"><span class="pill pill--lime pill--dot mono">En desarrollo</span><span class="pill mono">CIMMYT</span><span class="pill mono">Datos de muestra</span></div>
+    <h1>Cloud billing unificado</h1>
+    <p class="lead">Cada mes llega un archivo de Excel con el consumo cloud del mes y se guarda en SharePoint. Dirección necesita una vista estrictamente analítica: qué se consume y qué fuentes cuestan más. El reto es que el tablero se actualice solo cuando llega el archivo nuevo.</p>
+    <div class="tags"><span>SharePoint</span><span>Consumo de Microsoft Fabric</span><span>Power BI</span><span>Automatización</span></div>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">01 · El problema</div>
+    <h2>Doce archivos, cero vista de conjunto</h2>
+    <p class="intro">Un archivo por mes funciona para consultar un mes. Para responder “¿qué está creciendo?” o “¿qué fuente cuesta más este año?”, alguien tenía que juntar los archivos a mano.</p>
+    <div class="grid3">
+      <div class="fact"><span class="mono">Audiencia</span><b>Dirección</b><p>Decisiones de presupuesto y capacidad: nada de detalle operativo, solo lo que mueve el costo.</p></div>
+      <div class="fact"><span class="mono">Pregunta 1</span><b>¿Qué se consume?</b><p>Consumo total por mes y su tendencia.</p></div>
+      <div class="fact"><span class="mono">Pregunta 2</span><b>¿Qué cuesta más?</b><p>Ranking de fuentes de consumo y su participación en el total.</p></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">02 · La solución</div>
+    <h2>Del archivo mensual al tablero, sin copiar y pegar</h2>
+    <div class="flow">
+      <div class="step"><span class="mono">Fuente</span><b>Excel mensual</b><p>Un archivo nuevo por mes en una carpeta de SharePoint.</p></div>
+      <div class="step"><span class="mono">Automatización</span><b>Consolidar</b><p>Cada archivo nuevo se une al histórico con la misma estructura.</p></div>
+      <div class="step"><span class="mono">Modelo</span><b>Histórico único</b><p>Una sola tabla de consumo por mes y fuente, lista para medir.</p></div>
+      <div class="step"><span class="mono">Consumo</span><b>Tablero ejecutivo</b><p>Tendencia, variación mensual y ranking de fuentes para dirección.</p></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">03 · El tablero</div>
+    <h2>Vista ejecutiva, interactiva</h2>
+    <p class="intro">Recreación con datos de muestra. Elige un mes: los KPIs, la tendencia y el ranking se recalculan.</p>
+    <div class="win">
+      <div class="win__bar"><span class="dots"><i></i><i></i><i></i></span><span class="url mono">powerbi · cloud-billing / resumen-ejecutivo</span></div>
+      <div class="db">
+        <div class="db__top"><span class="mono" style="color:var(--dk-muted)">Mes</span><div class="months" id="months" role="group" aria-label="Mes"></div></div>
+        <div class="kpis">
+          <div class="k"><span class="mono">Consumo del mes</span><b id="k-total">—</b><small>USD</small></div>
+          <div class="k"><span class="mono">Vs. mes anterior</span><b id="k-delta">—</b><small id="k-delta-s"></small></div>
+          <div class="k"><span class="mono">Fuente principal</span><b id="k-top">—</b><small id="k-top-s"></small></div>
+        </div>
+        <div class="charts">
+          <div class="panel"><span class="mono">Consumo por mes y fuente</span><svg id="ch" viewBox="0 0 560 240" role="img" aria-label="Barras apiladas de consumo mensual por fuente"></svg><div class="legend" id="legend"></div></div>
+          <div class="panel"><span class="mono">Ranking de fuentes · mes</span><ul class="rank" id="rank"></ul></div>
+        </div>
+      </div>
+      <div class="win__foot mono">Recreación · datos de muestra</div>
+    </div>
+    <p class="note">Las cifras y nombres de fuentes son ilustrativos; el diseño responde a las dos preguntas del área. El proyecto sigue en desarrollo.</p>
+  </section>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a class="btn" href="procurement-analytics.html">Ver el caso de Procurement →</a>
+    <a class="btn btn--ghost" href="../index.html#ai-lab">Ir al AI Lab</a>
+  </div>
+</main>
+<footer class="mono"><span>Rodrigo Mendoza Cortés · Agentic AI &amp; Data Engineer</span><a href="../index.html">rmendoza-code.github.io</a></footer>
+
+<script>
+(function(){
+  var SRC=[{n:'Notebooks Spark',c:'#B8E08C'},{n:'Pipelines',c:'#3B4FE0'},{n:'Warehouse',c:'#A9B4F2'},{n:'Modelos semánticos',c:'#EDEDED'},{n:'Otros',c:'#56585E'}];
+  var MES=['Abr','May','Jun','Jul','Ago','Sep'];
+  var D=[[3.1,2.2,1.6,1.1,.5],[3.4,2.3,1.7,1.2,.5],[3.2,2.6,1.8,1.2,.6],[3.9,2.7,1.9,1.3,.6],[4.3,2.8,2.1,1.4,.6],[4.8,2.9,2.2,1.5,.7]];
+  var cur=5;
+  var $=function(id){return document.getElementById(id)};
+  var sum=function(a){return a.reduce(function(x,y){return x+y},0)};
+  function fmt(v){return '$'+(v*1000).toLocaleString('en-US',{maximumFractionDigits:0})}
+  function render(){
+    $('months').innerHTML=MES.map(function(m,i){return '<button type="button" class="'+(i===cur?'on':'')+'" data-i="'+i+'" aria-pressed="'+(i===cur)+'">'+m+'</button>'}).join('');
+    [].forEach.call($('months').querySelectorAll('button'),function(b){b.onclick=function(){cur=+b.dataset.i;render()}});
+    var t=sum(D[cur]); $('k-total').textContent=fmt(t);
+    if(cur>0){var p=sum(D[cur-1]),d=(t-p)/p*100; $('k-delta').textContent=(d>=0?'+':'')+d.toFixed(1)+'%'; $('k-delta').className=d>=0?'up':'down'; $('k-delta-s').textContent=MES[cur-1]+' → '+MES[cur];}
+    else{$('k-delta').textContent='—';$('k-delta').className='';$('k-delta-s').textContent='';}
+    var order=D[cur].map(function(v,i){return i}).sort(function(a,b){return D[cur][b]-D[cur][a]});
+    $('k-top').textContent=(D[cur][order[0]]/t*100).toFixed(0)+'%'; $('k-top-s').textContent=SRC[order[0]].n;
+    $('rank').innerHTML=order.map(function(i){var v=D[cur][i];return '<li><span>'+SRC[i].n+'</span><b>'+fmt(v)+'</b><i style="--w:'+(v/D[cur][order[0]]*100).toFixed(0)+'%;--c:'+SRC[i].c+'"></i></li>'}).join('');
+    var W=560,H=240,L=34,B=24,T=10,max=12,bw=(W-L-10)/MES.length,s='';
+    for(var g=0;g<=12;g+=4){var y=H-B-(g/max)*(H-B-T); s+='<line x1="'+L+'" x2="'+W+'" y1="'+y+'" y2="'+y+'" stroke="rgba(237,237,237,.08)"/><text x="'+(L-6)+'" y="'+(y+3)+'" text-anchor="end">'+g+'k</text>';}
+    D.forEach(function(row,i){var y=H-B,x=L+i*bw+bw*.2,w=bw*.6;row.forEach(function(v,j){var h=v/max*(H-B-T);y-=h;s+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+SRC[j].c+'" opacity="'+(i===cur?1:.35)+'" rx="2"/>'});s+='<text x="'+(x+w/2)+'" y="'+(H-6)+'" text-anchor="middle">'+MES[i]+'</text>'});
+    $('ch').innerHTML=s;
+    $('legend').innerHTML=SRC.map(function(x){return '<span><i style="background:'+x.c+'"></i>'+x.n+'</span>'}).join('');
+  }
+  render();
+  document.addEventListener('languagechange',function(){ if(window.I18N) I18N.refresh && I18N.refresh(); });
+})();
+</script>
+<script src="../assets/i18n.js"></script>
+<script>
+I18N.register({
+  "← Volver al portafolio":"← Back to portfolio","En desarrollo":"In development","Datos de muestra":"Sample data",
+  "Cloud billing unificado":"Unified cloud billing",
+  "Cada mes llega un archivo de Excel con el consumo cloud del mes y se guarda en SharePoint. Dirección necesita una vista estrictamente analítica: qué se consume y qué fuentes cuestan más. El reto es que el tablero se actualice solo cuando llega el archivo nuevo.":"Every month an Excel file with that month’s cloud consumption lands in SharePoint. Leadership needs a strictly analytical view: what is consumed and which sources cost the most. The challenge is keeping the dashboard current on its own when the new file arrives.",
+  "Consumo de Microsoft Fabric":"Microsoft Fabric consumption","Automatización":"Automation",
+  "01 · El problema":"01 · The problem","Doce archivos, cero vista de conjunto":"Twelve files, no big picture",
+  "Un archivo por mes funciona para consultar un mes. Para responder “¿qué está creciendo?” o “¿qué fuente cuesta más este año?”, alguien tenía que juntar los archivos a mano.":"One file per month works to look at one month. To answer “what is growing?” or “which source costs the most this year?”, someone had to stitch the files together by hand.",
+  "Audiencia":"Audience","Dirección":"Leadership","Decisiones de presupuesto y capacidad: nada de detalle operativo, solo lo que mueve el costo.":"Budget and capacity decisions: no operational detail, only what drives cost.",
+  "Pregunta 1":"Question 1","¿Qué se consume?":"What is consumed?","Consumo total por mes y su tendencia.":"Total monthly consumption and its trend.",
+  "Pregunta 2":"Question 2","¿Qué cuesta más?":"What costs the most?","Ranking de fuentes de consumo y su participación en el total.":"Ranking of consumption sources and their share of the total.",
+  "02 · La solución":"02 · The solution","Del archivo mensual al tablero, sin copiar y pegar":"From the monthly file to the dashboard, no copy-paste",
+  "Fuente":"Source","Excel mensual":"Monthly Excel","Un archivo nuevo por mes en una carpeta de SharePoint.":"A new file every month in a SharePoint folder.",
+  "Consolidar":"Consolidate","Cada archivo nuevo se une al histórico con la misma estructura.":"Each new file is appended to the history with the same structure.",
+  "Modelo":"Model","Histórico único":"Single history","Una sola tabla de consumo por mes y fuente, lista para medir.":"One consumption table by month and source, ready to measure.",
+  "Consumo":"Consumption","Tablero ejecutivo":"Executive dashboard","Tendencia, variación mensual y ranking de fuentes para dirección.":"Trend, month-over-month change and source ranking for leadership.",
+  "03 · El tablero":"03 · The dashboard","Vista ejecutiva, interactiva":"Executive view, interactive",
+  "Recreación con datos de muestra. Elige un mes: los KPIs, la tendencia y el ranking se recalculan.":"Recreation with sample data. Pick a month: KPIs, trend and ranking recalculate.",
+  "Mes":"Month","Consumo del mes":"Month consumption","Vs. mes anterior":"Vs. previous month","Fuente principal":"Top source",
+  "Consumo por mes y fuente":"Consumption by month and source","Ranking de fuentes · mes":"Source ranking · month","Recreación · datos de muestra":"Recreation · sample data",
+  "Las cifras y nombres de fuentes son ilustrativos; el diseño responde a las dos preguntas del área. El proyecto sigue en desarrollo.":"Figures and source names are illustrative; the design answers the team’s two questions. The project is still in development.",
+  "Ver el caso de Procurement →":"See the Procurement case →","Ir al AI Lab":"Go to the AI Lab"
+});
+I18N.init();
+</script>
+</body>
+</html>

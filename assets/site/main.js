@@ -15,7 +15,7 @@
     s1t:"AI agents", s1:"Agents that reason, use tools and integrate with business systems: intent routing, tool calling, memory, MCP servers and human approval on sensitive steps.",
     s2t:"RAG &amp; generative AI", s2:"Assistants that answer with the organization’s own information and don’t make things up: chunking, embeddings, vector databases, grounded prompts and answers that cite their source.",
     s3t:"Data &amp; BI", s3:"The foundation that makes an agent trustworthy: Microsoft Fabric lakehouses, semantic models, DAX and Power BI dashboards leadership actually uses.",
-    workH:"Data<br>&amp; BI", workS:"(06) Dashboards · Fabric<br>Power Platform", workNote:"Cards 01–03 open HTML recreations of dashboards built in Power BI: same measure logic and KPIs, with anonymized sample data.",
+    workH:"Data<br>&amp; BI", workS:"(06) Dashboards · Fabric<br>Power Platform", workNote:"Each card opens its case: HTML recreations of dashboards built in Power BI and Fabric, with the same measure logic and anonymized sample data.", caseCta:"See case and demo",
     p1t:"Procurement Analytics — PR to PO", p1d:"Procurement cycle tracking on a Bronze/Silver/Gold architecture sourced from D365 F&amp;O. Cycle time triangulated against stakeholder data.",
     p2c:"Finance · Budget", p2d:"Financial execution report with an embedded comment-capture page via Microsoft Forms → Power Automate → SharePoint, rendered with HTML Viewer.",
     p3t:"RAMS — Railway maintenance", p3d:"MTBF, MTTR and asset availability metrics for railway operations, with Dataverse to SQL Server pipelines and near real-time fleet monitoring.",

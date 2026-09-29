@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#E8E8E8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'" />
+<title>Training App (LMS) · Rodrigo Mendoza Cortés</title>
+<meta name="description" content="Caso: app de entrenamiento (LMS) sobre Microsoft Fabric y Power BI para usuarios que usan la herramienta por primera vez. Recreación con contenido de muestra." />
+<link rel="canonical" href="https://rmendoza-code.github.io/dashboards/training-app.html" />
+<meta property="og:image" content="https://rmendoza-code.github.io/assets/og-image.png" />
+<link rel="icon" href="../assets/site/img/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../assets/site/case.css" />
+<style>
+.lms{display:grid;grid-template-columns:230px 1fr;min-height:470px}
+.lms__side{background:#121316;padding:16px;display:flex;flex-direction:column;gap:14px;border-right:1px solid rgba(237,237,237,.06)}
+.lms__side .mono{color:var(--dk-muted);font-size:10.5px}
+.areas{display:flex;flex-direction:column;gap:4px}
+.areas button{text-align:left;font:inherit;font-size:14px;min-height:40px;padding:0 12px;border:0;border-radius:10px;background:transparent;color:#C9CACE;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
+.areas button:hover{background:#1E1F23;color:#fff}
+.areas button.on{background:var(--lime);color:var(--ink);font-weight:600}
+.areas small{font-family:"JBMono",monospace;font-size:10px;opacity:.7}
+.prog{margin-top:auto;background:#1E1F23;border-radius:12px;padding:12px}
+.prog b{display:block;font-weight:800;font-stretch:66%;font-size:34px;line-height:1;margin:6px 0}
+.prog i{display:block;height:6px;border-radius:3px;background:#2D2E32;position:relative;overflow:hidden}
+.prog i::after{content:"";position:absolute;inset:0;width:var(--p);background:var(--lime);transition:width .6s var(--ease-out)}
+.lms__main{padding:18px;display:grid;grid-template-columns:1fr 1.2fr;gap:14px}
+.path{list-style:none;display:flex;flex-direction:column;gap:8px}
+.path button{width:100%;text-align:left;font:inherit;display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:12px;border-radius:12px;border:1px solid rgba(237,237,237,.08);background:#1E1F23;color:#EDEDED;cursor:pointer}
+.path button:hover{border-color:rgba(184,224,140,.5)}
+.path button.on{border-color:var(--lime);background:#23261F}
+.path .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-family:"JBMono",monospace;font-size:11px;border:1.5px solid var(--dk-muted);color:var(--dk-muted)}
+.path .done .n{background:var(--lime);border-color:var(--lime);color:var(--ink)}
+.path .t{font-size:14px;line-height:1.25}
+.path .d{font-family:"JBMono",monospace;font-size:10px;color:var(--dk-muted)}
+.lesson{background:#1E1F23;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.lesson h3{font-weight:800;font-stretch:66%;text-transform:uppercase;font-size:28px;line-height:.95}
+.lesson p{font-size:14px;color:#C9CACE}
+.quiz{border-top:1px solid rgba(237,237,237,.08);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.quiz .q{font-size:14px;font-weight:600}
+.quiz button{text-align:left;font:inherit;font-size:13px;min-height:40px;padding:0 12px;border-radius:10px;border:1px solid rgba(237,237,237,.12);background:transparent;color:#EDEDED;cursor:pointer}
+.quiz button.ok{border-color:var(--lime);background:rgba(184,224,140,.15)}
+.quiz button.no{border-color:#FF8A7A;background:rgba(255,138,122,.12)}
+.fb{font-family:"JBMono",monospace;font-size:11px;min-height:16px;color:var(--lime)}
+.complete{align-self:flex-start;min-height:40px;padding:0 16px;border-radius:999px;border:0;background:var(--lime);color:var(--ink);font:inherit;font-weight:600;font-size:14px;cursor:pointer}
+@media(max-width:900px){.lms{grid-template-columns:1fr}.lms__main{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="btn" href="../index.html#dashboards">← Volver al portafolio</a>
+  <span data-lang-toggle-here></span>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="kick"><span class="pill pill--lime pill--dot mono">MVP en uso</span><span class="pill mono">CIMMYT</span><span class="pill mono">Contenido de muestra</span></div>
+    <h1>Training App</h1>
+    <p class="lead">Una app de entrenamiento (LMS) sobre Microsoft Fabric y Power BI para personas que abren la herramienta por primera vez. El contenido cambia según el área que se quiere entrenar: cada equipo aprende con los ejemplos de su propio trabajo.</p>
+    <div class="tags"><span>Microsoft Fabric</span><span>Power BI</span><span>Fabric App template</span><span>LMS</span></div>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">01 · Contexto</div>
+    <h2>Adopción empieza por el primer clic</h2>
+    <div class="grid3">
+      <div class="fact"><span class="mono">Audiencia</span><b>Usuarios nuevos</b><p>Para la mayoría es prácticamente su primera vez usando Fabric o Power BI.</p></div>
+      <div class="fact"><span class="mono">Personalización</span><b>Contenido por área</b><p>Las rutas se adaptan al departamento que se va a entrenar.</p></div>
+      <div class="fact"><span class="mono">Estado</span><b>MVP con resultados</b><p>Ya se capacitó al equipo de Procurement; el diseño permite escalar a toda la organización.</p></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">02 · Cómo se construyó</div>
+    <h2>Sobre la plataforma, no al lado</h2>
+    <div class="flow">
+      <div class="step"><span class="mono">Base</span><b>Fabric App template</b><p>Se partió del template de apps de Fabric en lugar de construir desde cero.</p></div>
+      <div class="step"><span class="mono">Contenido</span><b>Rutas por área</b><p>Módulos que cambian según el departamento destino.</p></div>
+      <div class="step"><span class="mono">Riesgo</span><b>Acceso y autenticación</b><p>Las partes críticas: quién entra y a qué datos puede ver.</p></div>
+      <div class="step"><span class="mono">Entrega</span><b>Capacitación</b><p>Primera generación: equipo de Procurement.</p></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">03 · La experiencia</div>
+    <h2>Pruébala</h2>
+    <p class="intro">Recreación con contenido de muestra. Elige un área, abre un módulo, responde la pregunta y márcalo como completado.</p>
+    <div class="win">
+      <div class="win__bar"><span class="dots"><i></i><i></i><i></i></span><span class="url mono">fabric · training-app / ruta</span></div>
+      <div class="lms">
+        <aside class="lms__side">
+          <span class="mono">Área</span>
+          <div class="areas" id="areas"></div>
+          <div class="prog"><span class="mono">Tu avance</span><b id="pct">0%</b><i id="bar" style="--p:0%"></i></div>
+        </aside>
+        <div class="lms__main">
+          <ol class="path" id="path"></ol>
+          <div class="lesson" id="lesson" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="win__foot mono">Recreación · contenido de muestra</div>
+    </div>
+    <p class="note">El repositorio es privado y no contiene información de CIMMYT en esta página: los módulos, preguntas y áreas mostrados son ilustrativos.</p>
+  </section>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a class="btn" href="procurement-analytics.html">Ver el caso de Procurement →</a>
+    <a class="btn btn--ghost" href="../index.html#ai-lab">Ir al AI Lab</a>
+  </div>
+</main>
+<footer class="mono"><span>Rodrigo Mendoza Cortés · Agentic AI &amp; Data Engineer</span><a href="../index.html">rmendoza-code.github.io</a></footer>
+
+<script>
+(function(){
+  var EN=function(){return document.documentElement.lang==='en'};
+  var DATA={
+    es:{areas:['Procurement','Finanzas','Operaciones'],mods:[
+      {t:'Qué es Microsoft Fabric',d:'5 min',p:'Un solo lugar para los datos de la organización: dónde viven, quién los cuida y cómo llegan a tus reportes.',q:'¿Dónde consultas los reportes oficiales de tu área?',o:['En el workspace del área','En un Excel que me reenvían'],a:0},
+      {t:'Navegar un reporte de Power BI',d:'8 min',p:'Páginas, visuales y cómo moverte sin perder el contexto de lo que estás revisando.',q:'Si haces clic en una barra, ¿qué pasa con los demás visuales?',o:['Se filtran por esa selección','No cambia nada'],a:0},
+      {t:'Filtros y segmentaciones',d:'6 min',p:'Cómo acotar por fecha, categoría o responsable y regresar a la vista completa.',q:'¿Qué haces para volver a ver todo?',o:['Cerrar el reporte','Limpiar los filtros'],a:1},
+      {t:'Leer el tablero de tu área',d:'10 min',p:'Qué significa cada KPI, cuál es su meta y qué hacer cuando está en rojo.',q:'Un KPI en rojo significa…',o:['Que está fuera de la meta','Que el reporte falló'],a:0},
+      {t:'Compartir y exportar',d:'4 min',p:'Comparte la liga en lugar de capturas: así todos ven la misma cifra actualizada.',q:'¿Qué conviene compartir?',o:['Una captura de pantalla','La liga al reporte'],a:1}]},
+    en:{areas:['Procurement','Finance','Operations'],mods:[
+      {t:'What Microsoft Fabric is',d:'5 min',p:'One place for the organization’s data: where it lives, who looks after it and how it reaches your reports.',q:'Where do you check your team’s official reports?',o:['In the team workspace','In an Excel someone forwards me'],a:0},
+      {t:'Navigating a Power BI report',d:'8 min',p:'Pages, visuals and how to move around without losing the context of what you are reviewing.',q:'If you click a bar, what happens to the other visuals?',o:['They filter by that selection','Nothing changes'],a:0},
+      {t:'Filters and slicers',d:'6 min',p:'How to narrow by date, category or owner and get back to the full view.',q:'How do you see everything again?',o:['Close the report','Clear the filters'],a:1},
+      {t:'Reading your team’s dashboard',d:'10 min',p:'What each KPI means, what its target is and what to do when it turns red.',q:'A red KPI means…',o:['It is off target','The report failed'],a:0},
+      {t:'Sharing and exporting',d:'4 min',p:'Share the link instead of screenshots: everyone sees the same, up-to-date number.',q:'What should you share?',o:['A screenshot','The link to the report'],a:1}]}
+  };
+  var state={area:0,mod:0,done:[{},{},{}]};
+  var $=function(id){return document.getElementById(id)};
+  function L(){return EN()?DATA.en:DATA.es}
+  function render(){
+    var d=L(), done=state.done[state.area], n=Object.keys(done).length, tot=d.mods.length;
+    $('areas').innerHTML=d.areas.map(function(a,i){var c=Object.keys(state.done[i]).length;return '<button type="button" class="'+(i===state.area?'on':'')+'" data-i="'+i+'" data-no-i18n>'+a+'<small>'+c+'/'+tot+'</small></button>'}).join('');
+    [].forEach.call($('areas').querySelectorAll('button'),function(b){b.onclick=function(){state.area=+b.dataset.i;state.mod=0;render()}});
+    $('pct').textContent=Math.round(n/tot*100)+'%'; $('bar').style.setProperty('--p',(n/tot*100)+'%');
+    $('path').innerHTML=d.mods.map(function(m,i){return '<li class="'+(done[i]?'done':'')+'"><button type="button" class="'+(i===state.mod?'on':'')+'" data-i="'+i+'" data-no-i18n><span class="n">'+(done[i]?'✓':('0'+(i+1)))+'</span><span class="t">'+m.t+'</span><span class="d">'+m.d+'</span></button></li>'}).join('');
+    [].forEach.call($('path').querySelectorAll('button'),function(b){b.onclick=function(){state.mod=+b.dataset.i;render()}});
+    var m=d.mods[state.mod];
+    $('lesson').innerHTML='<span class="mono" style="color:var(--dk-muted)" data-no-i18n>'+(EN()?'Module ':'Módulo ')+'0'+(state.mod+1)+' · '+d.areas[state.area]+'</span><h3 data-no-i18n>'+m.t+'</h3><p data-no-i18n>'+m.p+'</p><div class="quiz" data-no-i18n><div class="q">'+m.q+'</div>'+m.o.map(function(o,i){return '<button type="button" data-i="'+i+'">'+o+'</button>'}).join('')+'<div class="fb" id="fb"></div></div><button type="button" class="complete" id="complete" data-no-i18n>'+(done[state.mod]?(EN()?'Completed ✓':'Completado ✓'):(EN()?'Mark as completed':'Marcar como completado'))+'</button>';
+    [].forEach.call($('lesson').querySelectorAll('.quiz button'),function(b){b.onclick=function(){var ok=+b.dataset.i===m.a;b.classList.add(ok?'ok':'no');$('fb').textContent=ok?(EN()?'Correct':'Correcto'):(EN()?'Try again':'Intenta de nuevo');$('fb').style.color=ok?'var(--lime)':'#FF8A7A'}});
+    $('complete').onclick=function(){done[state.mod]=1; if(state.mod<tot-1) state.mod++; render()};
+  }
+  window.renderLMS=render; render();
+  document.addEventListener('languagechange',render);
+})();
+</script>
+<script src="../assets/i18n.js"></script>
+<script>
+I18N.register({
+  "← Volver al portafolio":"← Back to portfolio","MVP en uso":"MVP in use","Contenido de muestra":"Sample content",
+  "Una app de entrenamiento (LMS) sobre Microsoft Fabric y Power BI para personas que abren la herramienta por primera vez. El contenido cambia según el área que se quiere entrenar: cada equipo aprende con los ejemplos de su propio trabajo.":"A training app (LMS) on Microsoft Fabric and Power BI for people opening the tool for the first time. Content changes with the team being trained: each team learns with examples from its own work.",
+  "01 · Contexto":"01 · Context","Adopción empieza por el primer clic":"Adoption starts with the first click",
+  "Audiencia":"Audience","Usuarios nuevos":"New users","Para la mayoría es prácticamente su primera vez usando Fabric o Power BI.":"For most, it is practically their first time using Fabric or Power BI.",
+  "Personalización":"Personalization","Contenido por área":"Content by team","Las rutas se adaptan al departamento que se va a entrenar.":"Learning paths adapt to the department being trained.",
+  "Estado":"Status","MVP con resultados":"MVP with results","Ya se capacitó al equipo de Procurement; el diseño permite escalar a toda la organización.":"The Procurement team has already been trained; the design can scale to the whole organization.",
+  "02 · Cómo se construyó":"02 · How it was built","Sobre la plataforma, no al lado":"On the platform, not beside it",
+  "Base":"Foundation","Se partió del template de apps de Fabric en lugar de construir desde cero.":"Built from the Fabric app template instead of from scratch.",
+  "Contenido":"Content","Rutas por área":"Paths by team","Módulos que cambian según el departamento destino.":"Modules that change with the target department.",
+  "Riesgo":"Risk","Acceso y autenticación":"Access and authentication","Las partes críticas: quién entra y a qué datos puede ver.":"The critical parts: who gets in and which data they can see.",
+  "Entrega":"Delivery","Capacitación":"Training","Primera generación: equipo de Procurement.":"First cohort: the Procurement team.",
+  "03 · La experiencia":"03 · The experience","Pruébala":"Try it",
+  "Recreación con contenido de muestra. Elige un área, abre un módulo, responde la pregunta y márcalo como completado.":"Recreation with sample content. Pick a team, open a module, answer the question and mark it as completed.",
+  "Área":"Team","Tu avance":"Your progress","Recreación · contenido de muestra":"Recreation · sample content",
+  "El repositorio es privado y no contiene información de CIMMYT en esta página: los módulos, preguntas y áreas mostrados son ilustrativos.":"The repository is private and this page contains no CIMMYT information: the modules, questions and teams shown are illustrative.",
+  "Ver el caso de Procurement →":"See the Procurement case →","Ir al AI Lab":"Go to the AI Lab"
+});
+I18N.init();
+</script>
+</body>
+</html>
