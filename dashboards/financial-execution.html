@@ -1,52 +1,106 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" /><meta name="referrer" content="strict-origin-when-cross-origin" /><meta name="robots" content="noindex, follow" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; object-src 'none'; base-uri 'self'" />
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta name="robots" content="noindex, follow" />
+<meta name="theme-color" content="#E8E8E8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'" />
 <title>Financial Execution Report · Rodrigo Mendoza Cortés</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Caveat:wght@700&display=swap" rel="stylesheet" />
+<link rel="icon" href="../assets/site/img/favicon.svg" type="image/svg+xml" />
 <style>
-body{margin:0;min-height:100svh;display:flex;align-items:center;justify-content:center;
-background-color:#faf6ec;background-image:radial-gradient(#d9d2bf 1.15px,transparent 1.15px);background-size:22px 22px;
-font-family:'Plus Jakarta Sans',sans-serif;color:#2b2822;padding:24px}
-.note{background:#fffdf7;border:2.5px solid #2b2822;border-radius:255px 18px 225px 18px/18px 225px 18px 255px;
-box-shadow:5px 6px 0 rgba(43,40,34,.85);padding:52px 44px;max-width:520px;text-align:center;position:relative;transform:rotate(-.6deg)}
-.note::before{content:"";position:absolute;top:-14px;left:50%;width:96px;height:28px;transform:translateX(-50%) rotate(-2deg);
-background:rgba(255,216,77,.55);border-left:1px dashed rgba(43,40,34,.25);border-right:1px dashed rgba(43,40,34,.25)}
-h1{font-weight:800;font-size:1.5rem;letter-spacing:-.02em;margin:0 0 10px}
-.hand{font-family:'Caveat',cursive;font-weight:700;font-size:1.7rem;color:#3556c7;display:block;margin-bottom:6px;transform:rotate(-1.5deg)}
-p{color:#6d6759;font-size:.92rem;line-height:1.6;margin:0 0 26px}
-a{font-weight:700;font-size:.9rem;color:#2b2822;text-decoration:none;border:2px solid #2b2822;
-border-radius:255px 18px 225px 18px/18px 225px 18px 255px;padding:10px 24px;background:#ffd84d;
-box-shadow:3px 4px 0 #2b2822;display:inline-block;transition:all .2s}
-a:hover{transform:translate(-2px,-2px);box-shadow:5px 6px 0 #2b2822}
-
-.lang-toggle{display:inline-flex;align-items:center;gap:5px;font-family:'Plus Jakarta Sans',sans-serif;
-font-size:.72rem;font-weight:800;letter-spacing:.06em;border:2px solid #2b2822;border-radius:999px;
-padding:5px 13px;background:#fffdf7;color:#6d6759;cursor:pointer;box-shadow:2.5px 3px 0 #2b2822;
-transition:all .2s;transform:rotate(.8deg);margin-bottom:18px}
-.lang-toggle:hover{transform:rotate(.8deg) translate(-1px,-1px);box-shadow:4px 5px 0 #2b2822;background:#ffd84d}
-.lang-toggle [data-lang]{opacity:.42}.lang-toggle [data-lang].on{opacity:1;color:#2b2822}
-.lang-sep{opacity:.4;font-weight:600}
+@font-face{font-family:"Archivo";src:url(../assets/site/fonts/archivo-wdth.woff2) format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
+@font-face{font-family:"JBMono";src:url(../assets/site/fonts/jetbrains-mono-500.woff2) format("woff2");font-weight:500;font-display:swap}
+:root{--paper:#E8E8E8;--ink:#111214;--muted:#56585E;--line:rgba(17,18,20,.14);--pen:#3B4FE0;--lime:#B8E08C;--gut:clamp(16px,3vw,48px);--ease:cubic-bezier(.76,0,.24,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100svh;background:var(--paper);color:var(--ink);font-family:"Archivo",system-ui,sans-serif;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
+a{color:inherit;text-decoration:none}
+.mono{font-family:"JBMono",ui-monospace,monospace;font-size:12px;text-transform:uppercase}
+.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px var(--gut);border-bottom:1px solid var(--line)}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 18px;border-radius:999px;background:var(--ink);color:var(--paper);font-weight:600;font-size:14px;transition:background-color .3s}
+.btn:hover{background:var(--pen)}
+.btn--ghost{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+.btn--ghost:hover{background:var(--ink);color:var(--paper)}
+.lang-toggle{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border:1px solid var(--ink);border-radius:999px;background:transparent;color:var(--muted);cursor:pointer;font-family:"JBMono",monospace;font-size:12px}
+.lang-toggle [data-lang]{opacity:.45}.lang-toggle [data-lang].on{opacity:1;color:var(--ink)}.lang-sep{opacity:.4}
+main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(24px,5vw,72px);align-items:center;padding:clamp(40px,7vw,96px) var(--gut)}
+.badge{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--lime);color:var(--ink)}
+.badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink);animation:p 1.6s ease-in-out infinite}
+@keyframes p{50%{opacity:.25}}
+h1{font-weight:800;font-stretch:62%;text-transform:uppercase;font-size:clamp(44px,5.8vw,96px);line-height:.88;letter-spacing:-.015em;margin:22px 0 22px}
+.lead{font-size:clamp(17px,1.4vw,20px);color:var(--muted);max-width:34em}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 28px}
+.tags span{font-family:"JBMono",monospace;font-size:11px;padding:7px 12px;border:1px solid var(--line);border-radius:999px}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.win{background:#16171A;border-radius:18px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(17,18,20,.45),0 0 0 1px rgba(17,18,20,.9)}
+.bar{display:flex;align-items:center;gap:12px;height:46px;padding:0 14px;background:#0E0F11;color:#9FA1A6}
+.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:#3A3B40}.dots i:first-child{background:var(--lime)}
+.url{flex:1;background:#1C1D21;border-radius:8px;padding:6px 10px;font-size:11px;text-transform:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.win svg{display:block;width:100%;height:auto}
+.note{padding:10px 14px;color:#9FA1A6;font-size:10px;text-align:right;background:#16171A}
+footer{padding:20px var(--gut);border-top:1px solid var(--line);color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+:focus-visible{outline:2px solid var(--pen);outline-offset:3px}
+@media(max-width:860px){main{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div class="note">
-<span data-lang-toggle-here></span>
-<span class="hand">en construcción ✎</span>
-<h1>Financial Execution Report</h1>
-<p>Este caso de estudio se está dibujando en este momento — del levantamiento del requerimiento al dashboard interactivo, igual que el de Procurement.</p>
-<a href="../index.html">← Volver al portafolio</a>
-</div>
+<header class="top">
+  <a class="btn" href="../index.html#dashboards">← Volver al portafolio</a>
+  <span data-lang-toggle-here></span>
+</header>
+<main>
+  <div>
+    <span class="badge mono">En construcción</span>
+    <h1>Financial Execution Report</h1>
+    <p class="lead">Reporte de ejecución financiera con página de comentarios integrada vía Microsoft Forms → Power Automate → SharePoint, renderizada con HTML Viewer.</p>
+    <div class="tags"><span>Power BI</span><span>Power Automate</span><span>SharePoint</span><span>Microsoft Forms</span></div>
+    <p class="lead">Este caso de estudio se está documentando — del levantamiento del requerimiento al dashboard interactivo, igual que el de Procurement.</p>
+    <div class="actions" style="margin-top:26px">
+      <a class="btn" href="procurement-analytics.html">Ver el caso de Procurement →</a>
+      <a class="btn btn--ghost" href="../index.html#ai-lab">Ir al AI Lab</a>
+    </div>
+  </div>
+  <div class="win" aria-hidden="true">
+    <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="url mono">powerbi · financial-execution / resumen</span></div>
+    <svg viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <rect width="640" height="400" fill="#1A1B1E"/>
+          <g font-family="JBMono,monospace" font-size="11" fill="#9FA1A6">
+            <text x="48" y="70">EJECUTADO</text><text x="330" y="70">VS. PRESUPUESTO</text>
+          </g>
+          <text x="48" y="122" font-family="Archivo,sans-serif" font-size="46" font-weight="800" fill="#EDEDED">$84.2M</text>
+          <text x="330" y="122" font-family="Archivo,sans-serif" font-size="46" font-weight="800" fill="#B8E08C">96.1%</text>
+          <g font-family="JBMono,monospace" font-size="11" fill="#9FA1A6">
+            <text x="48" y="178">CAPEX</text><text x="48" y="218">OPEX</text><text x="48" y="258">SERVICIOS</text>
+          </g>
+          <g>
+            <rect x="150" y="168" width="440" height="12" rx="6" fill="#2D2E32"/><rect class="hb" x="150" y="168" width="420" height="12" rx="6" fill="#EDEDED"/>
+            <rect x="150" y="208" width="440" height="12" rx="6" fill="#2D2E32"/><rect class="hb" x="150" y="208" width="400" height="12" rx="6" fill="#EDEDED"/>
+            <rect x="150" y="248" width="440" height="12" rx="6" fill="#2D2E32"/><rect class="hb" x="150" y="248" width="436" height="12" rx="6" fill="#B8E08C"/>
+            <path d="M572 160v28M572 200v28M572 240v28" stroke="#B8E08C" stroke-width="2"/>
+          </g>
+          <g font-family="JBMono,monospace" font-size="11" text-anchor="middle">
+            <rect x="48" y="310" width="120" height="40" rx="20" fill="#222327" stroke="rgba(237,237,237,.2)"/><text x="108" y="334" fill="#EDEDED">FORMS</text>
+            <rect x="248" y="310" width="140" height="40" rx="20" fill="#B8E08C"/><text x="318" y="334" fill="#111214">AUTOMATE</text>
+            <rect x="468" y="310" width="124" height="40" rx="20" fill="#222327" stroke="rgba(237,237,237,.2)"/><text x="530" y="334" fill="#EDEDED">SHAREPOINT</text>
+          </g>
+          <g fill="none" stroke="rgba(237,237,237,.35)" stroke-width="1.5"><path d="M168 330H248"/><path d="M388 330H468"/></g>
+        </svg>
+    <div class="note mono">Vista previa · datos de muestra</div>
+  </div>
+</main>
+<footer class="mono"><span>Rodrigo Mendoza Cortés · Agentic AI &amp; Data Engineer</span><a href="../index.html">rmendoza-code.github.io</a></footer>
 <script src="../assets/i18n.js"></script>
 <script>
 I18N.register({
-  "en construcción ✎": "in progress ✎",
+  "← Volver al portafolio": "← Back to portfolio",
+  "En construcción": "In progress",
   "Financial Execution Report": "Financial Execution Report",
-  "Este caso de estudio se está dibujando en este momento — del levantamiento del requerimiento al dashboard interactivo, igual que el de Procurement.":
-    "This case study is being drawn right now — from requirement gathering to the interactive dashboard, just like the Procurement one.",
-  "← Volver al portafolio": "← Back to portfolio"
+  "Reporte de ejecución financiera con página de comentarios integrada vía Microsoft Forms → Power Automate → SharePoint, renderizada con HTML Viewer.": "Financial execution report with an embedded comment-capture page via Microsoft Forms → Power Automate → SharePoint, rendered with HTML Viewer.",
+  "Este caso de estudio se está documentando — del levantamiento del requerimiento al dashboard interactivo, igual que el de Procurement.": "This case study is being documented — from requirement gathering to the interactive dashboard, just like the Procurement one.",
+  "Ver el caso de Procurement →": "See the Procurement case →",
+  "Ir al AI Lab": "Go to the AI Lab",
+  "Vista previa · datos de muestra": "Preview · sample data"
 });
 I18N.init();
 </script>

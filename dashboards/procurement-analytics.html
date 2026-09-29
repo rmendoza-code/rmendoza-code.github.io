@@ -7,8 +7,8 @@
 <meta name="description" content="Caso de estudio: del levantamiento de requerimientos al dashboard interactivo de desempeño de compras y abastecimiento. Recreación HTML con datos de muestra." />
 <meta name="robots" content="index, follow" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
-<meta name="theme-color" content="#faf6ec" />
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+<meta name="theme-color" content="#E8E8E8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
 <link rel="canonical" href="https://rmendoza-code.github.io/dashboards/procurement-analytics.html" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://rmendoza-code.github.io/dashboards/procurement-analytics.html" />
@@ -16,209 +16,174 @@
 <meta property="og:description" content="Del levantamiento del requerimiento al dashboard interactivo: diseño en papel, arquitectura lakehouse y entrega. Datos de muestra." />
 <meta property="og:image" content="https://rmendoza-code.github.io/assets/og-image.png" />
 <meta name="twitter:card" content="summary_large_image" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet" />
+<link rel="icon" href="../assets/site/img/favicon.svg" type="image/svg+xml" />
+<link rel="preload" href="../assets/site/fonts/archivo-wdth.woff2" as="font" type="font/woff2" crossorigin />
 <style>
+@font-face{font-family:"Archivo";src:url(../assets/site/fonts/archivo-wdth.woff2) format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
+@font-face{font-family:"JBMono";src:url(../assets/site/fonts/jetbrains-mono-400.woff2) format("woff2");font-weight:400;font-display:swap}
+@font-face{font-family:"JBMono";src:url(../assets/site/fonts/jetbrains-mono-500.woff2) format("woff2");font-weight:500;font-display:swap}
 :root{
-  --paper:#faf6ec; --dot:#d9d2bf; --ink:#2b2822; --ink-soft:#6d6759; --ink-faint:#a39b88;
-  --hl:#ffd84d; --hl-soft:rgba(255,216,77,.45); --pen:#3556c7; --card:#fffdf7;
-  --tgt:#f29657; --ok:#77bd42; --warn:#ffbf50; --bad:#E24B4A;
-  --blue2:#a8b8ea; --gray2:#d8d2bf;
-  --hand:'Caveat',cursive; --sans:'Plus Jakarta Sans',sans-serif;
-  --wobble:255px 18px 225px 18px/18px 225px 18px 255px;
-  --wob2:14px 10px 16px 8px/8px 16px 10px 14px;
-  --ease:cubic-bezier(.4,0,.2,1);
+  --paper:#E8E8E8; --paper-2:#DEDEDE; --dot:rgba(17,18,20,.08); --ink:#111214; --ink-soft:#56585E; --ink-faint:#9FA1A6;
+  --hl:#B8E08C; --hl-soft:rgba(184,224,140,.55); --pen:#3B4FE0; --card:#FFFFFF;
+  --tgt:#3B4FE0; --ok:#5FA83A; --warn:#E3A72F; --bad:#E24B4A;
+  --blue2:#A9B4F2; --gray2:#CFCFD2; --line:rgba(17,18,20,.14);
+  --hand:"JBMono",ui-monospace,monospace; --mono:"JBMono",ui-monospace,monospace; --sans:"Archivo",system-ui,sans-serif;
+  --wobble:999px; --wob2:14px;
+  --ease:cubic-bezier(.76,0,.24,1); --ease-out:cubic-bezier(.16,1,.3,1);
+  --gut:clamp(16px,3vw,48px);
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{
-  background-color:var(--paper);
-  background-image:radial-gradient(var(--dot) 1.15px, transparent 1.15px);
-  background-size:22px 22px;
-  color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;
-}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(var(--dot) 1px,transparent 1px),linear-gradient(90deg,var(--dot) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:linear-gradient(180deg,#000,transparent 60%);mask-image:linear-gradient(180deg,#000,transparent 60%);z-index:-1}
+::selection{background:var(--hl);color:var(--ink)}
 a{color:inherit;text-decoration:none}
-.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
-.hlt{background-image:linear-gradient(104deg,transparent 2%,var(--hl-soft) 4%,var(--hl-soft) 96%,transparent 98%);background-size:100% 62%;background-position:0 68%;background-repeat:no-repeat;padding:0 .12em}
+.wrap{max-width:1280px;margin:0 auto;padding:0 var(--gut)}
+.hlt{background:linear-gradient(transparent 58%,var(--hl-soft) 58%);padding:0 .1em}
+svg text{font-stretch:78%}
 
-/* ---------- marco ---------- */
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0;flex-wrap:wrap}
-.back{font-weight:700;font-size:.85rem;border:2px solid var(--ink);border-radius:var(--wobble);padding:7px 16px;background:var(--card);box-shadow:2.5px 3px 0 var(--ink);transition:all .2s var(--ease);display:inline-flex;gap:8px;align-items:center;transform:rotate(-.6deg)}
-.back:hover{transform:rotate(-.6deg) translate(-1px,-1px);box-shadow:4px 5px 0 var(--ink);background:var(--hl)}
-.note-hand{font-family:var(--hand);font-weight:600;font-size:1.25rem;color:var(--pen);transform:rotate(-1.2deg)}
-.page-head{margin:8px 0 8px}
-.page-head h1{font-weight:800;font-size:clamp(1.5rem,3.3vw,2.25rem);letter-spacing:-.02em;max-width:24ch}
-.page-head p{color:var(--ink-soft);font-size:.93rem;max-width:72ch;margin-top:8px}
-.sample-tag{display:inline-block;font-family:var(--hand);font-weight:700;font-size:1.1rem;color:var(--ink);background:var(--hl);padding:1px 14px;border-radius:999px;border:1.5px solid var(--ink);transform:rotate(-1deg);margin-left:10px;vertical-align:middle}
+/* ---------- barra superior ---------- */
+.topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;flex-wrap:wrap;background:rgba(232,232,232,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);margin:0 calc(var(--gut)*-1);padding-inline:var(--gut);border-bottom:1px solid var(--line)}
+.back{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 18px;border-radius:999px;background:var(--ink);color:var(--paper);font-weight:600;font-size:14px;transition:background-color .3s,transform .3s var(--ease)}
+.back:hover{background:var(--pen);transform:translateX(-3px)}
+.note-hand{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.02em;color:var(--ink-soft)}
+.page-head{padding:clamp(48px,7vw,96px) 0 clamp(20px,3vw,36px);border-bottom:1px solid var(--line)}
+.page-head h1{font-weight:800;font-stretch:62%;text-transform:uppercase;font-size:clamp(46px,7.2vw,120px);line-height:.86;letter-spacing:-.015em;max-width:15ch}
+.page-head p{color:var(--ink-soft);font-size:clamp(17px,1.4vw,20px);max-width:60ch;margin-top:22px}
+.sample-tag{display:inline-block;vertical-align:middle;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.02em;text-transform:uppercase;color:var(--ink);background:var(--hl);padding:6px 12px;border-radius:999px;margin-left:12px;transform:translateY(-.4em)}
 
 /* ---------- ruta de la historia ---------- */
-.journey{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:20px 0 8px}
-.journey a{
-  font-family:var(--hand);font-weight:700;font-size:1.15rem;
-  border:1.5px solid var(--ink);border-radius:999px;padding:2px 15px;background:var(--card);
-  transition:all .2s var(--ease);
-}
-.journey a:hover{background:var(--hl)}
-.journey .jarr{color:var(--ink-soft);font-size:1rem;padding:0 2px}
+.journey{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:28px}
+.journey a{font-family:var(--mono);font-size:12px;text-transform:uppercase;min-height:40px;display:inline-flex;align-items:center;padding:0 16px;border:1px solid var(--ink);border-radius:999px;transition:background-color .3s,color .3s}
+.journey a:hover{background:var(--ink);color:var(--paper)}
+.journey .jarr{color:var(--ink-faint);font-family:var(--mono);font-size:12px}
 
-/* ---------- secciones spec + ejemplo ---------- */
-.topic{font-size:.68rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--pen);margin-bottom:10px}
-.sec-h{font-weight:800;font-size:clamp(1.55rem,3.1vw,2.05rem);letter-spacing:-.02em;margin-bottom:10px}
-.sec-intro{color:var(--ink-soft);font-size:.95rem;max-width:66ch;margin-bottom:26px}
-section.spec-sec{margin:60px 0}
-.spec{display:grid;grid-template-columns:.95fr 1.05fr;gap:34px;align-items:start}
+/* ---------- secciones ---------- */
+.topic{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;text-transform:uppercase;color:var(--pen);margin-bottom:16px}
+.topic::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--pen)}
+.sec-h{font-weight:800;font-stretch:62%;text-transform:uppercase;font-size:clamp(40px,5.4vw,84px);line-height:.88;letter-spacing:-.01em;margin-bottom:18px}
+.sec-intro{color:var(--ink-soft);font-size:clamp(16px,1.3vw,19px);max-width:62ch;margin-bottom:34px}
+section.spec-sec{margin:clamp(70px,10vw,140px) 0}
+.spec{display:grid;grid-template-columns:.95fr 1.05fr;gap:clamp(24px,4vw,56px);align-items:start}
 .spec.wide{grid-template-columns:1fr}
 @media(max-width:920px){.spec{grid-template-columns:1fr}}
-.spec-list{display:flex;flex-direction:column;gap:20px}
-.spec.wide .spec-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px 34px;margin-bottom:22px}
-.si{display:flex;gap:14px;align-items:flex-start}
-.sn{font-variant-numeric:tabular-nums;font-size:.8rem;font-weight:800;color:var(--pen);background:rgba(53,86,199,.08);border-radius:6px;padding:2px 8px;margin-top:2px;flex:none}
-.si b{display:block;font-weight:800;font-size:.92rem;margin-bottom:2px}
-.si p{font-size:.86rem;color:var(--ink-soft);line-height:1.6}
-.ex-card{background:var(--card);border:2px solid var(--ink);border-radius:16px;box-shadow:4px 5px 0 rgba(43,40,34,.85);overflow:hidden}
-.ex-head{font-size:.64rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);padding:11px 18px;border-bottom:1.5px solid rgba(43,40,34,.18);background:var(--paper);display:flex;justify-content:space-between;gap:10px;align-items:center}
-.ex-head .hand{font-family:var(--hand);font-size:1.05rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--pen);transform:rotate(-1deg)}
-.ex-body{padding:20px 18px}
-.ex-note{font-family:var(--hand);font-weight:600;font-size:1.1rem;color:var(--ink-soft);margin-top:14px;transform:rotate(-.6deg)}
-.ex-chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 16px}
-.ex-chips span{font-size:.68rem;font-weight:700;border:1.5px solid rgba(43,40,34,.35);border-radius:999px;padding:3px 12px;color:var(--ink-soft);background:var(--paper)}
+.spec-list{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.spec.wide .spec-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 40px;margin-bottom:28px}
+.si{display:flex;gap:16px;align-items:flex-start;padding:18px 0;border-bottom:1px solid var(--line)}
+.sn{font-family:var(--mono);font-size:11px;color:var(--pen);border:1px solid var(--pen);border-radius:999px;padding:3px 9px;margin-top:2px;flex:none}
+.si b{display:block;font-weight:700;font-stretch:88%;font-size:18px;margin-bottom:4px}
+.si p{font-size:15px;color:var(--ink-soft);line-height:1.55}
+.ex-card{background:var(--card);border-radius:18px;overflow:hidden;box-shadow:0 30px 60px -34px rgba(17,18,20,.35),0 0 0 1px rgba(17,18,20,.08)}
+.ex-head{display:flex;justify-content:space-between;gap:10px;align-items:center;font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--ink-soft);padding:12px 16px;background:#16171A;color:#9FA1A6}
+.ex-head .hand{font-family:var(--mono);font-size:11px;text-transform:none;color:var(--hl)}
+.ex-body{padding:22px 18px}
+.ex-note{font-size:14px;color:var(--ink-soft);margin-top:16px;padding:12px 14px;border-radius:12px;background:var(--paper)}
+.ex-chips{display:flex;gap:8px;flex-wrap:wrap;padding:0 18px 18px}
+.ex-chips span{font-family:var(--mono);font-size:11px;border:1px solid var(--line);border-radius:999px;padding:6px 11px;color:var(--ink-soft)}
 .flow-wrap,.model-wrap{overflow-x:auto}
 .flow-wrap svg,.model-wrap svg{min-width:820px;width:100%;height:auto;display:block}
 
-/* ---------- toggle de idioma ES · EN ---------- */
-.lang-toggle{
-  display:inline-flex;align-items:center;gap:5px;
-  font-family:'Plus Jakarta Sans',sans-serif;font-size:.72rem;font-weight:800;letter-spacing:.06em;
-  border:2px solid var(--ink);border-radius:999px;padding:5px 13px;
-  background:var(--card);color:var(--ink-soft);cursor:pointer;
-  box-shadow:2.5px 3px 0 var(--ink);transition:all .2s var(--ease);transform:rotate(.8deg);
-}
-.lang-toggle:hover{transform:rotate(.8deg) translate(-1px,-1px);box-shadow:4px 5px 0 var(--ink);background:var(--hl)}
-.lang-toggle:active{transform:rotate(.8deg) translate(1px,2px);box-shadow:1px 1px 0 var(--ink)}
-.lang-toggle [data-lang]{opacity:.42;transition:opacity .2s,color .2s}
+/* ---------- toggle ES · EN ---------- */
+.lang-toggle{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border:1px solid var(--ink);border-radius:999px;background:transparent;color:var(--ink-soft);cursor:pointer;font-family:var(--mono);font-size:12px;font-weight:500;transition:background-color .3s,color .3s}
+.lang-toggle:hover{background:var(--ink);color:var(--paper)}
+.lang-toggle:hover [data-lang].on{color:var(--hl)}
+.lang-toggle [data-lang]{opacity:.45;transition:opacity .2s,color .2s}
 .lang-toggle [data-lang].on{opacity:1;color:var(--ink)}
-.lang-sep{opacity:.4;font-weight:600}
-
+.lang-sep{opacity:.4}
 @media(prefers-reduced-motion:reduce){.flow-dot{display:none}}
 
 /* ---------- triangulación ---------- */
 .tri{display:flex;flex-direction:column;gap:12px}
 .tri-src{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.tri-src div{border:1.5px solid rgba(43,40,34,.3);border-radius:10px;background:#fff;padding:12px 8px;text-align:center}
-.tri-src .tv{font-weight:800;font-size:1.3rem;color:#3e7d23}
-.tri-src .tl{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
-.tri-arrow{text-align:center;color:var(--ink-soft);font-size:1rem;line-height:.6}
-.tri-res{border:2px solid #3e7d23;border-radius:10px;background:#eef6e9;padding:10px 14px;text-align:center;font-weight:800;font-size:.9rem;color:#2f5e1b}
+.tri-src div{border-radius:12px;background:var(--paper);padding:14px 8px;text-align:center}
+.tri-src .tv{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--hl);font-weight:800;font-size:15px;color:var(--ink)}
+.tri-src .tl{font-family:var(--mono);font-size:10px;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
+.tri-arrow{text-align:center;color:var(--ink-faint);font-size:16px;line-height:.6}
+.tri-res{border-radius:12px;background:var(--ink);color:var(--paper);padding:14px 16px;text-align:center;font-weight:600;font-size:15px}
 
-/* ---------- hojas de diseño ---------- */
-.sheets{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:34px 28px;margin-top:6px}
-.sheet{
-  background:#fff;border:1.5px solid rgba(43,40,34,.65);border-radius:4px;
-  box-shadow:0 2px 0 rgba(43,40,34,.25), 4px 6px 14px rgba(43,40,34,.18);
-  padding:14px 14px 10px;position:relative;
-}
-.sheet:nth-child(1){transform:rotate(-1.2deg)}
-.sheet:nth-child(2){transform:rotate(.9deg)}
-.sheet:nth-child(3){transform:rotate(-.7deg)}
-.sheet:nth-child(4){transform:rotate(1.1deg)}
-.sheet::before{
-  content:"";position:absolute;top:-13px;left:50%;width:92px;height:26px;transform:translateX(-50%) rotate(-2deg);
-  background:rgba(255,216,77,.55);border-left:1px dashed rgba(43,40,34,.25);border-right:1px dashed rgba(43,40,34,.25);
-  box-shadow:0 1px 2px rgba(43,40,34,.12);
-}
-.sheet:nth-child(even)::before{transform:translateX(-50%) rotate(2.4deg);background:rgba(53,86,199,.16)}
+/* ---------- bocetos (wireframes) ---------- */
+.sheets{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:28px;margin-top:6px}
+.sheet{background:#fff;border-radius:16px;padding:14px 14px 12px;position:relative;box-shadow:0 24px 50px -30px rgba(17,18,20,.35),0 0 0 1px rgba(17,18,20,.08);transition:transform .6s var(--ease)}
+.sheet:hover{transform:translateY(-6px)}
+.sheet::before{content:"";position:absolute;top:12px;right:14px;width:9px;height:9px;border-radius:50%;background:var(--hl)}
 .sheet svg{width:100%;height:auto;display:block}
-.sheet-cap{font-family:var(--hand);font-weight:700;font-size:1.2rem;color:var(--ink-soft);text-align:center;margin-top:8px;transform:rotate(-.5deg)}
-.sheet-cap b{color:var(--pen)}
+.sheet-cap{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--ink-soft);text-align:left;margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+.sheet-cap b{color:var(--pen);font-weight:500}
 
-/* ============================================================
-   DASHBOARD FINAL — tema cuaderno
-   ============================================================ */
-.canvas{
-  background:var(--card);border:2.5px solid var(--ink);border-radius:18px;
-  box-shadow:6px 7px 0 rgba(43,40,34,.85);overflow:hidden;margin-bottom:26px;
-}
-.db-band{
-  background:var(--ink);color:var(--paper);
-  padding:16px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
-}
-.db-band h2{font-size:1.02rem;font-weight:800;letter-spacing:.01em}
-.db-band .sub{font-size:.7rem;opacity:.75;margin-top:2px}
-.tabs{display:flex;gap:8px;flex-wrap:wrap}
-.tabs button{
-  font-family:var(--hand);font-weight:700;font-size:1.15rem;
-  border:1.5px solid var(--paper);border-radius:999px;padding:2px 18px;
-  background:transparent;color:var(--paper);cursor:pointer;transition:all .18s var(--ease);
-}
-.tabs button.on{background:var(--hl);border-color:var(--hl);color:var(--ink)}
-.db-body{padding:18px}
+/* ============ DASHBOARD FINAL ============ */
+.canvas{background:var(--card);border-radius:18px;overflow:hidden;margin-bottom:26px;box-shadow:0 40px 80px -36px rgba(17,18,20,.45),0 0 0 1px rgba(17,18,20,.9)}
+.db-band{background:#16171A;color:#EDEDED;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;position:relative}
+.db-band::before{content:"";position:absolute;left:20px;top:10px;width:46px;height:10px;background:radial-gradient(circle at 5px 5px,var(--hl) 4.5px,transparent 5px),radial-gradient(circle at 21px 5px,#3A3B40 4.5px,transparent 5px),radial-gradient(circle at 37px 5px,#3A3B40 4.5px,transparent 5px)}
+.db-band > div:first-child{padding-top:14px}
+.db-band h2{font-weight:800;font-stretch:66%;text-transform:uppercase;font-size:clamp(22px,2.2vw,30px);line-height:1;letter-spacing:0}
+.db-band .sub{font-family:var(--mono);font-size:11px;color:#9FA1A6;margin-top:6px}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;background:#0E0F11;padding:4px;border-radius:12px}
+.tabs button{font-family:var(--mono);font-size:12px;min-height:36px;padding:0 14px;border:0;border-radius:9px;background:transparent;color:#9FA1A6;cursor:pointer;transition:background-color .25s,color .25s}
+.tabs button:hover{color:#EDEDED}
+.tabs button.on{background:var(--hl);color:var(--ink)}
+.db-body{padding:20px;background:#F4F4F5}
 .view{display:none}
-.view.on{display:block}
+.view.on{display:block;animation:vin .5s var(--ease-out)}
+@keyframes vin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* slicers */
-.slicers{display:flex;gap:18px;flex-wrap:wrap;align-items:flex-end;margin-bottom:18px}
-.slicer .lbl{font-size:.64rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px}
-.seg{display:inline-flex;background:#fff;border:1.5px solid var(--ink);border-radius:999px;overflow:hidden}
-.seg button{font-family:var(--sans);font-size:.8rem;font-weight:700;padding:6px 16px;border:none;background:transparent;color:var(--ink-soft);cursor:pointer;transition:background .15s}
-.seg button + button{border-left:1.5px solid rgba(43,40,34,.3)}
-.seg button.on{background:var(--ink);color:var(--paper)}
+.slicers{display:flex;gap:20px;flex-wrap:wrap;align-items:flex-end;margin-bottom:20px}
+.slicer .lbl{font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--ink-soft);margin-bottom:8px}
+.seg{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px}
+.seg button{font-family:var(--mono);font-size:12px;min-height:34px;padding:0 16px;border:none;border-radius:999px;background:transparent;color:var(--ink-soft);cursor:pointer;transition:background-color .2s,color .2s}
+.seg button.on{background:var(--ink);color:#fff}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
-.chip{font-size:.75rem;font-weight:700;padding:5px 13px;border-radius:999px;border:1.5px solid var(--ink);background:#fff;color:var(--ink-soft);cursor:pointer;transition:all .15s}
-.chip.on{background:var(--hl);color:var(--ink)}
-.reset{margin-left:auto;font-family:var(--hand);font-weight:700;font-size:1.1rem;color:var(--pen);background:none;border:none;cursor:pointer;text-decoration:underline}
+.chip{font-family:var(--mono);font-size:12px;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink-soft);cursor:pointer;transition:background-color .2s,color .2s,border-color .2s}
+.chip.on{background:var(--hl);border-color:var(--hl);color:var(--ink)}
+.reset{margin-left:auto;font-family:var(--mono);font-size:12px;min-height:36px;padding:0 14px;border-radius:999px;color:var(--pen);background:none;border:1px solid var(--pen);cursor:pointer}
+.reset:hover{background:var(--pen);color:#fff}
 
 /* bandas de KPIs */
-.band-label{
-  display:flex;align-items:center;gap:12px;margin:18px 0 12px;
-  font-size:.7rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);
-}
-.band-label::before{content:"";width:5px;height:16px;background:var(--hl);border:1.5px solid var(--ink);border-radius:2px}
-.band-label::after{content:"";flex:1;border-top:1.5px dashed var(--ink-faint)}
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:14px}
+.band-label{display:flex;align-items:center;gap:12px;margin:22px 0 12px;font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--ink-soft)}
+.band-label::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pen)}
+.band-label::after{content:"";flex:1;border-top:1px solid var(--line)}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:12px}
 .kcard{perspective:900px;height:150px}
-.kinner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .55s var(--ease)}
+.kinner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .6s var(--ease)}
 .kcard:hover .kinner,.kcard:focus-within .kinner{transform:rotateY(180deg)}
-.kface{
-  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  border-radius:var(--wob2);overflow:hidden;border:1.8px solid var(--ink);
-  box-shadow:3px 3.5px 0 rgba(43,40,34,.7);display:flex;flex-direction:column;background:#fff;
-}
-.kback{background:#fff7dd;transform:rotateY(180deg)}
-.ktitle{background:var(--ink);color:var(--paper);font-size:.66rem;font-weight:800;letter-spacing:.04em;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
-.ktitle .idx{opacity:.6;font-weight:600}
-.kmain{padding:10px 14px 12px;flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.kface{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;background:#fff;box-shadow:0 0 0 1px rgba(17,18,20,.08)}
+.kback{background:#16171A;color:#EDEDED;transform:rotateY(180deg)}
+.ktitle{background:transparent;color:var(--ink-soft);font-family:var(--mono);font-size:10.5px;text-transform:uppercase;padding:10px 12px 0;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.kback .ktitle{color:#9FA1A6}
+.ktitle .idx{opacity:.7}
+.kmain{padding:6px 12px 12px;flex:1;display:flex;flex-direction:column;justify-content:space-between}
 .kval{display:flex;align-items:baseline;gap:8px}
-.kval .v{font-size:1.72rem;font-weight:800;letter-spacing:-.03em}
-.kval .u{font-size:.72rem;font-weight:600;color:var(--ink-soft)}
-.light{width:11px;height:11px;border-radius:50%;margin-left:auto;flex:none;border:1.5px solid var(--ink)}
-.ksub{font-size:.66rem;color:var(--ink-soft);font-weight:600}
-.pbar{position:relative;height:9px;border-radius:5px;background:#efe8d4;border:1px solid rgba(43,40,34,.35);overflow:visible;margin-top:8px}
-.pfill{position:absolute;left:0;top:0;bottom:0;border-radius:5px;transition:width .8s var(--ease)}
-.ptick{position:absolute;top:-4px;bottom:-4px;width:2.6px;background:var(--tgt);border-radius:2px}
-.kformula{padding:10px 14px;font-size:.7rem;line-height:1.5;color:var(--ink-soft);font-style:italic;flex:1;display:flex;align-items:center}
+.kval .v{font-weight:800;font-stretch:66%;font-size:42px;line-height:1;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.kval .u{font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.light{width:10px;height:10px;border-radius:50%;margin-left:auto;flex:none;box-shadow:0 0 0 3px rgba(17,18,20,.06)}
+.ksub{font-family:var(--mono);font-size:10.5px;color:var(--ink-soft)}
+.pbar{position:relative;height:8px;border-radius:4px;background:#E8E8E8;overflow:visible;margin-top:8px}
+.pfill{position:absolute;left:0;top:0;bottom:0;border-radius:4px;transition:width .9s var(--ease-out)}
+.ptick{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--tgt);border-radius:1px}
+.kformula{padding:8px 12px 12px;font-family:var(--mono);font-size:11px;line-height:1.55;color:#EDEDED;flex:1;display:flex;align-items:center}
 
-/* paneles de gráficas */
-.chart-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;margin-top:4px}
+/* paneles */
+.chart-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:12px;margin-top:4px}
 .chart-grid.even{grid-template-columns:1fr 1fr}
 @media(max-width:900px){.chart-grid,.chart-grid.even{grid-template-columns:1fr}}
-.panel{background:#fff;border:1.8px solid var(--ink);border-radius:var(--wob2);box-shadow:3px 3.5px 0 rgba(43,40,34,.7);overflow:hidden;display:flex;flex-direction:column}
-.panel .ktitle{font-size:.68rem}
-.panel .cbody{padding:12px 14px 14px;flex:1}
+.panel{background:#fff;border-radius:14px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(17,18,20,.08)}
+.panel .ktitle{font-size:10.5px;padding:12px 14px 0}
+.panel .cbody{padding:10px 14px 14px;flex:1}
 .panel svg{width:100%;height:auto;display:block}
-.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.66rem;font-weight:700;color:var(--ink-soft);padding:0 14px 12px}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;border:1.2px solid var(--ink);margin-right:5px;vertical-align:-1px}
+.panel svg text{font-family:var(--sans);font-stretch:85%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-family:var(--mono);font-size:10.5px;color:var(--ink-soft);padding:0 14px 12px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
 
-.annos{margin:18px 0 40px;display:flex;gap:26px;flex-wrap:wrap}
-.anno{font-family:var(--hand);font-weight:600;font-size:1.2rem;color:var(--ink-soft);max-width:32ch;transform:rotate(-.8deg)}
+.annos{margin:22px 0 40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.anno{font-size:15px;color:var(--ink-soft);padding:14px 16px;border-radius:14px;background:var(--paper-2);max-width:none}
 .anno b{color:var(--pen);font-weight:700}
-footer{padding:26px 0 40px;font-family:var(--hand);font-weight:600;font-size:1.1rem;color:var(--ink-soft);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
-@media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
-:focus-visible{outline:3px solid var(--pen);outline-offset:2px;border-radius:6px}
-
-.skip-link{position:absolute;left:-9999px;top:0;z-index:100;background:var(--hl);color:var(--ink);
-font-weight:800;font-size:.9rem;padding:12px 22px;border:2px solid var(--ink);border-radius:0 0 12px 0}
+footer{padding:28px 0 44px;margin-top:40px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;text-transform:uppercase;color:var(--ink-soft);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+footer a:hover{color:var(--pen)}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation:none!important}}
+:focus-visible{outline:2px solid var(--pen);outline-offset:3px;border-radius:6px}
+.skip-link{position:absolute;left:-9999px;top:0;z-index:100;background:var(--ink);color:var(--paper);font-weight:600;font-size:14px;padding:12px 18px;border-radius:0 0 12px 0}
 .skip-link:focus{left:0}
+@media(max-width:760px){.note-hand{display:none}.page-head h1{font-size:clamp(40px,12vw,64px)}.sample-tag{margin:10px 0 0;transform:none}}
 </style>
 </head>
 <body>
@@ -278,7 +243,7 @@ font-weight:800;font-size:.9rem;padding:12px 22px;border:2px solid var(--ink);bo
     <h2 class="sec-h">Primero en papel, con el equipo</h2>
     <p class="sec-intro">Antes de abrir Power BI, cada página del reporte se dibujó a pluma en una sesión de trabajo con el área: qué KPI va en qué banda, qué gráfica responde qué pregunta y dónde vive cada filtro. Una hoja por página del reporte — sin cifras, solo estructura e intención.</p>
     <div class="sheets">
-<div class="sheet"><svg viewBox="0 0 420 300" role="img" aria-label="Boceto: hoja 1 · <b>portada / home</b>"><path d="M14 12 h190 q22 130 0 276 h-190 z" fill="#f1ecdd" stroke="#2b2822" stroke-width="1.8"/><text x="26" y="36" font-family="Caveat" font-weight="700" font-size="12" fill="#8a8375" text-anchor="start">logo</text><rect x="24" y="24" width="34" height="18" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><text x="26" y="72" font-family="Caveat" font-weight="700" font-size="17" fill="#2b2822" text-anchor="start">Supply Chain Procurement</text><text x="26" y="92" font-family="Caveat" font-weight="700" font-size="17" fill="#2b2822" text-anchor="start">&amp; Sourcing Performance</text><path d="M26 100 q 40 5, 80 0 t 80 0" fill="none" stroke="#3556c7" stroke-width="2.2" stroke-linecap="round"/><path d="M26 118 q 40.0 -2.5, 80.0 0 t 80.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><path d="M26 127 q 40.0 -2.5, 80.0 0 t 80.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><path d="M26 136 q 40.0 -2.5, 80.0 0 t 80.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><path d="M26 145 q 40.0 -2.5, 80.0 0 t 80.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="26" y="168" font-family="Caveat" font-weight="700" font-size="12" fill="#3556c7" text-anchor="start" transform="rotate(-1 26 168)">refresh cada 2h ⟳</text><rect x="26" y="182" width="150" height="17" rx="8" fill="#fff" stroke="#2b2822" stroke-width="1.4"/><circle cx="36" cy="190.5" r="3.5" fill="none" stroke="#3556c7" stroke-width="1.4"/><text x="46" y="195" font-family="Caveat" font-weight="700" font-size="12" fill="#8a8375" text-anchor="start">Overview</text><rect x="26" y="205" width="150" height="17" rx="8" fill="#fff" stroke="#2b2822" stroke-width="1.4"/><circle cx="36" cy="213.5" r="3.5" fill="none" stroke="#3556c7" stroke-width="1.4"/><text x="46" y="218" font-family="Caveat" font-weight="700" font-size="12" fill="#8a8375" text-anchor="start">PRs</text><rect x="26" y="228" width="150" height="17" rx="8" fill="#fff" stroke="#2b2822" stroke-width="1.4"/><circle cx="36" cy="236.5" r="3.5" fill="none" stroke="#3556c7" stroke-width="1.4"/><text x="46" y="241" font-family="Caveat" font-weight="700" font-size="12" fill="#8a8375" text-anchor="start">POs</text><rect x="26" y="251" width="150" height="17" rx="8" fill="#fff" stroke="#2b2822" stroke-width="1.4"/><circle cx="36" cy="259.5" r="3.5" fill="none" stroke="#3556c7" stroke-width="1.4"/><text x="46" y="264" font-family="Caveat" font-weight="700" font-size="12" fill="#8a8375" text-anchor="start">Vendors</text><rect x="26" y="274" width="150" height="17" rx="8" fill="#fff" stroke="#2b2822" stroke-width="1.4"/><circle cx="36" cy="282.5" r="3.5" fill="none" stroke="#3556c7" stroke-width="1.4"/><text x="46" y="287" font-family="Caveat" font-weight="700" font-size="12" fill="#8a8375" text-anchor="start">Receipts</text><path d="M226 12 h180 v276 h-180 q-18 -140 0 -276 z" fill="#fff" stroke="#2b2822" stroke-width="1.8"/><line x1="230" y1="18" x2="402" y2="284" stroke="#8a8375" stroke-width="1.2"/><line x1="402" y1="18" x2="230" y2="284" stroke="#8a8375" stroke-width="1.2"/><text x="316" y="150" font-family="Caveat" font-weight="700" font-size="14" fill="#8a8375" text-anchor="middle" transform="rotate(-8 316 150)">foto de campo aquí</text><text x="316" y="286" font-family="Caveat" font-weight="700" font-size="11" fill="#3556c7" text-anchor="middle">curva orgánica divide ambos lados →</text></svg><div class="sheet-cap">hoja 1 · <b>portada / home</b></div></div><div class="sheet"><svg viewBox="0 0 420 300" role="img" aria-label="Boceto: hoja 2 · <b>principal kpis</b>"><text x="14" y="22" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">Principal KPIs — 3 bandas</text><line x1="14" y1="40" x2="406" y2="40" stroke="#8a8375" stroke-width="1" stroke-dasharray="3 4"/><text x="14" y="35" font-family="Caveat" font-weight="700" font-size="12" fill="#3556c7" text-anchor="start">cycle time · target ≤ 15d</text><rect x="14" y="48" width="88" height="52" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M22 62 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="22" y="86" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">##.#</text><rect x="22" y="92" width="72" height="4" rx="2" fill="none" stroke="#8a8375" stroke-width="1"/><line x1="66.64" y1="89" x2="66.64" y2="99" stroke="#f29657" stroke-width="2"/><rect x="112" y="48" width="88" height="52" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M120 62 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="120" y="86" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">##.#</text><rect x="120" y="92" width="72" height="4" rx="2" fill="none" stroke="#8a8375" stroke-width="1"/><line x1="164.64" y1="89" x2="164.64" y2="99" stroke="#f29657" stroke-width="2"/><rect x="210" y="48" width="88" height="52" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M218 62 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="218" y="86" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">##.#</text><rect x="218" y="92" width="72" height="4" rx="2" fill="none" stroke="#8a8375" stroke-width="1"/><line x1="262.64" y1="89" x2="262.64" y2="99" stroke="#f29657" stroke-width="2"/><rect x="308" y="48" width="88" height="52" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M316 62 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="316" y="86" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">##.#</text><rect x="316" y="92" width="72" height="4" rx="2" fill="none" stroke="#8a8375" stroke-width="1"/><line x1="360.64" y1="89" x2="360.64" y2="99" stroke="#f29657" stroke-width="2"/><line x1="14" y1="126" x2="406" y2="126" stroke="#8a8375" stroke-width="1" stroke-dasharray="3 4"/><text x="14" y="121" font-family="Caveat" font-weight="700" font-size="12" fill="#3556c7" text-anchor="start">volumen &amp; conversión</text><rect x="14" y="134" width="88" height="52" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M22 148 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="22" y="172" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">##.#</text><rect x="22" y="178" width="72" height="4" rx="2" fill="none" stroke="#8a8375" stroke-width="1"/><line x1="66.64" y1="175" x2="66.64" y2="185" stroke="#f29657" stroke-width="2"/><rect x="112" y="134" width="88" height="52" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M120 148 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="120" y="172" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">##.#</text><rect x="120" y="178" width="72" height="4" rx="2" fill="none" stroke="#8a8375" stroke-width="1"/><line x1="164.64" y1="175" x2="164.64" y2="185" stroke="#f29657" stroke-width="2"/><rect x="210" y="134" width="88" height="52" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M218 148 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="218" y="172" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">##.#</text><rect x="218" y="178" width="72" height="4" rx="2" fill="none" stroke="#8a8375" stroke-width="1"/><line x1="262.64" y1="175" x2="262.64" y2="185" stroke="#f29657" stroke-width="2"/><rect x="308" y="134" width="88" height="52" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M316 148 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="316" y="172" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">##.#</text><rect x="316" y="178" width="72" height="4" rx="2" fill="none" stroke="#8a8375" stroke-width="1"/><line x1="360.64" y1="175" x2="360.64" y2="185" stroke="#f29657" stroke-width="2"/><line x1="14" y1="212" x2="406" y2="212" stroke="#8a8375" stroke-width="1" stroke-dasharray="3 4"/><text x="14" y="207" font-family="Caveat" font-weight="700" font-size="12" fill="#3556c7" text-anchor="start">backlog, riesgo y gasto</text><rect x="14" y="220" width="88" height="52" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M22 234 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="22" y="258" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">##.#</text><rect x="22" y="264" width="72" height="4" rx="2" fill="none" stroke="#8a8375" stroke-width="1"/><line x1="66.64" y1="261" x2="66.64" y2="271" stroke="#f29657" stroke-width="2"/><rect x="112" y="220" width="88" height="52" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M120 234 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="120" y="258" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">##.#</text><rect x="120" y="264" width="72" height="4" rx="2" fill="none" stroke="#8a8375" stroke-width="1"/><line x1="164.64" y1="261" x2="164.64" y2="271" stroke="#f29657" stroke-width="2"/><rect x="210" y="220" width="88" height="52" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M218 234 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="218" y="258" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">##.#</text><rect x="218" y="264" width="72" height="4" rx="2" fill="none" stroke="#8a8375" stroke-width="1"/><line x1="262.64" y1="261" x2="262.64" y2="271" stroke="#f29657" stroke-width="2"/><text x="322" y="238" font-family="Caveat" font-weight="700" font-size="12" fill="#8a8375" text-anchor="start">sin cifras aún —</text><text x="322" y="254" font-family="Caveat" font-weight="700" font-size="12" fill="#8a8375" text-anchor="start">targets primero ✎</text><path d="M382 220 q 14 10, 6 26 M388 246 l-8 -6 M388 246 l2 -10" fill="none" stroke="#3556c7" stroke-width="1.8" stroke-linecap="round"/></svg><div class="sheet-cap">hoja 2 · <b>principal kpis</b></div></div><div class="sheet"><svg viewBox="0 0 420 300" role="img" aria-label="Boceto: hoja 3 · <b>PRs</b>"><text x="14" y="22" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">PRs — requisiciones</text><rect x="14" y="34" width="260" height="110" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M26 122 C 60 100, 90 112, 120 104 S 190 92, 220 100 S 252 88, 264 92 L 264 132 L 26 132 Z" fill="rgba(255,216,77,.4)" stroke="#2b2822" stroke-width="1.6"/><line x1="24" y1="62" x2="266" y2="62" stroke="#f29657" stroke-width="1.6" stroke-dasharray="5 4"/><text x="226" y="56" font-family="Caveat" font-weight="700" font-size="11" fill="#f29657" text-anchor="start">limit 15d</text><text x="20" y="48" font-family="Caveat" font-weight="700" font-size="12" fill="#8a8375" text-anchor="start">tendencia mensual</text><rect x="286" y="34" width="120" height="110" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><circle cx="346" cy="86" r="30" fill="none" stroke="#2b2822" stroke-width="8" opacity=".25"/><path d="M346 56 a30 30 0 1 1 -26 46" fill="none" stroke="#3556c7" stroke-width="8" stroke-linecap="round"/><text x="346" y="90" font-family="Caveat" font-weight="700" font-size="12" fill="#2b2822" text-anchor="middle">total</text><text x="292" y="48" font-family="Caveat" font-weight="700" font-size="11" fill="#8a8375" text-anchor="start">pipeline open/closed</text><rect x="14" y="158" width="190" height="120" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><text x="20" y="172" font-family="Caveat" font-weight="700" font-size="12" fill="#8a8375" text-anchor="start">cycle x buyer · desc</text><rect x="24" y="178" width="13" height="84" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.3"/><rect x="45" y="188" width="13" height="74" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.3"/><rect x="66" y="204" width="13" height="58" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.3"/><rect x="87" y="216" width="13" height="46" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.3"/><rect x="108" y="222" width="13" height="40" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.3"/><rect x="129" y="228" width="13" height="34" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.3"/><rect x="150" y="234" width="13" height="28" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.3"/><rect x="171" y="240" width="13" height="22" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.3"/><line x1="20" y1="216" x2="198" y2="216" stroke="#f29657" stroke-width="1.4" stroke-dasharray="4 4"/><rect x="218" y="158" width="120" height="120" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><text x="224" y="172" font-family="Caveat" font-weight="700" font-size="11" fill="#8a8375" text-anchor="start">status x programa</text><rect x="226" y="184" width="92" height="10" rx="2" fill="rgba(53,86,199,.25)" stroke="#2b2822" stroke-width="1.2"/><rect x="226" y="184" width="25.76" height="10" rx="2" fill="rgba(226,75,74,.4)" stroke="#2b2822" stroke-width="1.2"/><rect x="226" y="201" width="76" height="10" rx="2" fill="rgba(53,86,199,.25)" stroke="#2b2822" stroke-width="1.2"/><rect x="226" y="201" width="21.28" height="10" rx="2" fill="rgba(226,75,74,.4)" stroke="#2b2822" stroke-width="1.2"/><rect x="226" y="218" width="60" height="10" rx="2" fill="rgba(53,86,199,.25)" stroke="#2b2822" stroke-width="1.2"/><rect x="226" y="218" width="16.8" height="10" rx="2" fill="rgba(226,75,74,.4)" stroke="#2b2822" stroke-width="1.2"/><rect x="226" y="235" width="48" height="10" rx="2" fill="rgba(53,86,199,.25)" stroke="#2b2822" stroke-width="1.2"/><rect x="226" y="235" width="13.440000000000001" height="10" rx="2" fill="rgba(226,75,74,.4)" stroke="#2b2822" stroke-width="1.2"/><rect x="226" y="252" width="36" height="10" rx="2" fill="rgba(53,86,199,.25)" stroke="#2b2822" stroke-width="1.2"/><rect x="226" y="252" width="10.080000000000002" height="10" rx="2" fill="rgba(226,75,74,.4)" stroke="#2b2822" stroke-width="1.2"/><rect x="352" y="158" width="54" height="120" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><text x="356" y="172" font-family="Caveat" font-weight="700" font-size="10" fill="#8a8375" text-anchor="start">¿contrato?</text><rect x="360" y="196" width="16" height="70" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.3"/><rect x="384" y="248" width="16" height="18" rx="2" fill="none" stroke="#2b2822" stroke-width="1.3"/><text x="368" y="290" font-family="Caveat" font-weight="700" font-size="10" fill="#8a8375" text-anchor="middle">no</text><text x="392" y="290" font-family="Caveat" font-weight="700" font-size="10" fill="#8a8375" text-anchor="middle">sí</text></svg><div class="sheet-cap">hoja 3 · <b>PRs</b></div></div><div class="sheet"><svg viewBox="0 0 420 300" role="img" aria-label="Boceto: hoja 4 · <b>POs</b>"><text x="14" y="22" font-family="Caveat" font-weight="700" font-size="15" fill="#2b2822" text-anchor="start">POs — órdenes de compra</text><rect x="14" y="34" width="72" height="44" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M21 46 q 14.5 -2.5, 29.0 0 t 29.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="21" y="68" font-family="Caveat" font-weight="700" font-size="13" fill="#2b2822" text-anchor="start">##</text><rect x="94" y="34" width="72" height="44" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M101 46 q 14.5 -2.5, 29.0 0 t 29.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="101" y="68" font-family="Caveat" font-weight="700" font-size="13" fill="#2b2822" text-anchor="start">##</text><rect x="174" y="34" width="72" height="44" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M181 46 q 14.5 -2.5, 29.0 0 t 29.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="181" y="68" font-family="Caveat" font-weight="700" font-size="13" fill="#2b2822" text-anchor="start">##</text><rect x="254" y="34" width="72" height="44" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M261 46 q 14.5 -2.5, 29.0 0 t 29.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="261" y="68" font-family="Caveat" font-weight="700" font-size="13" fill="#2b2822" text-anchor="start">##</text><rect x="334" y="34" width="72" height="44" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><path d="M341 46 q 14.5 -2.5, 29.0 0 t 29.0 0" fill="none" stroke="#8a8375" stroke-width="1.5" stroke-linecap="round"/><text x="341" y="68" font-family="Caveat" font-weight="700" font-size="13" fill="#2b2822" text-anchor="start">##</text><rect x="14" y="92" width="190" height="92" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><text x="20" y="106" font-family="Caveat" font-weight="700" font-size="11" fill="#8a8375" text-anchor="start">PR→PO→Rcpt→Inv x mes</text><rect x="26" y="128" width="14" height="22.0" rx="1.5" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.1"/><rect x="26" y="150.0" width="14" height="14.96" rx="1.5" fill="rgba(53,86,199,.28)" stroke="#2b2822" stroke-width="1.1"/><rect x="26" y="164.96" width="14" height="7.04" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#2b2822" stroke-width="1.1"/><rect x="51" y="120" width="14" height="26.0" rx="1.5" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.1"/><rect x="51" y="146.0" width="14" height="17.68" rx="1.5" fill="rgba(53,86,199,.28)" stroke="#2b2822" stroke-width="1.1"/><rect x="51" y="163.68" width="14" height="8.32" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#2b2822" stroke-width="1.1"/><rect x="76" y="112" width="14" height="30.0" rx="1.5" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.1"/><rect x="76" y="142.0" width="14" height="20.400000000000002" rx="1.5" fill="rgba(53,86,199,.28)" stroke="#2b2822" stroke-width="1.1"/><rect x="76" y="162.4" width="14" height="9.6" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#2b2822" stroke-width="1.1"/><rect x="101" y="124" width="14" height="24.0" rx="1.5" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.1"/><rect x="101" y="148.0" width="14" height="16.32" rx="1.5" fill="rgba(53,86,199,.28)" stroke="#2b2822" stroke-width="1.1"/><rect x="101" y="164.32" width="14" height="7.68" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#2b2822" stroke-width="1.1"/><rect x="126" y="116" width="14" height="28.0" rx="1.5" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.1"/><rect x="126" y="144.0" width="14" height="19.040000000000003" rx="1.5" fill="rgba(53,86,199,.28)" stroke="#2b2822" stroke-width="1.1"/><rect x="126" y="163.04" width="14" height="8.96" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#2b2822" stroke-width="1.1"/><rect x="151" y="108" width="14" height="32.0" rx="1.5" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.1"/><rect x="151" y="140.0" width="14" height="21.76" rx="1.5" fill="rgba(53,86,199,.28)" stroke="#2b2822" stroke-width="1.1"/><rect x="151" y="161.76" width="14" height="10.24" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#2b2822" stroke-width="1.1"/><rect x="176" y="132" width="14" height="20.0" rx="1.5" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.1"/><rect x="176" y="152.0" width="14" height="13.600000000000001" rx="1.5" fill="rgba(53,86,199,.28)" stroke="#2b2822" stroke-width="1.1"/><rect x="176" y="165.6" width="14" height="6.4" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#2b2822" stroke-width="1.1"/><rect x="218" y="92" width="120" height="92" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><text x="224" y="106" font-family="Caveat" font-weight="700" font-size="11" fill="#8a8375" text-anchor="start">spend x categoría</text><rect x="226" y="116" width="96" height="8" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.1"/><rect x="226" y="129" width="64" height="8" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.1"/><rect x="226" y="142" width="30" height="8" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.1"/><rect x="226" y="155" width="22" height="8" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.1"/><rect x="226" y="168" width="14" height="8" rx="2" fill="rgba(255,216,77,.55)" stroke="#2b2822" stroke-width="1.1"/><rect x="352" y="92" width="54" height="92" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><circle cx="379" cy="130" r="20" fill="none" stroke="#2b2822" stroke-width="6" opacity=".22"/><path d="M379 110 a20 20 0 1 1 -17 30" fill="none" stroke="#3556c7" stroke-width="6" stroke-linecap="round"/><text x="379" y="168" font-family="Caveat" font-weight="700" font-size="10" fill="#8a8375" text-anchor="middle">status</text><rect x="14" y="198" width="392" height="80" rx="4" fill="none" stroke="#2b2822" stroke-width="1.6" /><text x="20" y="212" font-family="Caveat" font-weight="700" font-size="11" fill="#8a8375" text-anchor="start">qty (barras) + spend (línea) x mes</text><rect x="40" y="236" width="20" height="30" rx="2" fill="rgba(255,216,77,.5)" stroke="#2b2822" stroke-width="1.2"/><rect x="92" y="226" width="20" height="40" rx="2" fill="rgba(255,216,77,.5)" stroke="#2b2822" stroke-width="1.2"/><rect x="144" y="222" width="20" height="44" rx="2" fill="rgba(255,216,77,.5)" stroke="#2b2822" stroke-width="1.2"/><rect x="196" y="228" width="20" height="38" rx="2" fill="rgba(255,216,77,.5)" stroke="#2b2822" stroke-width="1.2"/><rect x="248" y="224" width="20" height="42" rx="2" fill="rgba(255,216,77,.5)" stroke="#2b2822" stroke-width="1.2"/><rect x="300" y="218" width="20" height="48" rx="2" fill="rgba(255,216,77,.5)" stroke="#2b2822" stroke-width="1.2"/><rect x="352" y="248" width="20" height="18" rx="2" fill="rgba(255,216,77,.5)" stroke="#2b2822" stroke-width="1.2"/><path d="M50 240 C 100 228, 150 238, 200 230 S 300 224, 350 236 L 386 252" fill="none" stroke="#3556c7" stroke-width="2" stroke-linecap="round"/><text x="316" y="292" font-family="Caveat" font-weight="700" font-size="11" fill="#8a8375" text-anchor="start">tabla de valores debajo ✎</text></svg><div class="sheet-cap">hoja 4 · <b>POs</b></div></div>
+<div class="sheet"><svg viewBox="0 0 420 300" role="img" aria-label="Boceto: hoja 1 · <b>portada / home</b>"><path d="M14 12 h190 q22 130 0 276 h-190 z" fill="#F1F1F1" stroke="#111214" stroke-width="1.8"/><text x="26" y="36" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#56585E" text-anchor="start">logo</text><rect x="24" y="24" width="34" height="18" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><text x="26" y="72" font-family="Archivo, sans-serif" font-weight="700" font-size="17" fill="#111214" text-anchor="start">Supply Chain Procurement</text><text x="26" y="92" font-family="Archivo, sans-serif" font-weight="700" font-size="17" fill="#111214" text-anchor="start">&amp; Sourcing Performance</text><path d="M26 100 q 40 5, 80 0 t 80 0" fill="none" stroke="#3B4FE0" stroke-width="2.2" stroke-linecap="round"/><path d="M26 118 q 40.0 -2.5, 80.0 0 t 80.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><path d="M26 127 q 40.0 -2.5, 80.0 0 t 80.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><path d="M26 136 q 40.0 -2.5, 80.0 0 t 80.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><path d="M26 145 q 40.0 -2.5, 80.0 0 t 80.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="26" y="168" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#3B4FE0" text-anchor="start" transform="rotate(-1 26 168)">refresh cada 2h ⟳</text><rect x="26" y="182" width="150" height="17" rx="8" fill="#fff" stroke="#111214" stroke-width="1.4"/><circle cx="36" cy="190.5" r="3.5" fill="none" stroke="#3B4FE0" stroke-width="1.4"/><text x="46" y="195" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#56585E" text-anchor="start">Overview</text><rect x="26" y="205" width="150" height="17" rx="8" fill="#fff" stroke="#111214" stroke-width="1.4"/><circle cx="36" cy="213.5" r="3.5" fill="none" stroke="#3B4FE0" stroke-width="1.4"/><text x="46" y="218" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#56585E" text-anchor="start">PRs</text><rect x="26" y="228" width="150" height="17" rx="8" fill="#fff" stroke="#111214" stroke-width="1.4"/><circle cx="36" cy="236.5" r="3.5" fill="none" stroke="#3B4FE0" stroke-width="1.4"/><text x="46" y="241" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#56585E" text-anchor="start">POs</text><rect x="26" y="251" width="150" height="17" rx="8" fill="#fff" stroke="#111214" stroke-width="1.4"/><circle cx="36" cy="259.5" r="3.5" fill="none" stroke="#3B4FE0" stroke-width="1.4"/><text x="46" y="264" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#56585E" text-anchor="start">Vendors</text><rect x="26" y="274" width="150" height="17" rx="8" fill="#fff" stroke="#111214" stroke-width="1.4"/><circle cx="36" cy="282.5" r="3.5" fill="none" stroke="#3B4FE0" stroke-width="1.4"/><text x="46" y="287" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#56585E" text-anchor="start">Receipts</text><path d="M226 12 h180 v276 h-180 q-18 -140 0 -276 z" fill="#fff" stroke="#111214" stroke-width="1.8"/><line x1="230" y1="18" x2="402" y2="284" stroke="#56585E" stroke-width="1.2"/><line x1="402" y1="18" x2="230" y2="284" stroke="#56585E" stroke-width="1.2"/><text x="316" y="150" font-family="Archivo, sans-serif" font-weight="700" font-size="14" fill="#56585E" text-anchor="middle" transform="rotate(-8 316 150)">foto de campo aquí</text><text x="316" y="286" font-family="Archivo, sans-serif" font-weight="700" font-size="11" fill="#3B4FE0" text-anchor="middle">curva orgánica divide ambos lados →</text></svg><div class="sheet-cap">hoja 1 · <b>portada / home</b></div></div><div class="sheet"><svg viewBox="0 0 420 300" role="img" aria-label="Boceto: hoja 2 · <b>principal kpis</b>"><text x="14" y="22" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">Principal KPIs — 3 bandas</text><line x1="14" y1="40" x2="406" y2="40" stroke="#56585E" stroke-width="1" stroke-dasharray="3 4"/><text x="14" y="35" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#3B4FE0" text-anchor="start">cycle time · target ≤ 15d</text><rect x="14" y="48" width="88" height="52" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M22 62 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="22" y="86" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">##.#</text><rect x="22" y="92" width="72" height="4" rx="2" fill="none" stroke="#56585E" stroke-width="1"/><line x1="66.64" y1="89" x2="66.64" y2="99" stroke="#3B4FE0" stroke-width="2"/><rect x="112" y="48" width="88" height="52" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M120 62 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="120" y="86" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">##.#</text><rect x="120" y="92" width="72" height="4" rx="2" fill="none" stroke="#56585E" stroke-width="1"/><line x1="164.64" y1="89" x2="164.64" y2="99" stroke="#3B4FE0" stroke-width="2"/><rect x="210" y="48" width="88" height="52" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M218 62 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="218" y="86" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">##.#</text><rect x="218" y="92" width="72" height="4" rx="2" fill="none" stroke="#56585E" stroke-width="1"/><line x1="262.64" y1="89" x2="262.64" y2="99" stroke="#3B4FE0" stroke-width="2"/><rect x="308" y="48" width="88" height="52" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M316 62 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="316" y="86" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">##.#</text><rect x="316" y="92" width="72" height="4" rx="2" fill="none" stroke="#56585E" stroke-width="1"/><line x1="360.64" y1="89" x2="360.64" y2="99" stroke="#3B4FE0" stroke-width="2"/><line x1="14" y1="126" x2="406" y2="126" stroke="#56585E" stroke-width="1" stroke-dasharray="3 4"/><text x="14" y="121" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#3B4FE0" text-anchor="start">volumen &amp; conversión</text><rect x="14" y="134" width="88" height="52" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M22 148 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="22" y="172" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">##.#</text><rect x="22" y="178" width="72" height="4" rx="2" fill="none" stroke="#56585E" stroke-width="1"/><line x1="66.64" y1="175" x2="66.64" y2="185" stroke="#3B4FE0" stroke-width="2"/><rect x="112" y="134" width="88" height="52" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M120 148 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="120" y="172" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">##.#</text><rect x="120" y="178" width="72" height="4" rx="2" fill="none" stroke="#56585E" stroke-width="1"/><line x1="164.64" y1="175" x2="164.64" y2="185" stroke="#3B4FE0" stroke-width="2"/><rect x="210" y="134" width="88" height="52" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M218 148 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="218" y="172" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">##.#</text><rect x="218" y="178" width="72" height="4" rx="2" fill="none" stroke="#56585E" stroke-width="1"/><line x1="262.64" y1="175" x2="262.64" y2="185" stroke="#3B4FE0" stroke-width="2"/><rect x="308" y="134" width="88" height="52" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M316 148 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="316" y="172" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">##.#</text><rect x="316" y="178" width="72" height="4" rx="2" fill="none" stroke="#56585E" stroke-width="1"/><line x1="360.64" y1="175" x2="360.64" y2="185" stroke="#3B4FE0" stroke-width="2"/><line x1="14" y1="212" x2="406" y2="212" stroke="#56585E" stroke-width="1" stroke-dasharray="3 4"/><text x="14" y="207" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#3B4FE0" text-anchor="start">backlog, riesgo y gasto</text><rect x="14" y="220" width="88" height="52" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M22 234 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="22" y="258" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">##.#</text><rect x="22" y="264" width="72" height="4" rx="2" fill="none" stroke="#56585E" stroke-width="1"/><line x1="66.64" y1="261" x2="66.64" y2="271" stroke="#3B4FE0" stroke-width="2"/><rect x="112" y="220" width="88" height="52" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M120 234 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="120" y="258" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">##.#</text><rect x="120" y="264" width="72" height="4" rx="2" fill="none" stroke="#56585E" stroke-width="1"/><line x1="164.64" y1="261" x2="164.64" y2="271" stroke="#3B4FE0" stroke-width="2"/><rect x="210" y="220" width="88" height="52" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M218 234 q 17.0 -2.5, 34.0 0 t 34.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="218" y="258" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">##.#</text><rect x="218" y="264" width="72" height="4" rx="2" fill="none" stroke="#56585E" stroke-width="1"/><line x1="262.64" y1="261" x2="262.64" y2="271" stroke="#3B4FE0" stroke-width="2"/><text x="322" y="238" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#56585E" text-anchor="start">sin cifras aún —</text><text x="322" y="254" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#56585E" text-anchor="start">targets primero ✎</text><path d="M382 220 q 14 10, 6 26 M388 246 l-8 -6 M388 246 l2 -10" fill="none" stroke="#3B4FE0" stroke-width="1.8" stroke-linecap="round"/></svg><div class="sheet-cap">hoja 2 · <b>principal kpis</b></div></div><div class="sheet"><svg viewBox="0 0 420 300" role="img" aria-label="Boceto: hoja 3 · <b>PRs</b>"><text x="14" y="22" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">PRs — requisiciones</text><rect x="14" y="34" width="260" height="110" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M26 122 C 60 100, 90 112, 120 104 S 190 92, 220 100 S 252 88, 264 92 L 264 132 L 26 132 Z" fill="rgba(255,216,77,.4)" stroke="#111214" stroke-width="1.6"/><line x1="24" y1="62" x2="266" y2="62" stroke="#3B4FE0" stroke-width="1.6" stroke-dasharray="5 4"/><text x="226" y="56" font-family="Archivo, sans-serif" font-weight="700" font-size="11" fill="#3B4FE0" text-anchor="start">limit 15d</text><text x="20" y="48" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#56585E" text-anchor="start">tendencia mensual</text><rect x="286" y="34" width="120" height="110" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><circle cx="346" cy="86" r="30" fill="none" stroke="#111214" stroke-width="8" opacity=".25"/><path d="M346 56 a30 30 0 1 1 -26 46" fill="none" stroke="#3B4FE0" stroke-width="8" stroke-linecap="round"/><text x="346" y="90" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#111214" text-anchor="middle">total</text><text x="292" y="48" font-family="Archivo, sans-serif" font-weight="700" font-size="11" fill="#56585E" text-anchor="start">pipeline open/closed</text><rect x="14" y="158" width="190" height="120" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><text x="20" y="172" font-family="Archivo, sans-serif" font-weight="700" font-size="12" fill="#56585E" text-anchor="start">cycle x buyer · desc</text><rect x="24" y="178" width="13" height="84" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.3"/><rect x="45" y="188" width="13" height="74" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.3"/><rect x="66" y="204" width="13" height="58" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.3"/><rect x="87" y="216" width="13" height="46" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.3"/><rect x="108" y="222" width="13" height="40" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.3"/><rect x="129" y="228" width="13" height="34" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.3"/><rect x="150" y="234" width="13" height="28" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.3"/><rect x="171" y="240" width="13" height="22" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.3"/><line x1="20" y1="216" x2="198" y2="216" stroke="#3B4FE0" stroke-width="1.4" stroke-dasharray="4 4"/><rect x="218" y="158" width="120" height="120" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><text x="224" y="172" font-family="Archivo, sans-serif" font-weight="700" font-size="11" fill="#56585E" text-anchor="start">status x programa</text><rect x="226" y="184" width="92" height="10" rx="2" fill="rgba(59,79,224,.25)" stroke="#111214" stroke-width="1.2"/><rect x="226" y="184" width="25.76" height="10" rx="2" fill="rgba(226,75,74,.4)" stroke="#111214" stroke-width="1.2"/><rect x="226" y="201" width="76" height="10" rx="2" fill="rgba(59,79,224,.25)" stroke="#111214" stroke-width="1.2"/><rect x="226" y="201" width="21.28" height="10" rx="2" fill="rgba(226,75,74,.4)" stroke="#111214" stroke-width="1.2"/><rect x="226" y="218" width="60" height="10" rx="2" fill="rgba(59,79,224,.25)" stroke="#111214" stroke-width="1.2"/><rect x="226" y="218" width="16.8" height="10" rx="2" fill="rgba(226,75,74,.4)" stroke="#111214" stroke-width="1.2"/><rect x="226" y="235" width="48" height="10" rx="2" fill="rgba(59,79,224,.25)" stroke="#111214" stroke-width="1.2"/><rect x="226" y="235" width="13.440000000000001" height="10" rx="2" fill="rgba(226,75,74,.4)" stroke="#111214" stroke-width="1.2"/><rect x="226" y="252" width="36" height="10" rx="2" fill="rgba(59,79,224,.25)" stroke="#111214" stroke-width="1.2"/><rect x="226" y="252" width="10.080000000000002" height="10" rx="2" fill="rgba(226,75,74,.4)" stroke="#111214" stroke-width="1.2"/><rect x="352" y="158" width="54" height="120" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><text x="356" y="172" font-family="Archivo, sans-serif" font-weight="700" font-size="10" fill="#56585E" text-anchor="start">¿contrato?</text><rect x="360" y="196" width="16" height="70" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.3"/><rect x="384" y="248" width="16" height="18" rx="2" fill="none" stroke="#111214" stroke-width="1.3"/><text x="368" y="290" font-family="Archivo, sans-serif" font-weight="700" font-size="10" fill="#56585E" text-anchor="middle">no</text><text x="392" y="290" font-family="Archivo, sans-serif" font-weight="700" font-size="10" fill="#56585E" text-anchor="middle">sí</text></svg><div class="sheet-cap">hoja 3 · <b>PRs</b></div></div><div class="sheet"><svg viewBox="0 0 420 300" role="img" aria-label="Boceto: hoja 4 · <b>POs</b>"><text x="14" y="22" font-family="Archivo, sans-serif" font-weight="700" font-size="15" fill="#111214" text-anchor="start">POs — órdenes de compra</text><rect x="14" y="34" width="72" height="44" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M21 46 q 14.5 -2.5, 29.0 0 t 29.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="21" y="68" font-family="Archivo, sans-serif" font-weight="700" font-size="13" fill="#111214" text-anchor="start">##</text><rect x="94" y="34" width="72" height="44" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M101 46 q 14.5 -2.5, 29.0 0 t 29.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="101" y="68" font-family="Archivo, sans-serif" font-weight="700" font-size="13" fill="#111214" text-anchor="start">##</text><rect x="174" y="34" width="72" height="44" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M181 46 q 14.5 -2.5, 29.0 0 t 29.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="181" y="68" font-family="Archivo, sans-serif" font-weight="700" font-size="13" fill="#111214" text-anchor="start">##</text><rect x="254" y="34" width="72" height="44" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M261 46 q 14.5 -2.5, 29.0 0 t 29.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="261" y="68" font-family="Archivo, sans-serif" font-weight="700" font-size="13" fill="#111214" text-anchor="start">##</text><rect x="334" y="34" width="72" height="44" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><path d="M341 46 q 14.5 -2.5, 29.0 0 t 29.0 0" fill="none" stroke="#56585E" stroke-width="1.5" stroke-linecap="round"/><text x="341" y="68" font-family="Archivo, sans-serif" font-weight="700" font-size="13" fill="#111214" text-anchor="start">##</text><rect x="14" y="92" width="190" height="92" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><text x="20" y="106" font-family="Archivo, sans-serif" font-weight="700" font-size="11" fill="#56585E" text-anchor="start">PR→PO→Rcpt→Inv x mes</text><rect x="26" y="128" width="14" height="22.0" rx="1.5" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.1"/><rect x="26" y="150.0" width="14" height="14.96" rx="1.5" fill="rgba(59,79,224,.28)" stroke="#111214" stroke-width="1.1"/><rect x="26" y="164.96" width="14" height="7.04" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#111214" stroke-width="1.1"/><rect x="51" y="120" width="14" height="26.0" rx="1.5" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.1"/><rect x="51" y="146.0" width="14" height="17.68" rx="1.5" fill="rgba(59,79,224,.28)" stroke="#111214" stroke-width="1.1"/><rect x="51" y="163.68" width="14" height="8.32" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#111214" stroke-width="1.1"/><rect x="76" y="112" width="14" height="30.0" rx="1.5" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.1"/><rect x="76" y="142.0" width="14" height="20.400000000000002" rx="1.5" fill="rgba(59,79,224,.28)" stroke="#111214" stroke-width="1.1"/><rect x="76" y="162.4" width="14" height="9.6" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#111214" stroke-width="1.1"/><rect x="101" y="124" width="14" height="24.0" rx="1.5" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.1"/><rect x="101" y="148.0" width="14" height="16.32" rx="1.5" fill="rgba(59,79,224,.28)" stroke="#111214" stroke-width="1.1"/><rect x="101" y="164.32" width="14" height="7.68" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#111214" stroke-width="1.1"/><rect x="126" y="116" width="14" height="28.0" rx="1.5" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.1"/><rect x="126" y="144.0" width="14" height="19.040000000000003" rx="1.5" fill="rgba(59,79,224,.28)" stroke="#111214" stroke-width="1.1"/><rect x="126" y="163.04" width="14" height="8.96" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#111214" stroke-width="1.1"/><rect x="151" y="108" width="14" height="32.0" rx="1.5" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.1"/><rect x="151" y="140.0" width="14" height="21.76" rx="1.5" fill="rgba(59,79,224,.28)" stroke="#111214" stroke-width="1.1"/><rect x="151" y="161.76" width="14" height="10.24" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#111214" stroke-width="1.1"/><rect x="176" y="132" width="14" height="20.0" rx="1.5" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.1"/><rect x="176" y="152.0" width="14" height="13.600000000000001" rx="1.5" fill="rgba(59,79,224,.28)" stroke="#111214" stroke-width="1.1"/><rect x="176" y="165.6" width="14" height="6.4" rx="1.5" fill="rgba(43,40,34,.18)" stroke="#111214" stroke-width="1.1"/><rect x="218" y="92" width="120" height="92" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><text x="224" y="106" font-family="Archivo, sans-serif" font-weight="700" font-size="11" fill="#56585E" text-anchor="start">spend x categoría</text><rect x="226" y="116" width="96" height="8" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.1"/><rect x="226" y="129" width="64" height="8" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.1"/><rect x="226" y="142" width="30" height="8" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.1"/><rect x="226" y="155" width="22" height="8" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.1"/><rect x="226" y="168" width="14" height="8" rx="2" fill="rgba(184,224,140,.6)" stroke="#111214" stroke-width="1.1"/><rect x="352" y="92" width="54" height="92" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><circle cx="379" cy="130" r="20" fill="none" stroke="#111214" stroke-width="6" opacity=".22"/><path d="M379 110 a20 20 0 1 1 -17 30" fill="none" stroke="#3B4FE0" stroke-width="6" stroke-linecap="round"/><text x="379" y="168" font-family="Archivo, sans-serif" font-weight="700" font-size="10" fill="#56585E" text-anchor="middle">status</text><rect x="14" y="198" width="392" height="80" rx="4" fill="none" stroke="#111214" stroke-width="1.6" /><text x="20" y="212" font-family="Archivo, sans-serif" font-weight="700" font-size="11" fill="#56585E" text-anchor="start">qty (barras) + spend (línea) x mes</text><rect x="40" y="236" width="20" height="30" rx="2" fill="rgba(255,216,77,.5)" stroke="#111214" stroke-width="1.2"/><rect x="92" y="226" width="20" height="40" rx="2" fill="rgba(255,216,77,.5)" stroke="#111214" stroke-width="1.2"/><rect x="144" y="222" width="20" height="44" rx="2" fill="rgba(255,216,77,.5)" stroke="#111214" stroke-width="1.2"/><rect x="196" y="228" width="20" height="38" rx="2" fill="rgba(255,216,77,.5)" stroke="#111214" stroke-width="1.2"/><rect x="248" y="224" width="20" height="42" rx="2" fill="rgba(255,216,77,.5)" stroke="#111214" stroke-width="1.2"/><rect x="300" y="218" width="20" height="48" rx="2" fill="rgba(255,216,77,.5)" stroke="#111214" stroke-width="1.2"/><rect x="352" y="248" width="20" height="18" rx="2" fill="rgba(255,216,77,.5)" stroke="#111214" stroke-width="1.2"/><path d="M50 240 C 100 228, 150 238, 200 230 S 300 224, 350 236 L 386 252" fill="none" stroke="#3B4FE0" stroke-width="2" stroke-linecap="round"/><text x="316" y="292" font-family="Archivo, sans-serif" font-weight="700" font-size="11" fill="#56585E" text-anchor="start">tabla de valores debajo ✎</text></svg><div class="sheet-cap">hoja 4 · <b>POs</b></div></div>
     </div>
   </section>
 
@@ -300,14 +265,14 @@ font-weight:800;font-size:.9rem;padding:12px 22px;border:2px solid var(--ink);bo
 <svg viewBox="0 0 960 320" role="img" aria-label="Pipeline de datos desde D365 F&O hasta Power BI">
       <defs>
         <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
-          <path d="M0 0 L10 5 L0 10 z" fill="#2b2822"/>
+          <path d="M0 0 L10 5 L0 10 z" fill="#111214"/>
         </marker>
       </defs>
       <!-- pista principal -->
       <path id="track" d="M96 150 C 170 150, 190 150, 250 150 S 380 150, 424 150 S 560 150, 598 150 S 730 150, 770 150 S 860 150, 900 150"
-            fill="none" stroke="#2b2822" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round"/>
+            fill="none" stroke="#111214" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round"/>
       <!-- flechas entre estaciones -->
-      <g stroke="#2b2822" stroke-width="2" fill="none" marker-end="url(#arr)">
+      <g stroke="#111214" stroke-width="2" fill="none" marker-end="url(#arr)">
         <path d="M140 150 L 186 150"/>
         <path d="M296 150 L 342 150"/>
         <path d="M452 150 L 498 150"/>
@@ -317,119 +282,119 @@ font-weight:800;font-size:.9rem;padding:12px 22px;border:2px solid var(--ink);bo
 
       <!-- Estación: ERP -->
       <g>
-        <rect x="40" y="112" width="100" height="76" rx="14" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/>
-        <ellipse cx="90" cy="136" rx="17" ry="6.5" fill="#e8edf2" stroke="#1a5f7a" stroke-width="1.8"/>
-        <path d="M73 136 v14 a17 6.5 0 0 0 34 0 v-14" fill="#e8edf2" stroke="#1a5f7a" stroke-width="1.8"/>
-        <text x="90" y="172" text-anchor="middle" font-size="12" font-weight="800" fill="#2b2822">D365 F&amp;O</text>
-        <text x="90" y="208" text-anchor="middle" font-size="10" fill="#6d6759">ERP · PRs, POs,</text>
-        <text x="90" y="221" text-anchor="middle" font-size="10" fill="#6d6759">proveedores, fechas</text>
+        <rect x="40" y="112" width="100" height="76" rx="14" fill="#FFFFFF" stroke="#111214" stroke-width="2"/>
+        <ellipse cx="90" cy="136" rx="17" ry="6.5" fill="#EEF0FD" stroke="#3B4FE0" stroke-width="1.8"/>
+        <path d="M73 136 v14 a17 6.5 0 0 0 34 0 v-14" fill="#EEF0FD" stroke="#3B4FE0" stroke-width="1.8"/>
+        <text x="90" y="172" text-anchor="middle" font-size="12" font-weight="800" fill="#111214">D365 F&amp;O</text>
+        <text x="90" y="208" text-anchor="middle" font-size="10" fill="#56585E">ERP · PRs, POs,</text>
+        <text x="90" y="221" text-anchor="middle" font-size="10" fill="#56585E">proveedores, fechas</text>
       </g>
 
       <!-- Estación: Bronze -->
       <g>
-        <rect x="196" y="112" width="100" height="76" rx="14" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/>
-        <circle cx="246" cy="140" r="13" fill="#c98a4b" stroke="#2b2822" stroke-width="1.8"/>
+        <rect x="196" y="112" width="100" height="76" rx="14" fill="#FFFFFF" stroke="#111214" stroke-width="2"/>
+        <circle cx="246" cy="140" r="13" fill="#c98a4b" stroke="#111214" stroke-width="1.8"/>
         <text x="246" y="144" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">B</text>
-        <text x="246" y="172" text-anchor="middle" font-size="12" font-weight="800" fill="#2b2822">Bronze</text>
-        <text x="246" y="208" text-anchor="middle" font-size="10" fill="#6d6759">aterrizaje crudo</text>
-        <text x="246" y="221" text-anchor="middle" font-size="10" fill="#6d6759">en OneLake</text>
+        <text x="246" y="172" text-anchor="middle" font-size="12" font-weight="800" fill="#111214">Bronze</text>
+        <text x="246" y="208" text-anchor="middle" font-size="10" fill="#56585E">aterrizaje crudo</text>
+        <text x="246" y="221" text-anchor="middle" font-size="10" fill="#56585E">en OneLake</text>
       </g>
 
       <!-- Estación: Silver -->
       <g>
-        <rect x="352" y="112" width="100" height="76" rx="14" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/>
-        <circle cx="402" cy="140" r="13" fill="#9aa5ad" stroke="#2b2822" stroke-width="1.8"/>
+        <rect x="352" y="112" width="100" height="76" rx="14" fill="#FFFFFF" stroke="#111214" stroke-width="2"/>
+        <circle cx="402" cy="140" r="13" fill="#9FA1A6" stroke="#111214" stroke-width="1.8"/>
         <text x="402" y="144" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">S</text>
-        <text x="402" y="172" text-anchor="middle" font-size="12" font-weight="800" fill="#2b2822">Silver</text>
-        <text x="402" y="208" text-anchor="middle" font-size="10" fill="#6d6759">limpieza PySpark:</text>
-        <text x="402" y="221" text-anchor="middle" font-size="10" fill="#6d6759">strings multi-PR, UTC</text>
+        <text x="402" y="172" text-anchor="middle" font-size="12" font-weight="800" fill="#111214">Silver</text>
+        <text x="402" y="208" text-anchor="middle" font-size="10" fill="#56585E">limpieza PySpark:</text>
+        <text x="402" y="221" text-anchor="middle" font-size="10" fill="#56585E">strings multi-PR, UTC</text>
       </g>
 
       <!-- Estación: Gold -->
       <g>
-        <rect x="508" y="112" width="100" height="76" rx="14" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/>
-        <circle cx="558" cy="140" r="13" fill="#d4a72c" stroke="#2b2822" stroke-width="1.8"/>
+        <rect x="508" y="112" width="100" height="76" rx="14" fill="#FFFFFF" stroke="#111214" stroke-width="2"/>
+        <circle cx="558" cy="140" r="13" fill="#d4a72c" stroke="#111214" stroke-width="1.8"/>
         <text x="558" y="144" text-anchor="middle" font-size="10" font-weight="800" fill="#fff">G</text>
-        <text x="558" y="172" text-anchor="middle" font-size="12" font-weight="800" fill="#2b2822">Gold</text>
-        <text x="558" y="208" text-anchor="middle" font-size="10" fill="#6d6759">tablas dim/fact</text>
-        <text x="558" y="221" text-anchor="middle" font-size="10" fill="#6d6759">listas para consumo</text>
+        <text x="558" y="172" text-anchor="middle" font-size="12" font-weight="800" fill="#111214">Gold</text>
+        <text x="558" y="208" text-anchor="middle" font-size="10" fill="#56585E">tablas dim/fact</text>
+        <text x="558" y="221" text-anchor="middle" font-size="10" fill="#56585E">listas para consumo</text>
       </g>
 
       <!-- Estación: Modelo semántico -->
       <g>
-        <rect x="664" y="112" width="100" height="76" rx="14" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/>
-        <circle cx="714" cy="134" r="5.5" fill="#1a5f7a"/>
-        <circle cx="697" cy="146" r="4" fill="#8ec1cb"/>
-        <circle cx="731" cy="146" r="4" fill="#8ec1cb"/>
-        <circle cx="705" cy="128" r="4" fill="#8ec1cb"/>
-        <circle cx="724" cy="127" r="4" fill="#8ec1cb"/>
-        <g stroke="#1a5f7a" stroke-width="1.4">
+        <rect x="664" y="112" width="100" height="76" rx="14" fill="#FFFFFF" stroke="#111214" stroke-width="2"/>
+        <circle cx="714" cy="134" r="5.5" fill="#3B4FE0"/>
+        <circle cx="697" cy="146" r="4" fill="#A9B4F2"/>
+        <circle cx="731" cy="146" r="4" fill="#A9B4F2"/>
+        <circle cx="705" cy="128" r="4" fill="#A9B4F2"/>
+        <circle cx="724" cy="127" r="4" fill="#A9B4F2"/>
+        <g stroke="#3B4FE0" stroke-width="1.4">
           <line x1="714" y1="134" x2="697" y2="146"/><line x1="714" y1="134" x2="731" y2="146"/>
           <line x1="714" y1="134" x2="705" y2="128"/><line x1="714" y1="134" x2="724" y2="127"/>
         </g>
-        <text x="714" y="172" text-anchor="middle" font-size="11.5" font-weight="800" fill="#2b2822">Modelo semántico</text>
-        <text x="714" y="208" text-anchor="middle" font-size="10" fill="#6d6759">estrella · 13+ DAX</text>
-        <text x="714" y="221" text-anchor="middle" font-size="10" fill="#6d6759">· RLS por rol</text>
+        <text x="714" y="172" text-anchor="middle" font-size="11.5" font-weight="800" fill="#111214">Modelo semántico</text>
+        <text x="714" y="208" text-anchor="middle" font-size="10" fill="#56585E">estrella · 13+ DAX</text>
+        <text x="714" y="221" text-anchor="middle" font-size="10" fill="#56585E">· RLS por rol</text>
       </g>
 
       <!-- Estación: Power BI -->
       <g>
-        <rect x="812" y="106" width="112" height="88" rx="14" fill="#1a5f7a" stroke="#2b2822" stroke-width="2"/>
-        <rect x="832" y="140" width="11" height="26" rx="2.5" fill="#8ec1cb"/>
-        <rect x="849" y="128" width="11" height="38" rx="2.5" fill="#ffd84d"/>
-        <rect x="866" y="120" width="11" height="46" rx="2.5" fill="#fffdf7"/>
-        <rect x="883" y="134" width="11" height="32" rx="2.5" fill="#8ec1cb"/>
+        <rect x="812" y="106" width="112" height="88" rx="14" fill="#3B4FE0" stroke="#111214" stroke-width="2"/>
+        <rect x="832" y="140" width="11" height="26" rx="2.5" fill="#A9B4F2"/>
+        <rect x="849" y="128" width="11" height="38" rx="2.5" fill="#B8E08C"/>
+        <rect x="866" y="120" width="11" height="46" rx="2.5" fill="#FFFFFF"/>
+        <rect x="883" y="134" width="11" height="32" rx="2.5" fill="#A9B4F2"/>
         <text x="868" y="185" text-anchor="middle" font-size="12" font-weight="800" fill="#fff">Power BI</text>
-        <text x="868" y="212" text-anchor="middle" font-size="10" fill="#6d6759">dashboard · tarjetas KPI</text>
-        <text x="868" y="225" text-anchor="middle" font-size="10" fill="#6d6759">con flip de fórmula</text>
+        <text x="868" y="212" text-anchor="middle" font-size="10" fill="#56585E">dashboard · tarjetas KPI</text>
+        <text x="868" y="225" text-anchor="middle" font-size="10" fill="#56585E">con flip de fórmula</text>
       </g>
 
       <!-- Rama: Excel de validación -->
       <g>
-        <rect x="560" y="252" width="112" height="52" rx="12" fill="#fffdf7" stroke="#2b2822" stroke-width="2" stroke-dasharray="5 4"/>
+        <rect x="560" y="252" width="112" height="52" rx="12" fill="#FFFFFF" stroke="#111214" stroke-width="2" stroke-dasharray="5 4"/>
         <rect x="576" y="264" width="22" height="27" rx="3" fill="#e6f2e6" stroke="#3e7d23" stroke-width="1.6"/>
         <line x1="580" y1="271" x2="594" y2="271" stroke="#3e7d23" stroke-width="1.4"/>
         <line x1="580" y1="277" x2="594" y2="277" stroke="#3e7d23" stroke-width="1.4"/>
         <line x1="580" y1="283" x2="594" y2="283" stroke="#3e7d23" stroke-width="1.4"/>
-        <text x="634" y="274" text-anchor="middle" font-size="11" font-weight="800" fill="#2b2822">Excel del</text>
-        <text x="634" y="288" text-anchor="middle" font-size="11" font-weight="800" fill="#2b2822">stakeholder</text>
+        <text x="634" y="274" text-anchor="middle" font-size="11" font-weight="800" fill="#111214">Excel del</text>
+        <text x="634" y="288" text-anchor="middle" font-size="11" font-weight="800" fill="#111214">stakeholder</text>
       </g>
-      <path id="valtrack" d="M672 268 C 760 258, 800 232, 830 200" fill="none" stroke="#f29657" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arr)"/>
+      <path id="valtrack" d="M672 268 C 760 258, 800 232, 830 200" fill="none" stroke="#3B4FE0" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arr)"/>
       <text x="790" y="252" font-size="10.5" font-weight="700" fill="#c96a1e" transform="rotate(-16 790 252)">triangulación / validación</text>
 
       <!-- título del flujo -->
-      <text x="48" y="66" font-size="13" font-weight="800" fill="#2b2822">Ingesta</text>
-      <text x="48" y="82" font-size="10.5" fill="#6d6759">mirroring / shortcuts a OneLake</text>
-      <text x="404" y="66" font-size="13" font-weight="800" fill="#2b2822" text-anchor="middle">Transformación</text>
-      <text x="404" y="82" font-size="10.5" fill="#6d6759" text-anchor="middle">notebooks PySpark programados</text>
-      <text x="868" y="66" font-size="13" font-weight="800" fill="#2b2822" text-anchor="middle">Consumo</text>
-      <text x="868" y="82" font-size="10.5" fill="#6d6759" text-anchor="middle">refresh programado + slicers</text>
+      <text x="48" y="66" font-size="13" font-weight="800" fill="#111214">Ingesta</text>
+      <text x="48" y="82" font-size="10.5" fill="#56585E">mirroring / shortcuts a OneLake</text>
+      <text x="404" y="66" font-size="13" font-weight="800" fill="#111214" text-anchor="middle">Transformación</text>
+      <text x="404" y="82" font-size="10.5" fill="#56585E" text-anchor="middle">notebooks PySpark programados</text>
+      <text x="868" y="66" font-size="13" font-weight="800" fill="#111214" text-anchor="middle">Consumo</text>
+      <text x="868" y="82" font-size="10.5" fill="#56585E" text-anchor="middle">refresh programado + slicers</text>
 
       <!-- paquetes de datos viajando -->
       <g class="flow-dot">
-        <circle r="5" fill="#1a5f7a" stroke="#fffdf7" stroke-width="1.6">
+        <circle r="5" fill="#3B4FE0" stroke="#FFFFFF" stroke-width="1.6">
           <animateMotion dur="7s" repeatCount="indefinite" rotate="0">
             <mpath href="#track"/>
           </animateMotion>
         </circle>
       </g>
       <g class="flow-dot">
-        <circle r="4" fill="#c98a4b" stroke="#fffdf7" stroke-width="1.4">
+        <circle r="4" fill="#c98a4b" stroke="#FFFFFF" stroke-width="1.4">
           <animateMotion dur="7s" begin="1.7s" repeatCount="indefinite"><mpath href="#track"/></animateMotion>
         </circle>
       </g>
       <g class="flow-dot">
-        <circle r="4" fill="#d4a72c" stroke="#fffdf7" stroke-width="1.4">
+        <circle r="4" fill="#d4a72c" stroke="#FFFFFF" stroke-width="1.4">
           <animateMotion dur="7s" begin="3.4s" repeatCount="indefinite"><mpath href="#track"/></animateMotion>
         </circle>
       </g>
       <g class="flow-dot">
-        <circle r="4" fill="#8ec1cb" stroke="#fffdf7" stroke-width="1.4">
+        <circle r="4" fill="#A9B4F2" stroke="#FFFFFF" stroke-width="1.4">
           <animateMotion dur="7s" begin="5.1s" repeatCount="indefinite"><mpath href="#track"/></animateMotion>
         </circle>
       </g>
       <g class="flow-dot">
-        <circle r="3.5" fill="#f29657" stroke="#fffdf7" stroke-width="1.4">
+        <circle r="3.5" fill="#3B4FE0" stroke="#FFFFFF" stroke-width="1.4">
           <animateMotion dur="4.5s" begin="1s" repeatCount="indefinite"><mpath href="#valtrack"/></animateMotion>
         </circle>
       </g>
@@ -456,10 +421,10 @@ font-weight:800;font-size:.9rem;padding:12px 22px;border:2px solid var(--ink);bo
         <div class="ex-body model-wrap">
 <svg viewBox="0 0 960 400" role="img" aria-label="Diagrama del modelo semántico en estrella">
       <defs>
-        <g id="tbl-h"><rect width="170" height="26" rx="6" fill="#1a5f7a"/></g>
+        <g id="tbl-h"><rect width="170" height="26" rx="6" fill="#3B4FE0"/></g>
       </defs>
       <!-- relaciones -->
-      <g stroke="#2b2822" stroke-width="1.8" fill="none">
+      <g stroke="#111214" stroke-width="1.8" fill="none">
         <path d="M182 92 C 240 110, 280 140, 330 172"/>                      <!-- calendar -> PR -->
         <path d="M160 210 L 330 210"/>                                       <!-- PR -> fact -->
         <path d="M160 250 C 230 268, 280 300, 340 318"/>                     <!-- PR -> PRline -->
@@ -469,11 +434,11 @@ font-weight:800;font-size:.9rem;padding:12px 22px;border:2px solid var(--ink);bo
         <path d="M872 176 L 872 132"/>                                       <!-- PO -> vendor -->
       </g>
       <!-- relación inexistente calendar -> PO -->
-      <path d="M182 74 C 460 8, 700 40, 830 172" fill="none" stroke="#f29657" stroke-width="2" stroke-dasharray="7 6"/>
+      <path d="M182 74 C 460 8, 700 40, 830 172" fill="none" stroke="#3B4FE0" stroke-width="2" stroke-dasharray="7 6"/>
       <text x="500" y="30" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c96a1e">sin relación directa → fecha proxy (submitteddate) en medidas de PO</text>
 
       <!-- cardinalidades -->
-      <g font-size="11" font-weight="800" fill="#2b2822">
+      <g font-size="11" font-weight="800" fill="#111214">
         <text x="192" y="106">1</text><text x="316" y="172">*</text>
         <text x="168" y="204">1</text><text x="318" y="204">*</text>
         <text x="170" y="266">1</text><text x="330" y="316">*</text>
@@ -485,60 +450,60 @@ font-weight:800;font-size:.9rem;padding:12px 22px;border:2px solid var(--ink);bo
 
       <!-- dim_Calendar -->
       <g transform="translate(12,44)">
-        <rect width="170" height="78" rx="8" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/>
-        <rect width="170" height="26" rx="8" fill="#1a5f7a"/><rect y="18" width="170" height="8" fill="#1a5f7a"/>
+        <rect width="170" height="78" rx="8" fill="#FFFFFF" stroke="#111214" stroke-width="2"/>
+        <rect width="170" height="26" rx="8" fill="#3B4FE0"/><rect y="18" width="170" height="8" fill="#3B4FE0"/>
         <text x="85" y="17" text-anchor="middle" font-size="11.5" font-weight="800" fill="#fff">dim_Calendar</text>
-        <text x="12" y="44" font-size="10" fill="#3d5b68">Date · Year · Month</text>
+        <text x="12" y="44" font-size="10" fill="#2A2B2E">Date · Year · Month</text>
         <text x="12" y="60" font-size="10" font-weight="700" fill="#3e7d23">IsWorkday = 1 (excl. festivos)</text>
       </g>
       <!-- dimpurchrequisition -->
       <g transform="translate(-10,176)">
-        <rect width="170" height="90" rx="8" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/>
-        <rect width="170" height="26" rx="8" fill="#1a5f7a"/><rect y="18" width="170" height="8" fill="#1a5f7a"/>
+        <rect width="170" height="90" rx="8" fill="#FFFFFF" stroke="#111214" stroke-width="2"/>
+        <rect width="170" height="26" rx="8" fill="#3B4FE0"/><rect y="18" width="170" height="8" fill="#3B4FE0"/>
         <text x="85" y="17" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">dimpurchrequisition</text>
-        <text x="12" y="44" font-size="10" fill="#3d5b68">purchreqid · submitteddate</text>
-        <text x="12" y="60" font-size="10" fill="#3d5b68">purch_req_status (50 = Closed)</text>
-        <text x="12" y="76" font-size="10" fill="#3d5b68">program · contrato S/N</text>
+        <text x="12" y="44" font-size="10" fill="#2A2B2E">purchreqid · submitteddate</text>
+        <text x="12" y="60" font-size="10" fill="#2A2B2E">purch_req_status (50 = Closed)</text>
+        <text x="12" y="76" font-size="10" fill="#2A2B2E">program · contrato S/N</text>
       </g>
       <!-- factpr2pomatrix (centro) -->
       <g transform="translate(330,168)">
-        <rect width="298" height="96" rx="8" fill="#fff7dd" stroke="#2b2822" stroke-width="2.6"/>
-        <rect width="298" height="26" rx="8" fill="#2b2822"/><rect y="18" width="298" height="8" fill="#2b2822"/>
-        <text x="149" y="17" text-anchor="middle" font-size="12" font-weight="800" fill="#ffd84d">factpr2pomatrix · HECHOS</text>
-        <text x="14" y="46" font-size="10" fill="#3d5b68">purchreqid ↔ purchid · fechas del ciclo</text>
-        <text x="14" y="62" font-size="10" fill="#3d5b68">po_itembuyergroupid · po_program</text>
+        <rect width="298" height="96" rx="8" fill="#F4F4F5" stroke="#111214" stroke-width="2.6"/>
+        <rect width="298" height="26" rx="8" fill="#111214"/><rect y="18" width="298" height="8" fill="#111214"/>
+        <text x="149" y="17" text-anchor="middle" font-size="12" font-weight="800" fill="#B8E08C">factpr2pomatrix · HECHOS</text>
+        <text x="14" y="46" font-size="10" fill="#2A2B2E">purchreqid ↔ purchid · fechas del ciclo</text>
+        <text x="14" y="62" font-size="10" fill="#2A2B2E">po_itembuyergroupid · po_program</text>
         <text x="14" y="80" font-size="10" font-weight="700" fill="#c96a1e">⚠ no cubre todos los POs → doble ruta de navegación</text>
       </g>
       <!-- dimpurchreqline -->
       <g transform="translate(340,290)">
-        <rect width="170" height="64" rx="8" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/>
-        <rect width="170" height="26" rx="8" fill="#4d8aa3"/><rect y="18" width="170" height="8" fill="#4d8aa3"/>
+        <rect width="170" height="64" rx="8" fill="#FFFFFF" stroke="#111214" stroke-width="2"/>
+        <rect width="170" height="26" rx="8" fill="#6B7AE8"/><rect y="18" width="170" height="8" fill="#6B7AE8"/>
         <text x="85" y="17" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">dimpurchreqline</text>
-        <text x="12" y="44" font-size="10" fill="#3d5b68">línea PR · purchid → enlaza al PO</text>
+        <text x="12" y="44" font-size="10" fill="#2A2B2E">línea PR · purchid → enlaza al PO</text>
       </g>
       <!-- dimpurchorderline -->
       <g transform="translate(610,290)">
-        <rect width="170" height="64" rx="8" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/>
-        <rect width="170" height="26" rx="8" fill="#4d8aa3"/><rect y="18" width="170" height="8" fill="#4d8aa3"/>
+        <rect width="170" height="64" rx="8" fill="#FFFFFF" stroke="#111214" stroke-width="2"/>
+        <rect width="170" height="26" rx="8" fill="#6B7AE8"/><rect y="18" width="170" height="8" fill="#6B7AE8"/>
         <text x="85" y="17" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">dimpurchorderline</text>
-        <text x="12" y="44" font-size="10" fill="#3d5b68">puente líneas PO ↔ líneas PR</text>
+        <text x="12" y="44" font-size="10" fill="#2A2B2E">puente líneas PO ↔ líneas PR</text>
       </g>
       <!-- dimpurchorder -->
       <g transform="translate(792,176)">
-        <rect width="170" height="90" rx="8" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/>
-        <rect width="170" height="26" rx="8" fill="#1a5f7a"/><rect y="18" width="170" height="8" fill="#1a5f7a"/>
+        <rect width="170" height="90" rx="8" fill="#FFFFFF" stroke="#111214" stroke-width="2"/>
+        <rect width="170" height="26" rx="8" fill="#3B4FE0"/><rect y="18" width="170" height="8" fill="#3B4FE0"/>
         <text x="85" y="17" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">dimpurchorder</text>
-        <text x="12" y="44" font-size="10" fill="#3d5b68">purchid · creteddate (UTC fix)</text>
-        <text x="12" y="60" font-size="10" fill="#3d5b68">receivingdate · invoiceddate</text>
-        <text x="12" y="76" font-size="10" fill="#3d5b68">invoiceamountusd · estatus</text>
+        <text x="12" y="44" font-size="10" fill="#2A2B2E">purchid · creteddate (UTC fix)</text>
+        <text x="12" y="60" font-size="10" fill="#2A2B2E">receivingdate · invoiceddate</text>
+        <text x="12" y="76" font-size="10" fill="#2A2B2E">invoiceamountusd · estatus</text>
       </g>
       <!-- dimvendor -->
       <g transform="translate(802,56)">
-        <rect width="150" height="76" rx="8" fill="#fffdf7" stroke="#2b2822" stroke-width="2"/>
-        <rect width="150" height="26" rx="8" fill="#1a5f7a"/><rect y="18" width="150" height="8" fill="#1a5f7a"/>
+        <rect width="150" height="76" rx="8" fill="#FFFFFF" stroke="#111214" stroke-width="2"/>
+        <rect width="150" height="26" rx="8" fill="#3B4FE0"/><rect y="18" width="150" height="8" fill="#3B4FE0"/>
         <text x="75" y="17" text-anchor="middle" font-size="11" font-weight="800" fill="#fff">dimvendor</text>
-        <text x="12" y="44" font-size="10" fill="#3d5b68">vendorid · nombre</text>
-        <text x="12" y="60" font-size="10" fill="#3d5b68">maestro de proveedores</text>
+        <text x="12" y="44" font-size="10" fill="#2A2B2E">vendorid · nombre</text>
+        <text x="12" y="60" font-size="10" fill="#2A2B2E">maestro de proveedores</text>
       </g>
     </svg>
         </div>
@@ -651,7 +616,7 @@ font-weight:800;font-size:.9rem;padding:12px 22px;border:2px solid var(--ink);bo
   </div>
 
   <footer>
-    <span>Rodrigo Mendoza Cortés · Power BI Developer</span>
+    <span>Rodrigo Mendoza Cortés · Agentic AI &amp; Data Engineer</span>
     <a href="../index.html">← portafolio</a>
   </footer>
 </div>
@@ -794,7 +759,7 @@ function renderKPIs(a){
 
 /* ---------- charts (tema cuaderno) ---------- */
 const NS='http://www.w3.org/2000/svg';
-const INK='#2b2822', SOFT='#71695c', GRID='#efe8d4', HLc='#ffd84d', PENc='#3556c7', TGc='#f29657', BLUE2='#a8b8ea', GRAY2='#d8d2bf';
+const INK='#111214', SOFT='#56585E', GRID='#E8E8E8', HLc='#B8E08C', PENc='#3B4FE0', TGc='#3B4FE0', BLUE2='#A9B4F2', GRAY2='#CFCFD2';
 function el(t,attrs,parent,txt){
   const e=document.createElementNS(NS,t);
   for(const k in attrs) e.setAttribute(k,attrs[k]);
@@ -815,10 +780,10 @@ function chartTrend(){
   el('line',{x1:L,x2:W-R,y1:y(15),y2:y(15),stroke:TGc,'stroke-width':2.2,'stroke-dasharray':'7 6'},svg);
   el('text',{x:W-R,y:y(15)-6,'text-anchor':'end','font-size':10,'font-weight':700,fill:TGc},svg,window.T('meta 15 d'));
   const pts=data.map((d,i)=>[x(i),y(d.cycle)]);
-  el('path',{d:'M'+pts.map(p=>p.join(',')).join(' L ')+` L ${x(data.length-1)},${y(0)} L ${x(0)},${y(0)} Z`,fill:'rgba(255,216,77,.32)'},svg);
+  el('path',{d:'M'+pts.map(p=>p.join(',')).join(' L ')+` L ${x(data.length-1)},${y(0)} L ${x(0)},${y(0)} Z`,fill:'rgba(184,224,140,.45)'},svg);
   el('path',{d:'M'+pts.map(p=>p.join(',')).join(' L '),fill:'none',stroke:INK,'stroke-width':2.4,'stroke-linecap':'round','stroke-linejoin':'round'},svg);
   data.forEach((d,i)=>{
-    el('circle',{cx:x(i),cy:y(d.cycle),r:4,fill:d.cycle<=15?'#77bd42':'#E24B4A',stroke:'#fff','stroke-width':1.6},svg);
+    el('circle',{cx:x(i),cy:y(d.cycle),r:4,fill:d.cycle<=15?'#5FA83A':'#E24B4A',stroke:'#fff','stroke-width':1.6},svg);
     el('text',{x:x(i),y:y(d.cycle)-10,'text-anchor':'middle','font-size':10,'font-weight':700,fill:INK},svg,d.cycle.toFixed(1));
     el('text',{x:x(i),y:H-10,'text-anchor':'middle','font-size':10,fill:SOFT},svg,window.T(d.m));
   });
