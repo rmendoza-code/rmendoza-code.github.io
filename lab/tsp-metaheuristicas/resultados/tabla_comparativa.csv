@@ -1,0 +1,4 @@
+tecnica,mejor_dist,dist_promedio,dist_peor,desv_std,tiempo_prom_s,iter_prom
+Recocido Simulado,32.2161,33.0393,34.038,0.7818,0.1339,3600
+Algoritmo Genetico,32.2161,32.3462,32.8664,0.2601,0.6156,100
+Hill-Climbing,32.2161,32.9587,34.3774,0.9296,0.0035,9

@@ -1,0 +1,65 @@
+{
+  "name": "Error Workflow genererico",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "9a0f2923-8f6b-4b35-9f44-701ccd1f7d97",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09FQ01TKCM",
+          "mode": "list",
+          "cachedResultName": "workflowfail"
+        },
+        "text": "=¡Error algo ha fallado!\nExecution url:  {{ $json.execution.url }}\nMensaje de error: {{ $json.execution.error.message }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        0
+      ],
+      "id": "02332149-3fda-4ea4-911c-000264ae41ff",
+      "name": "Send a message",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "<ID>",
+  "id": "URBRd8ZIUvDwEhMo",
+  "tags": []
+}

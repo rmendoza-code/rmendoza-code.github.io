@@ -1,0 +1,420 @@
+{
+  "name": "Asistente n8n",
+  "nodes": [
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "path": "asistente-interno",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        112
+      ],
+      "id": "13b1acf7-f998-4fbc-bea6-2dd642df5539",
+      "name": "Webhook",
+      "webhookId": "<WEBHOOK_ID>"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"estado\": \"recibido\",\n  \"usuario\": \"{{ $('Edit Fields').item.json.usuario }}\",\n  \"mensaje\": \"{{ $('Edit Fields').item.json.mensaje }}\",\n  \"prioridad\": \"{{ $('Edit Fields').item.json.prioridad }}\",\n  \"fecha\": \"{{ $('Edit Fields').item.json.fecha }}\",\n  \"flujo\": \"{{ $('Edit Fields').item.json.flujo }}\",\n  \"ejecucion_id\": \"{{ $('Edit Fields').item.json.ejecucion_id }}\",\n  \"categoria\": \"{{ $json.categoria }}\",\n  \"confianza\": \"{{ $json.confianza }}\",\n  \"tema detectado\" : \"{{ $json.tema }}\"\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1120,
+        112
+      ],
+      "id": "c5a727b7-5a32-414b-bd70-60176698d431",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "5ca736a2-4152-4658-8e82-30c2e07a85e9",
+              "name": "usuario",
+              "value": "={{ $json.body.usuario }}",
+              "type": "string"
+            },
+            {
+              "id": "3d916674-4762-438f-bca6-f02f92a320a8",
+              "name": "mensaje",
+              "value": "={{ $json.body.mensaje }}",
+              "type": "string"
+            },
+            {
+              "id": "f7935abe-2fdd-4b37-a078-ae8fe9ff397a",
+              "name": "prioridad",
+              "value": "={{ $json.body.mensaje.includes(\"urgente\")?\"alta\":\"normal\" }}",
+              "type": "string"
+            },
+            {
+              "id": "92ca3d5c-4f34-4943-90f7-87c9dcfd0102",
+              "name": "fecha",
+              "value": "={{ $now.format('yyyy-MM-dd')}}",
+              "type": "string"
+            },
+            {
+              "id": "f3af8c0f-0454-4eab-a054-fe97473d8df1",
+              "name": "flujo",
+              "value": "={{ $workflow.name }}",
+              "type": "string"
+            },
+            {
+              "id": "6d1cbdc9-28be-4d0b-89b9-5fb723e5c387",
+              "name": "ejecucion_id",
+              "value": "={{ $execution.id }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        208
+      ],
+      "id": "c084fdc0-f024-4724-910d-c3c868f84486",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b2c48b67-2aa3-4d24-90ae-3da4a2904c3a",
+              "leftValue": "={{ $json.mensaje }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "013eabdb-53a6-4e70-abb9-bbc7a08da0dd",
+              "leftValue": "={{ $json.mensaje.length }}",
+              "rightValue": 10,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        208
+      ],
+      "id": "bdfbc4fc-3136-4f70-8455-a15ae6806a2b",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"estado\": \"error\",\n  \"detalle\": \"El mensaje esta vacío o demasiado corto\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        672,
+        304
+      ],
+      "id": "0e491683-eb9f-4a5c-89f8-a9e5c72c8e6b",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "IffQX2WWUVYzSv5J"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "mensaje": "={{ $json.mensaje }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "mensaje",
+              "displayName": "mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        112
+      ],
+      "id": "dbd12d7a-9a4f-4f89-8909-66c9400e33da",
+      "name": "Subworkflow - Clasificar mensaje"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "qIGCWBydyuA1ZzKb",
+          "mode": "list",
+          "cachedResultName": "Sub-enrutado"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "categoria": "={{ $('Subworkflow - Clasificar mensaje').item.json.categoria }}",
+            "prioridad": "={{ $('Edit Fields').item.json.prioridad }}",
+            "usuario": "={{ $('Edit Fields').item.json.usuario }}",
+            "mensaje": "={{ $('Edit Fields').item.json.mensaje }}",
+            "ejecucion_id": "={{ $('Edit Fields').item.json.ejecucion_id }}",
+            "fecha": "={{ $('Edit Fields').item.json.fecha }}"
+          },
+          "matchingColumns": [
+            "categoria",
+            "prioridad",
+            "usuario",
+            "mensaje",
+            "ejecucion_id",
+            "fecha"
+          ],
+          "schema": [
+            {
+              "id": "categoria",
+              "displayName": "categoria",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "prioridad",
+              "displayName": "prioridad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "usuario",
+              "displayName": "usuario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "mensaje",
+              "displayName": "mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ejecucion_id",
+              "displayName": "ejecucion_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.2,
+      "position": [
+        896,
+        112
+      ],
+      "name": "Call Sub-enrutado",
+      "id": "cd9dd7da-065c-4237-9876-a3e112fc5f43"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "=<!doctype html>\n<html lang=\"es\">\n<head>\n  <meta charset=\"utf-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n  <title>Petición — Formulario JSON</title>\n  <style>\n    :root{\n      --bg: #0b0f14;\n      --card: rgba(21, 28, 38, 0.7);\n      --stroke: rgba(255,255,255,0.08);\n      --text: #e6ebf3;\n      --muted: #aab6c5;\n      --accent: #77eaff;\n      --accent-2: #9b8cff;\n      --danger: #ff6b6b;\n      --success: #32d296;\n      --radius: 18px;\n      --shadow: 0 10px 35px rgba(0,0,0,0.45), inset 0 0 0 1px var(--stroke);\n    }\n\n    *{ box-sizing: border-box; }\n    html,body{ height:100%; }\n    body{\n      margin:0;\n      background:\n        radial-gradient(1200px 600px at 10% -10%, rgba(119,234,255,0.12), transparent 60%),\n        radial-gradient(1000px 500px at 110% 10%, rgba(155,140,255,0.10), transparent 60%),\n        linear-gradient(180deg, #0a0e13 0%, #0b0f14 100%);\n      color:var(--text);\n      font: 16px/1.5 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;\n      display:grid;\n      place-items:center;\n      padding:24px;\n    }\n\n    .wrap{\n      width:100%;\n      max-width: 720px;\n    }\n\n    header{\n      margin-bottom: 22px;\n      display:flex; align-items:center; gap:12px;\n    }\n    .logo{\n      width:40px; height:40px; border-radius:12px;\n      background:\n        conic-gradient(from 210deg, var(--accent), var(--accent-2) 50%, var(--accent) 100%);\n      filter: blur(.2px) saturate(120%);\n      box-shadow: 0 0 0 2px rgba(255,255,255,0.06), 0 10px 30px rgba(119,234,255,0.14);\n    }\n    h1{\n      font-size: clamp(18px, 3vw, 22px);\n      margin:0;\n      letter-spacing: .3px;\n      font-weight: 650;\n    }\n    .subtitle{\n      margin:2px 0 0 0;\n      color:var(--muted);\n      font-size: 14px;\n    }\n\n    .card{\n      background: var(--card);\n      border-radius: var(--radius);\n      box-shadow: var(--shadow);\n      backdrop-filter: blur(10px) saturate(130%);\n      -webkit-backdrop-filter: blur(10px) saturate(130%);\n      padding: 22px;\n      border: 1px solid var(--stroke);\n    }\n\n    form{\n      display:grid; gap:16px;\n    }\n\n    .field{\n      display:grid; gap:8px;\n    }\n    label{\n      font-size: 14px;\n      color: var(--muted);\n    }\n    input[type=\"text\"], textarea{\n      width:100%;\n      background: rgba(255,255,255,0.03);\n      color:var(--text);\n      border:1px solid var(--stroke);\n      border-radius: 14px;\n      padding: 12px 14px;\n      outline: none;\n      transition: border-color .2s, box-shadow .2s, transform .04s;\n      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);\n    }\n    textarea{ min-height: 140px; resize: vertical; }\n\n    input:focus, textarea:focus{\n      border-color: rgba(119,234,255,0.35);\n      box-shadow: 0 0 0 4px rgba(119,234,255,0.14), inset 0 0 0 1px rgba(119,234,255,0.06);\n    }\n\n    .row{\n      display:flex; gap:12px; flex-wrap:wrap;\n    }\n\n    .btn{\n      appearance: none; -webkit-appearance: none;\n      border: 0;\n      border-radius: 14px;\n      padding: 12px 16px;\n      font-weight: 600;\n      cursor: pointer;\n      transition: transform .06s ease, box-shadow .2s ease, background .2s ease, opacity .2s ease;\n      display:inline-flex; align-items:center; gap:10px;\n      background: linear-gradient(135deg, rgba(119,234,255,0.18), rgba(155,140,255,0.18));\n      color: var(--text);\n      box-shadow: 0 8px 22px rgba(119,234,255,0.12), inset 0 0 0 1px rgba(255,255,255,0.06);\n    }\n    .btn:hover{ transform: translateY(-1px); }\n    .btn:active{ transform: translateY(0); }\n    .btn[disabled]{ opacity:.6; cursor:not-allowed; }\n\n    .ghost{\n      background: transparent;\n      border: 1px dashed rgba(255,255,255,0.15);\n      box-shadow: none;\n    }\n\n    .status{\n      display:none;\n      border-radius: 12px;\n      padding: 10px 12px;\n      font-size: 14px;\n    }\n    .status.ok{ display:flex; gap:8px; align-items:center; color:#0b291b; background: rgba(50,210,150,0.18); border:1px solid rgba(50,210,150,0.35); }\n    .status.err{ display:flex; gap:8px; align-items:center; color:#2a0b0b; background: rgba(255,107,107,0.18); border:1px solid rgba(255,107,107,0.35); }\n\n    .hint{\n      color:var(--muted);\n      font-size: 12.5px;\n      margin-top:-2px;\n    }\n\n    footer{\n      margin-top: 14px;\n      color: var(--muted);\n      font-size: 12.5px;\n      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;\n    }\n\n    .spinner{\n      width:16px; height:16px; border-radius:50%;\n      border:2px solid rgba(255,255,255,0.2);\n      border-top-color: var(--accent);\n      animation: spin 1s linear infinite;\n    }\n    @keyframes spin{ to{ transform: rotate(360deg); } }\n\n    @media (prefers-color-scheme: light){\n      :root{\n        --bg: #f6f8fb;\n        --card: rgba(255,255,255,0.8);\n        --stroke: rgba(0,0,0,0.08);\n        --text: #0f1722;\n        --muted: #5a6677;\n      }\n      body{\n        background:\n          radial-gradient(1400px 700px at -10% -10%, rgba(119,234,255,0.2), transparent 60%),\n          radial-gradient(1200px 600px at 110% 0%, rgba(155,140,255,0.2), transparent 60%),\n          linear-gradient(180deg, #f2f5fa 0%, #f6f8fb 100%);\n      }\n    }\n  </style>\n</head>\n<body>\n  <div class=\"wrap\">\n    <header>\n      <div class=\"logo\" aria-hidden=\"true\"></div>\n      <div>\n        <h1>Enviar petición</h1>\n        <p class=\"subtitle\">Formulario minimalista que envía <strong>JSON por POST</strong> al backend.</p>\n      </div>\n    </header>\n\n    <section class=\"card\">\n      <!-- Instrucciones rápidas:\n           1) Completa Usuario y Mensaje.\n           2) Clic en Enviar; revisa DevTools > Network para ver el POST JSON.\n           3) URL destino: https://<N8N_INSTANCE>/webhook/<path>\n           Estructura JSON:\n             {\n               \"usuario\": \"string\",\n               \"mensaje\": \"string\",\n               \"timestamp\": \"ISO-8601\"\n             }\n      -->\n      <form id=\"peticionForm\" novalidate>\n        <div class=\"field\">\n          <label for=\"usuario\">Usuario</label>\n          <input id=\"usuario\" name=\"usuario\" type=\"text\" inputmode=\"text\" placeholder=\"Tu nombre o usuario\"\n                 minlength=\"2\" maxlength=\"80\" required autocomplete=\"name\" />\n          <div class=\"hint\">Requerido. 2–80 caracteres.</div>\n        </div>\n\n        <div class=\"field\">\n          <label for=\"mensaje\">Mensaje</label>\n          <textarea id=\"mensaje\" name=\"mensaje\" placeholder=\"Escribe tu petición…\" minlength=\"4\" maxlength=\"2000\" required></textarea>\n          <div class=\"hint\">Requerido. 4–2000 caracteres.</div>\n        </div>\n\n        <div class=\"row\">\n          <button id=\"submitBtn\" type=\"submit\" class=\"btn\">\n            <span class=\"spinner\" style=\"display:none\" aria-hidden=\"true\"></span>\n            <span id=\"btnText\">Enviar</span>\n          </button>\n          <button type=\"reset\" class=\"btn ghost\">Limpiar</button>\n        </div>\n\n        <div id=\"ok\" class=\"status ok\" role=\"status\" aria-live=\"polite\" style=\"display:none;\">\n          ✅ <span>Enviado correctamente.</span>\n        </div>\n        <div id=\"err\" class=\"status err\" role=\"status\" aria-live=\"polite\" style=\"display:none;\">\n          ⚠️ <span>Ocurrió un problema al enviar. Intenta de nuevo.</span>\n        </div>\n      </form>\n\n      <footer>\n        <span>Futuro-ready UI ✦ glass minimal</span>\n        <span>JSON • fetch • POST</span>\n      </footer>\n    </section>\n  </div>\n\n  <script>\n    (function(){\n      const form = document.getElementById('peticionForm');\n      const usuario = document.getElementById('usuario');\n      const mensaje = document.getElementById('mensaje');\n      const btn = document.getElementById('submitBtn');\n      const btnText = document.getElementById('btnText');\n      const spin = btn.querySelector('.spinner');\n      const ok = document.getElementById('ok');\n      const err = document.getElementById('err');\n\n      const ENDPOINT = \"https://<N8N_INSTANCE>/webhook/<path>\";\n\n      function setBusy(b){\n        btn.disabled = b;\n        spin.style.display = b ? 'inline-block' : 'none';\n        btnText.textContent = b ? 'Enviando…' : 'Enviar';\n      }\n\n      function show(el){\n        el.style.display = 'flex';\n      }\n      function hide(el){\n        el.style.display = 'none';\n      }\n\n      function validate(){\n        // Simple front validation\n        if (!usuario.value || usuario.value.trim().length < 2){\n          usuario.focus();\n          return false;\n        }\n        if (!mensaje.value || mensaje.value.trim().length < 4){\n          mensaje.focus();\n          return false;\n        }\n        return true;\n      }\n\n      form.addEventListener('submit', async (e) => {\n        e.preventDefault();\n        hide(ok); hide(err);\n\n        if (!validate()) return;\n\n        const payload = {\n          usuario: usuario.value.trim(),\n          mensaje: mensaje.value.trim(),\n          timestamp: new Date().toISOString()\n        };\n\n        try{\n          setBusy(true);\n          const res = await fetch(ENDPOINT, {\n            method: 'POST',\n            headers: {\n              'Content-Type': 'application/json'\n            },\n            body: JSON.stringify(payload),\n            // credentials omitted intentionally; add 'credentials' if your backend needs cookies\n          });\n\n          if (!res.ok){\n            // try to read error\n            let info = '';\n            try{ info = await res.text(); } catch(_){}\n            console.error('Respuesta no OK:', res.status, info);\n            show(err);\n            return;\n          }\n\n          show(ok);\n          form.reset();\n        }catch(ex){\n          console.error('Error de red:', ex);\n          show(err);\n        }finally{\n          setBusy(false);\n        }\n      }, { passive:false });\n    })();\n  </script>\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        224,
+        16
+      ],
+      "id": "880d2ccd-1eaf-49ed-945d-8175af8e8591",
+      "name": "Mostrar formulario",
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09FQ01TKCM",
+          "mode": "list",
+          "cachedResultName": "workflowfail"
+        },
+        "text": "Forzando el error",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        16
+      ],
+      "id": "2b7776f7-10c8-4fa4-8714-6b31387627a0",
+      "name": "Send a message",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Mostrar formulario",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Subworkflow - Clasificar mensaje",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Subworkflow - Clasificar mensaje": {
+      "main": [
+        [
+          {
+            "node": "Call Sub-enrutado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Sub-enrutado": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mostrar formulario": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "URBRd8ZIUvDwEhMo"
+  },
+  "versionId": "<ID>",
+  "id": "3c7JJmWBljj2Rigs",
+  "tags": []
+}

@@ -1,0 +1,626 @@
+{
+  "name": "Sub-enrutado",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "<ID>",
+          "mode": "list",
+          "cachedResultName": "Peticiones",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<SHEET_ID>"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/<SHEET_ID>"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "usuario": "={{ $('Start').item.json.usuario }}",
+            "mensaje": "={{ $('Start').item.json.mensaje }}",
+            "fecha": "={{ $('Start').item.json.fecha }}",
+            "categoria": "={{ $('Start').item.json.categoria }}",
+            "estado": "Registrado"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "usuario",
+              "displayName": "usuario",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "mensaje",
+              "displayName": "mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fecha",
+              "displayName": "fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "estado",
+              "displayName": "estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "categoria",
+              "displayName": "categoria",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1120,
+        640
+      ],
+      "id": "be68b5f6-1ada-4cef-ba45-2afb6c42aae5",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=correo@ejemplo.com",
+        "subject": "=Nueva petición - {{ $('Start').item.json.usuario }}",
+        "message": "=Usuario: {{ $('Start').item.json.usuario }}\n<br>\nMensaje: {{ $('Start').item.json.mensaje }}\n<br>\nPrioridad: {{ $('Start').item.json.prioridad }}\n<br>\nFecha: {{ $('Start').item.json.fecha }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1120,
+        448
+      ],
+      "id": "858f523e-1277-486d-9e28-68f36eb12b94",
+      "name": "Gmail",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f6acbd1c-d8a8-4f66-8a5f-8a5109f6c12b",
+              "name": "origen",
+              "value": "={{ $prevNode.name }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1472,
+        352
+      ],
+      "id": "e8a17374-c43d-4cd3-b377-b537d60c31f0",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": {
+          "__rl": true,
+          "value": "<ID>",
+          "mode": "list",
+          "cachedResultName": "Legal Request",
+          "cachedResultUrl": "https://www.notion.so/<PAGE_ID>"
+        },
+        "title": "={{ $('Start').item.json.ejecucion_id }}-{{ $('Start').item.json.usuario }}",
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Estado|status",
+              "statusValue": "En curso"
+            },
+            {
+              "key": "Fecha|date",
+              "includeTime": "=",
+              "date": "={{ $('Start').item.json.fecha }}"
+            },
+            {
+              "key": "Mensaje|rich_text",
+              "textContent": "={{ $('Start').item.json.mensaje }}"
+            },
+            {
+              "key": "Usuario|title",
+              "title": "={{ $('Start').item.json.usuario }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        256
+      ],
+      "id": "f8b731ac-5856-4adf-814d-1e95059d804d",
+      "name": "Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.categoria }}",
+                    "rightValue": "it",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d5965eee-7b93-4904-8407-f3ee0fcebf97"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "IT"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5e554096-0de5-41fd-a8c6-46c1dde90469",
+                    "leftValue": "={{ $json.categoria }}",
+                    "rightValue": "legal",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "LEGAL"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "d5b10df7-ac22-47dc-a6d1-f53521b0efc0",
+                    "leftValue": "={{ $json.categoria }}",
+                    "rightValue": "facilities",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "FACILITIES"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        896,
+        288
+      ],
+      "id": "20ba9f39-873f-43d7-b691-d939c6084ab8",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09G0K59AQ1",
+          "mode": "list",
+          "cachedResultName": "soporte"
+        },
+        "text": "=Solicitud de: {{ $('Start').item.json.usuario }}\nCategoría: {{ $json.categoria }}\nMensaje: {{ $('Start').item.json.mensaje }}\nPrioridad: {{ $('Start').item.json.prioridad }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1120,
+        64
+      ],
+      "id": "48a1a5ca-3138-4209-ba1c-d1e75101fa24",
+      "name": "Slack",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "categoria",
+              "type": "any"
+            },
+            {
+              "name": "prioridad",
+              "type": "any"
+            },
+            {
+              "name": "usuario",
+              "type": "any"
+            },
+            {
+              "name": "mensaje",
+              "type": "any"
+            },
+            {
+              "name": "ejecucion_id",
+              "type": "any"
+            },
+            {
+              "name": "fecha",
+              "type": "any"
+            }
+          ]
+        }
+      },
+      "id": "366f8b6a-596f-45f6-b515-81c5ace7a77a",
+      "typeVersion": 1.1,
+      "name": "Start",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "position": [
+        672,
+        320
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "3cadc4b5-11e0-4d9d-83a0-d71537a73bbb",
+              "leftValue": "={{ $json.prioridad }}",
+              "rightValue": "alta",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        -128
+      ],
+      "id": "8c7d1b40-fb52-42b4-a36e-7d35a5f89b4b",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1344,
+        96
+      ],
+      "id": "929c896a-2317-4e68-97cd-1bda4cd9b945",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "endpointUrl": "https://<N8N_INSTANCE>/webhook/<path>",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpClientTool",
+      "typeVersion": 1.1,
+      "position": [
+        1600,
+        96
+      ],
+      "id": "d1727555-a981-4c0a-95c2-e7f954051f29",
+      "name": "MCP Client"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ JSON.stringify($json) }}",
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=Agenda un evento en el calendario con el usuario para resolver su problema con una duración máxima de 15 minutos lo antes posible.\n\nLas horas agendadas deben ser proporcionales a los 15 minutos máximos, por ejemplo, agendar de 9:00 a 9:15 o 10:30 a 10:45. NUNCA agendar una reunión en un horario no proporcional (como lo sería por ejemplo 9:13 o 10:47). \n\nLos horarios son de 9:00 hasta 17:00, de lunes a viernes. Es importante saber que sábados y domingos no se agendan reuniones\n\nEnvía un correo al usuario bien formateado con la fecha del evento y con sección de posibles soluciones que hemos conseguido de SerpAPI.\n\nEl mensaje tiene que ser formateado en html diferenciado las secciones para que sea fácil de leer para el usuario.\n\nLa respuesta debe ser en español."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1408,
+        -128
+      ],
+      "id": "d2cd59ac-e9d2-4356-900a-6426f2f7fc1a",
+      "name": "Usar MCP"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-20250514",
+          "cachedResultName": "Claude 4 Sonnet"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        1472,
+        96
+      ],
+      "id": "6d648aa8-f1e8-4ffb-9ed7-9766f94e9ce1",
+      "name": "Anthropic Chat Model",
+      "credentials": {
+        "anthropicApi": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notion",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notion": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        []
+      ]
+    },
+    "Start": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Usar MCP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Usar MCP",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MCP Client": {
+      "ai_tool": [
+        [
+          {
+            "node": "Usar MCP",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Usar MCP": {
+      "main": [
+        []
+      ]
+    },
+    "Anthropic Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Usar MCP",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "<ID>",
+  "id": "qIGCWBydyuA1ZzKb",
+  "tags": []
+}

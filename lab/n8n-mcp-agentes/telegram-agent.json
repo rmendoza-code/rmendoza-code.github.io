@@ -1,0 +1,314 @@
+{
+  "name": "MyChatBot",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        -96
+      ],
+      "id": "a0a6f952-e8c1-4ac9-88dc-3c78dc074152",
+      "name": "Telegram Trigger",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "Lo estoy procesando, dame un segundo",
+        "additionalFields": {
+          "reply_to_message_id": "={{ $json.message.message_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        224,
+        -96
+      ],
+      "id": "10be7e6e-6d2a-4ec1-b9af-d54dcb3b6ec7",
+      "name": "Send a text message",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4b5baad8-990e-4d29-acce-9461bc8e8c12",
+              "leftValue": "={{ $json.result.reply_to_message.voice }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        -96
+      ],
+      "id": "0d5d27ce-d9f6-4bf5-bfcc-7a56de8b3732",
+      "name": "Contiene mensaje de voz"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.result.reply_to_message.voice.file_id }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        672,
+        -96
+      ],
+      "id": "2cf86e11-a91d-4368-91d6-72547708ba38",
+      "name": "Get a file",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        896,
+        -96
+      ],
+      "id": "08f6277e-b2e9-4bdb-8a69-8f49bb1353ab",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.text }}",
+        "options": {
+          "systemMessage": "Eres un asistente que resume audios de voz que se han enviado ami.\nDime en pocas frases, lo que necesitan."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1120,
+        -96
+      ],
+      "id": "39f6f930-e37d-4dac-b80a-7a017cffbce1",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1200,
+        128
+      ],
+      "id": "780daa46-0241-4391-b45b-857e5964c6b2",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "input": "={{ $json.output }}",
+        "voice": "echo",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        1472,
+        -96
+      ],
+      "id": "8f635722-e006-42b4-b10b-773054cb9dde",
+      "name": "Generate audio",
+      "credentials": {
+        "openAiApi": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAudio",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "binaryData": true,
+        "additionalFields": {
+          "reply_to_message_id": "={{ $('Telegram Trigger').item.json.message.message_id }}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1680,
+        -96
+      ],
+      "id": "5f71adb3-a0bd-4b7c-90f7-7f591881c14b",
+      "name": "Send an audio file",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "telegramApi": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Contiene mensaje de voz",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Contiene mensaje de voz": {
+      "main": [
+        [
+          {
+            "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a file": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Generate audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate audio": {
+      "main": [
+        [
+          {
+            "node": "Send an audio file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "<ID>",
+  "id": "hKUsmtVqquDZLdBL",
+  "tags": []
+}

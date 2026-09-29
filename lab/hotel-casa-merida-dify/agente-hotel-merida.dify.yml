@@ -1,0 +1,935 @@
+app:
+  description: Este es un agente que ayuda a los usuarios con consultas básicas tipo conversación
+  icon: 🤖
+  icon_background: '#FFEAD5'
+  icon_type: emoji
+  mode: advanced-chat
+  name: Agente para Hotel en Mérida
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/openai:0.4.2@<ID>
+    version: null
+kind: app
+version: 0.6.0
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        attachment_image_file_size_limit: 2
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        file_upload_limit: 50
+        image_file_batch_limit: 10
+        image_file_size_limit: 10
+        single_chunk_attachment_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: '¡Hola! Soy Lorena, y soy un agente virtual en Hotel Casa Mérida Boutique. 🌿
+
+      Estoy aquí para ayudarle con su reservación, resolver dudas o recomendarle qué hacer durante su estancia en Mérida.
+
+      ¿En qué le puedo ayudar hoy?'
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions:
+    - Quiero confirmar el estado y los datos de mi reservación
+    - Quiero conocer la disponibilidad de habitaciones
+    - Necesito solicitar mi factura
+    suggested_questions_after_answer:
+      enabled: true
+      model:
+        completion_params:
+          echo: false
+          frequency_penalty: 0
+          max_tokens: 0
+          presence_penalty: 0
+          stop: []
+          temperature: 0.7
+          top_p: 0
+        mode: chat
+        name: gpt-4o
+        provider: langgenius/openai/openai
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInLoop: false
+        sourceType: agent
+        targetType: answer
+      id: 1781665010523-source-answer-target
+      selected: false
+      source: '1781665010523'
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: agent
+        targetType: answer
+      id: 17817551539940-source-answer-target
+      selected: false
+      source: '17817551539940'
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: start
+        targetType: question-classifier
+      id: 1781664903407-source-1781755196403-target
+      selected: false
+      source: '1781664903407'
+      sourceHandle: source
+      target: '1781755196403'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: question-classifier
+        targetType: agent
+      id: 1781755196403-1-1781665010523-target
+      selected: false
+      source: '1781755196403'
+      sourceHandle: '1'
+      target: '1781665010523'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: question-classifier
+        targetType: agent
+      id: 1781755196403-2-17817551539940-target
+      selected: false
+      source: '1781755196403'
+      sourceHandle: '2'
+      target: '17817551539940'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: question-classifier
+        targetType: agent
+      id: 1781755196403-1781757405964-17817573986730-target
+      selected: false
+      source: '1781755196403'
+      sourceHandle: '1781757405964'
+      target: '17817573986730'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: agent
+        targetType: answer
+      id: 17817573986730-source-answer-target
+      selected: false
+      source: '17817573986730'
+      sourceHandle: source
+      target: answer
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        selected: false
+        title: Inicio
+        type: start
+        variables: []
+      height: 73
+      id: '1781664903407'
+      position:
+        x: -384.28571428571433
+        y: 119.61904761904765
+      positionAbsolute:
+        x: -384.28571428571433
+        y: 119.61904761904765
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        answer: '{{#1781665010523.text#}}
+
+          {{#17817551539940.text#}}
+
+          {{#17817573986730.text#}}'
+        selected: false
+        title: Respuesta
+        type: answer
+        variables: []
+      height: 138
+      id: answer
+      position:
+        x: 661.1428571428569
+        y: 260
+      positionAbsolute:
+        x: 661.1428571428569
+        y: 260
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        agent_parameters:
+          instruction:
+            type: constant
+            value: "Te llamas Lorena  y eres un agente del Hotel Casa Mérida Boutique.\n\nTu trabajo es atender y ayudar a\
+              \ los usuarios como lo haría un buen recepcionista: cálido, cercano y tranquilo, alguien que da confianza desde\
+              \ el\nprimer mensaje.\n\nUtiliza tu herrramienta searc_info_hotel que es la fuente oficial de información del\
+              \ hotel\n\nCÓMO HABLAR (tono):\n- Preséntate como Lorena un agente virtual que tiene funciones de recepcionista\
+              \ que te puede a solo la primera vez que saludas; después no repitas tu nombre en cada mensaje.\n- Habla de\
+              \ \"usted\" de forma amable, pero relajada y natural, como una persona real, no como un robot ni como un folleto.\n\
+              - Sé cálido sin exagerar: evita demasiados signos de admiración, emojis en exceso o frases excesivamente formales\
+              \ o aduladoras.\n- Usa frases naturales: \"Con gusto\", \"Claro que sí\", \"Déjeme reviso eso\", \"Buena pregunta\"\
+              . Una sola frase amable al inicio es suficiente.\n- Respuestas breves y fáciles de leer. Ve al grano, usa listas\
+              \ o pasos cuando ayuden, y cierra con una pregunta o un ofrecimiento útil (\"¿Le reservo el\n  transporte?\"\
+              ).\n\nQUÉ HACES:\n- Resuelves dudas sobre el hotel (horarios, habitaciones, tarifas, cómo llegar, servicios)\
+              \ usando la información del hotel que tienes disponible.\n- Cuando viene al caso, sugieres con naturalidad un\
+              \ servicio adicional relacionado (un tour, el transporte al aeropuerto, un masaje), sin presionar ni sonar a\
+              \ vendedor.\n- Si el huésped pregunta por algo que cambia con el tiempo (clima, distancias, eventos en la ciudad,\
+              \ tipos de cambio), buscas la información con tus herramientas (Tavily o Wikipedia) antes de responder. Nunca\
+              \ inventes datos.\n- Para cálculos de noches, tarifas o impuestos, usa la calculadora y muestra el total de\
+              \ forma clara.\n\nLÍMITES:\n- Si no tienes un dato y no puedes encontrarlo, dilo con honestidad y ofrece conectar\
+              \ con el equipo del hotel por WhatsApp (<TELEFONO>).\n- Si la pregunta no tiene que ver con el hotel ni con\
+              \ viajar por Yucatán, redirígela con amabilidad hacia cómo sí puedes ayudar.\n- Confirma disponibilidad antes\
+              \ de prometer cualquier servicio extra.\n\nTu meta: que cada huésped termine la conversación sintiéndose bien\
+              \ atendido, con la información que necesitaba y con ganas de quedarse en el hotel."
+          model:
+            type: constant
+            value:
+              completion_params: {}
+              mode: chat
+              model: gpt-4o-mini
+              model_type: llm
+              provider: langgenius/openai/openai
+              type: model-selector
+          query:
+            type: constant
+            value: '{{#1781755196403.class_label#}}
+
+              {{#sys.query#}}'
+          tools:
+            type: constant
+            value:
+            - enabled: true
+              extra:
+                description: A search engine tool built specifically for AI agents (LLMs), delivering real-time, accurate,
+                  and factual results at speed.
+              parameters:
+                country:
+                  auto: 1
+                  value: null
+                end_date:
+                  auto: 1
+                  value: null
+                exclude_domains:
+                  auto: 1
+                  value: null
+                include_domains:
+                  auto: 1
+                  value: null
+                query:
+                  auto: 1
+                  value: null
+                search_depth:
+                  auto: 1
+                  value: null
+                start_date:
+                  auto: 1
+                  value: null
+                time_range:
+                  auto: 1
+                  value: null
+                topic:
+                  auto: 1
+                  value: null
+              provider_name: langgenius/tavily/tavily
+              provider_show_name: langgenius/tavily/tavily
+              settings:
+                auto_parameters:
+                  value:
+                    type: constant
+                    value: true
+                chunks_per_source:
+                  value:
+                    type: constant
+                    value: 3
+                include_answer:
+                  value:
+                    type: constant
+                    value: false
+                include_favicon:
+                  value:
+                    type: constant
+                    value: false
+                include_image_descriptions:
+                  value:
+                    type: constant
+                    value: false
+                include_images:
+                  value:
+                    type: constant
+                    value: false
+                include_raw_content:
+                  value:
+                    type: constant
+                    value: false
+                include_usage:
+                  value:
+                    type: constant
+                    value: false
+                max_results:
+                  value:
+                    type: constant
+                    value: 5
+                project_id:
+                  value:
+                    type: mixed
+                    value: null
+              tool_description: A search engine tool built specifically for AI agents (LLMs), delivering real-time, accurate,
+                and factual results at speed.
+              tool_label: Tavily Search
+              tool_name: tavily_search
+              type: builtin
+            - enabled: true
+              extra:
+                description: A tool for performing a Wikipedia search and extracting snippets and webpages.
+              parameters:
+                language:
+                  auto: 1
+                  value: null
+                query:
+                  auto: 1
+                  value: null
+              provider_name: langgenius/wikipedia/wikipedia
+              provider_show_name: langgenius/wikipedia/wikipedia
+              settings: {}
+              tool_description: A tool for performing a Wikipedia search and extracting snippets and webpages.
+              tool_label: WikipediaSearch
+              tool_name: wikipedia_search
+              type: builtin
+            - enabled: true
+              extra:
+                description: Consulta a la base de conocimiento del hotel
+              parameters:
+                query:
+                  auto: 1
+                  value: null
+              provider_name: <ID>
+              provider_show_name: Consulta a la información del Hotel
+              settings: {}
+              tool_description: Consulta a la base de conocimiento del hotel
+              tool_label: Consulta a la información del Hotel
+              tool_name: search_info_hotel
+              type: workflow
+            - enabled: true
+              extra:
+                description: "Consulta la base de datos de reservaciones del hotel en Google Sheets. \nÚsala SIEMPRE que el\
+                  \ huésped pregunte por el estado, fechas, número de \nconfirmación, tipo de habitación o total pagado de\
+                  \ su reservación. \nBusca por nombre, email o número de confirmación."
+              parameters:
+                ranges:
+                  auto: 0
+                  value:
+                    type: mixed
+                    value: '["Reservaciones!A1:I41"]'
+                spreadsheet_id:
+                  auto: 0
+                  value:
+                    type: mixed
+                    value: <ID>
+              provider_name: omluc/google_sheets/google_sheets
+              provider_show_name: omluc/google_sheets/google_sheets
+              settings:
+                date_time_render_option:
+                  value:
+                    type: constant
+                    value: FORMATTED_STRING
+                major_dimension:
+                  value:
+                    type: constant
+                    value: ROWS
+                value_render_option:
+                  value:
+                    type: constant
+                    value: FORMATTED_VALUE
+              tool_description: Retrieve data from multiple ranges in a Google Sheet
+              tool_label: Batch Get
+              tool_name: batch_get
+              type: builtin
+        agent_strategy_label: FunctionCalling
+        agent_strategy_name: function_calling
+        agent_strategy_provider_name: langgenius/agent/agent
+        memory:
+          query_prompt_template: '{{#sys.query#}}
+
+
+            {{#sys.files#}}'
+          window:
+            enabled: true
+            size: 30
+        meta:
+          minimum_dify_version: 1.7.0
+          version: 0.0.2
+        output_schema: {}
+        plugin_unique_identifier: langgenius/agent:0.0.39@<ID>
+        selected: false
+        title: Agente - Reservaciones
+        tool_node_version: '2'
+        type: agent
+      height: 188
+      id: '1781665010523'
+      position:
+        x: 293.42857142857133
+        y: 14.285714285714278
+      positionAbsolute:
+        x: 293.42857142857133
+        y: 14.285714285714278
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        agent_parameters:
+          instruction:
+            type: constant
+            value: "Te llamas Lorena y eres un agente del Hotel Casa Mérida Boutique.\nTu objetivo es ayudar al huésped a\
+              \ generar su factura (CFDI) recopilando, de forma ordenada y amable, todos los datos fiscales necesarios.\n\n\
+              TONO:\n- Cálido, claro y paciente. Trato de \"usted\", natural, sin sonar a formulario.\n- Explica brevemente\
+              \ para qué sirve cada dato si el huésped duda.\n\nPASO 1 — VERIFICAR LA ESTANCIA:\n- Primero pide el número\
+              \ de confirmación de la reservación y el nombre del titular para identificar la estancia a facturar.\n- Recuerda\
+              \ al huésped que la factura solo puede solicitarse dentro del mismo mes de la estancia y antes del día 28.\n\
+              \nPASO 2 — RECOPILAR DATOS FISCALES (uno o dos a la vez, no todos de golpe):\n1. RFC (12 caracteres para persona\
+              \ moral, 13 para persona física).\n2. Nombre o razón social (exactamente como está en la Constancia de Situación\
+              \ Fiscal).\n3. Código postal fiscal (5 dígitos).\n4. Régimen fiscal (si no lo conoce, ofrécele los más comunes:\
+              \ 605 Sueldos y salarios, 612 Personas físicas con actividad empresarial, 601 General de ley personas morales,\
+              \ 626 RESICO).\n5. Uso de CFDI (por defecto \"G03 - Gastos en general\"; confírmalo).\n6. Correo electrónico\
+              \ donde enviar la factura.\n\nREGLAS DE VALIDACIÓN:\n- Verifica que el RFC tenga el formato y largo correcto;\
+              \ si no, pídelo de nuevo con amabilidad.\n- Verifica que el código postal tenga 5 dígitos.\n- Si un dato viene\
+              \ incompleto o con errores evidentes, no avances: aclara y vuelve a pedirlo.\n\nPASO 3 — CONFIRMAR:\n- Antes\
+              \ de cerrar, muestra un RESUMEN con todos los datos capturados y pide al huésped que confirme que son correctos\
+              \ (\"¿Confirma que estos datos sonn correctos para emitir su factura?\").\n\nPASO 4 — CIERRE:\n- Una vez confirmado,\
+              \ informa que la factura se emitirá en un máximo de 48 horas hábiles y se enviará en PDF y XML al correo proporcionado.\n\
+              - Indica que cualquier corrección debe solicitarse antes de que termine el mes.\n- Si el huésped lo prefiere,\
+              \ comparte el correo del área:\n  correo@ejemplo.com\n\nPRIVACIDAD Y LÍMITES:\n- Los datos fiscales son confidenciales:\
+              \ solo trata la información de la reservación que el propio huésped está facturando. Nunca muestres datos de\
+              \ otras personas.\n- No inventes folios ni confirmes la emisión inmediata; tú solo recopilas y registras la\
+              \ solicitud.\n- Si la estancia no aparece o el periodo de facturación ya cerró, explícalo con amabilidad y ofrece\
+              \ el contacto del área de facturación.\n\nLÍMITES:\n- Si no tienes un dato y no puedes encontrarlo, dilo con\
+              \ honestidad y ofrece conectar con el equipo del hotel por WhatsApp (<TELEFONO>).\n- Si la pregunta no tiene\
+              \ que ver con el hotel ni con viajar por Yucatán,  redirígela con amabilidad hacia cómo sí puedes ayudar.\n\
+              - Confirma disponibilidad antes de prometer cualquier servicio extra.\n- Los datos fiscales son confidenciales:\
+              \ solo trata la información de la reservación que el propio huésped está facturando y nunca muestres datos de\
+              \ otras personas. No inventes folios ni confirmes la emisión inmediata; tú sol  recopilas y registras la solicitud.\n\
+              \nTu meta: que el huésped entregue todos sus datos sin fricción y se vaya con la\ncerteza de que su factura\
+              \ está en proceso."
+          model:
+            type: constant
+            value:
+              completion_params: {}
+              mode: chat
+              model: gpt-4o-mini
+              model_type: llm
+              provider: langgenius/openai/openai
+              type: model-selector
+          query:
+            type: constant
+            value: '{{#1781755196403.class_label#}}
+
+              {{#sys.query#}}'
+          tools:
+            type: constant
+            value:
+            - enabled: true
+              extra:
+                description: A search engine tool built specifically for AI agents (LLMs), delivering real-time, accurate,
+                  and factual results at speed.
+              parameters:
+                country:
+                  auto: 1
+                  value: null
+                end_date:
+                  auto: 1
+                  value: null
+                exclude_domains:
+                  auto: 1
+                  value: null
+                include_domains:
+                  auto: 1
+                  value: null
+                query:
+                  auto: 1
+                  value: null
+                search_depth:
+                  auto: 1
+                  value: null
+                start_date:
+                  auto: 1
+                  value: null
+                time_range:
+                  auto: 1
+                  value: null
+                topic:
+                  auto: 1
+                  value: null
+              provider_name: langgenius/tavily/tavily
+              provider_show_name: langgenius/tavily/tavily
+              settings:
+                auto_parameters:
+                  value:
+                    type: constant
+                    value: true
+                chunks_per_source:
+                  value:
+                    type: constant
+                    value: 3
+                include_answer:
+                  value:
+                    type: constant
+                    value: false
+                include_favicon:
+                  value:
+                    type: constant
+                    value: false
+                include_image_descriptions:
+                  value:
+                    type: constant
+                    value: false
+                include_images:
+                  value:
+                    type: constant
+                    value: false
+                include_raw_content:
+                  value:
+                    type: constant
+                    value: false
+                include_usage:
+                  value:
+                    type: constant
+                    value: false
+                max_results:
+                  value:
+                    type: constant
+                    value: 5
+                project_id:
+                  value:
+                    type: mixed
+                    value: null
+              tool_description: A search engine tool built specifically for AI agents (LLMs), delivering real-time, accurate,
+                and factual results at speed.
+              tool_label: Tavily Search
+              tool_name: tavily_search
+              type: builtin
+            - enabled: true
+              extra:
+                description: A tool for performing a Wikipedia search and extracting snippets and webpages.
+              parameters:
+                language:
+                  auto: 1
+                  value: null
+                query:
+                  auto: 1
+                  value: null
+              provider_name: langgenius/wikipedia/wikipedia
+              provider_show_name: langgenius/wikipedia/wikipedia
+              settings: {}
+              tool_description: A tool for performing a Wikipedia search and extracting snippets and webpages.
+              tool_label: WikipediaSearch
+              tool_name: wikipedia_search
+              type: builtin
+            - enabled: true
+              extra:
+                description: Consulta a la base de conocimiento del hotel
+              parameters:
+                query:
+                  auto: 1
+                  value: null
+              provider_name: <ID>
+              provider_show_name: Consulta a la información del Hotel
+              settings: {}
+              tool_description: Consulta a la base de conocimiento del hotel
+              tool_label: Consulta a la información del Hotel
+              tool_name: search_info_hotel
+              type: workflow
+            - enabled: true
+              extra:
+                description: "El usuario solicita o pregunta por su factura, comprobante fiscal, datos de \nfacturación, CFDI,\
+                  \ RFC, monto facturado o requiere una factura de su estancia. \nEjemplos: \"necesito mi factura\", \"quiero\
+                  \ solicitar mi CFDI\", \"¿pueden facturarme?\", \n\"datos para facturación\", \"monto de mi factura\"."
+              parameters:
+                ranges:
+                  auto: 0
+                  value:
+                    type: mixed
+                    value: '["Facturacion!A1:J32"]'
+                spreadsheet_id:
+                  auto: 0
+                  value:
+                    type: mixed
+                    value: <ID>
+              provider_name: omluc/google_sheets/google_sheets
+              provider_show_name: omluc/google_sheets/google_sheets
+              settings:
+                date_time_render_option:
+                  value:
+                    type: constant
+                    value: FORMATTED_STRING
+                major_dimension:
+                  value:
+                    type: constant
+                    value: ROWS
+                value_render_option:
+                  value:
+                    type: constant
+                    value: FORMATTED_VALUE
+              tool_description: Retrieve data from multiple ranges in a Google Sheet
+              tool_label: Batch Get
+              tool_name: batch_get
+              type: builtin
+        agent_strategy_label: FunctionCalling
+        agent_strategy_name: function_calling
+        agent_strategy_provider_name: langgenius/agent/agent
+        desc: ''
+        isInIteration: false
+        isInLoop: false
+        memory:
+          query_prompt_template: '{{#sys.query#}}
+
+
+            {{#sys.files#}}'
+          window:
+            enabled: true
+            size: 30
+        meta:
+          minimum_dify_version: 1.7.0
+          version: 0.0.2
+        output_schema: {}
+        plugin_unique_identifier: langgenius/agent:0.0.39@<ID>
+        selected: false
+        title: Agente Facturación
+        tool_node_version: '2'
+        type: agent
+      height: 188
+      id: '17817551539940'
+      position:
+        x: 293.42857142857133
+        y: 260
+      positionAbsolute:
+        x: 293.42857142857133
+        y: 260
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        classes:
+        - id: '1'
+          label: Reservaciones
+          name: "El usuario pregunta por su reservación: estado, fechas de check-in/check-out, número de confirmación, tipo\
+            \ de habitación, noches, total pagado, cancelaciones \no cambios. Ejemplos: \"¿cuál es el estado de mi reserva?\"\
+            , \"¿qué días tengo reservados?\", \"quiero confirmar mi reservación\", \"¿cuánto pagué?\".\n\n{{#sys.query#}}"
+        - id: '2'
+          label: Facturación
+          name: "El usuario solicita o pregunta por su factura, comprobante fiscal, datos de facturación, CFDI, RFC, monto\
+            \ facturado o requiere una factura de su estancia. \nEjemplos: \"necesito mi factura\", \"quiero solicitar mi\
+            \ CFDI\", \"¿pueden facturarme?\", \"datos para facturación\", \"monto de mi factura\".\n\n{{#sys.query#}}"
+        - id: '1781757405964'
+          label: Disponibilidad
+          name: "El usuario pregunta por disponibilidad de habitaciones, tarifas por noche, precios, tipos de habitación libres,\
+            \ o si hay cupo en ciertas fechas. \nEjemplos: \"¿tienen habitaciones para el sábado?\", \"¿cuánto cuesta una\
+            \  Junior Suite?\", \"¿qué disponibilidad hay este fin de semana?\", \"quiero reservar, ¿hay lugar?\", \"¿qué\
+            \ tipos de habitación tienen?\".\n\n{{#sys.query#}}"
+        model:
+          completion_params:
+            temperature: 0.7
+          mode: chat
+          name: gpt-4o
+          provider: langgenius/openai/openai
+        query_variable_selector:
+        - '1781664903407'
+        - sys.query
+        selected: false
+        title: Clasificador de preguntas
+        type: question-classifier
+        vision:
+          enabled: false
+      height: 220
+      id: '1781755196403'
+      position:
+        x: -45.71428571428572
+        y: 140.61904761904765
+      positionAbsolute:
+        x: -45.71428571428572
+        y: 140.61904761904765
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    - data:
+        agent_parameters:
+          instruction:
+            type: constant
+            value: "Te llamas Laura y eres agente de disponibilidad del Hotel Casa Mérida Boutique.\n\nTu trabajo es ayudar\
+              \ a los huéspedes a conocer la disponibilidad de   habitaciones y tarifas, con el trato cálido y cercano de\
+              \ un buen recepcionista yucateco.\n\nFUENTE DE DATOS:\nUsa SIEMPRE la herramienta Batch Get para consultar la\
+              \ hoja de Disponibilidad. \nNunca inventes disponibilidad ni precios; responde únicamente con lo que devuelva\
+              \ la hoja.\n\nCÓMO RESPONDER:\n- Si el huésped da una fecha, busca esa fecha exacta en la columna Fecha.\n-\
+              \ Si pregunta por un tipo de habitación, filtra por Tipo_Habitacion.\n- Para cada opción relevante informa:\
+              \ tipo de habitación, número de \n  habitaciones Disponibles, Tarifa_Noche_MXN y Temporada.\n- Si \"Disponibles\"\
+              \ es 0, di claramente que NO hay disponibilidad para esa  fecha/tipo y ofrece alternativas en fechas cercanas.\n\
+              - Si hay nota relevante (ej. \"Música en vivo en terraza\", \"Casi lleno\"), \n  menciónala como dato útil.\n\
+              - Presenta los precios en pesos mexicanos con formato claro (ej. $1,650 MXN  por noche).\n\nREGLAS:\n- Si no\
+              \ encuentras la fecha solicitada, dilo con honestidad y ofrece las \n  fechas más próximas que sí tengas.\n\
+              - No proceses pagos ni confirmes reservas; si el huésped quiere reservar, indícale que con gusto el equipo lo\
+              \ confirma por WhatsApp al <TELEFONO>.\n- Sé breve, claro y amable. Cierra preguntando si desea revisar otra\
+              \ fecha o tipo de habitación.\n\nEJEMPLO DE TONO:\n\"¡Claro que sí! Para el sábado 27 de junio tenemos disponible\
+              \ la Estándar Colonial ($1,650 MXN/noche) — aunque queda solo 1, así que va volando. \nLa Junior Suite y la\
+              \ Suite Familiar ya están llenas para esa fecha. \n¿Le gustaría que revise otro día?\""
+          model:
+            type: constant
+            value:
+              completion_params: {}
+              mode: chat
+              model: gpt-4o-mini
+              model_type: llm
+              provider: langgenius/openai/openai
+              type: model-selector
+          query:
+            type: constant
+            value: '{{#1781755196403.class_label#}}
+
+              {{#sys.query#}}'
+          tools:
+            type: constant
+            value:
+            - enabled: true
+              extra:
+                description: A search engine tool built specifically for AI agents (LLMs), delivering real-time, accurate,
+                  and factual results at speed.
+              parameters:
+                country:
+                  auto: 1
+                  value: null
+                end_date:
+                  auto: 1
+                  value: null
+                exclude_domains:
+                  auto: 1
+                  value: null
+                include_domains:
+                  auto: 1
+                  value: null
+                query:
+                  auto: 1
+                  value: null
+                search_depth:
+                  auto: 1
+                  value: null
+                start_date:
+                  auto: 1
+                  value: null
+                time_range:
+                  auto: 1
+                  value: null
+                topic:
+                  auto: 1
+                  value: null
+              provider_name: langgenius/tavily/tavily
+              provider_show_name: langgenius/tavily/tavily
+              settings:
+                auto_parameters:
+                  value:
+                    type: constant
+                    value: true
+                chunks_per_source:
+                  value:
+                    type: constant
+                    value: 3
+                include_answer:
+                  value:
+                    type: constant
+                    value: false
+                include_favicon:
+                  value:
+                    type: constant
+                    value: false
+                include_image_descriptions:
+                  value:
+                    type: constant
+                    value: false
+                include_images:
+                  value:
+                    type: constant
+                    value: false
+                include_raw_content:
+                  value:
+                    type: constant
+                    value: false
+                include_usage:
+                  value:
+                    type: constant
+                    value: false
+                max_results:
+                  value:
+                    type: constant
+                    value: 5
+                project_id:
+                  value:
+                    type: mixed
+                    value: null
+              tool_description: A search engine tool built specifically for AI agents (LLMs), delivering real-time, accurate,
+                and factual results at speed.
+              tool_label: Tavily Search
+              tool_name: tavily_search
+              type: builtin
+            - enabled: true
+              extra:
+                description: A tool for performing a Wikipedia search and extracting snippets and webpages.
+              parameters:
+                language:
+                  auto: 1
+                  value: null
+                query:
+                  auto: 1
+                  value: null
+              provider_name: langgenius/wikipedia/wikipedia
+              provider_show_name: langgenius/wikipedia/wikipedia
+              settings: {}
+              tool_description: A tool for performing a Wikipedia search and extracting snippets and webpages.
+              tool_label: WikipediaSearch
+              tool_name: wikipedia_search
+              type: builtin
+            - enabled: true
+              extra:
+                description: Consulta a la base de conocimiento del hotel
+              parameters:
+                query:
+                  auto: 1
+                  value: null
+              provider_name: <ID>
+              provider_show_name: Consulta a la información del Hotel
+              settings: {}
+              tool_description: Consulta a la base de conocimiento del hotel
+              tool_label: Consulta a la información del Hotel
+              tool_name: search_info_hotel
+              type: workflow
+            - enabled: true
+              extra:
+                description: Consulta la hoja de DISPONIBILIDAD del hotel. Úsala cuando el huésped pregunte por habitaciones
+                  disponibles, tarifas, precios o cupo en fechas  específicas. Filtra por fecha y tipo de habitación.
+              parameters:
+                ranges:
+                  auto: 0
+                  value:
+                    type: mixed
+                    value: '["Disponibilidad!A1:I369"]'
+                spreadsheet_id:
+                  auto: 0
+                  value:
+                    type: mixed
+                    value: <ID>
+              provider_name: omluc/google_sheets/google_sheets
+              provider_show_name: omluc/google_sheets/google_sheets
+              settings:
+                date_time_render_option:
+                  value:
+                    type: constant
+                    value: FORMATTED_STRING
+                major_dimension:
+                  value:
+                    type: constant
+                    value: ROWS
+                value_render_option:
+                  value:
+                    type: constant
+                    value: FORMATTED_VALUE
+              tool_description: Retrieve data from multiple ranges in a Google Sheet
+              tool_label: Batch Get
+              tool_name: batch_get
+              type: builtin
+        agent_strategy_label: FunctionCalling
+        agent_strategy_name: function_calling
+        agent_strategy_provider_name: langgenius/agent/agent
+        desc: ''
+        isInIteration: false
+        isInLoop: false
+        memory:
+          query_prompt_template: '{{#sys.query#}}
+
+
+            {{#sys.files#}}'
+          window:
+            enabled: true
+            size: 30
+        meta:
+          minimum_dify_version: 1.7.0
+          version: 0.0.2
+        output_schema: {}
+        plugin_unique_identifier: langgenius/agent:0.0.39@<ID>
+        selected: false
+        title: Agente Disponibilidad
+        tool_node_version: '2'
+        type: agent
+      height: 188
+      id: '17817573986730'
+      position:
+        x: 284.8571428571428
+        y: 501.7619047619047
+      positionAbsolute:
+        x: 284.8571428571428
+        y: 501.7619047619047
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 242
+    viewport:
+      x: 354.50000000000034
+      y: 160.20000000000005
+      zoom: 0.7
+  rag_pipeline_variables: []

@@ -1,9 +1,10 @@
 # Portafolio — Rodrigo Mendoza Cortés
 
-Data & AI Engineer · Power BI Developer. Sitio estático (HTML/CSS/JS puro, sin build ni dependencias) publicado con GitHub Pages en https://rmendoza-code.github.io
+Agentic AI & Data Engineer. Sitio estático (HTML/CSS/JS puro, sin build ni dependencias) publicado con GitHub Pages en https://rmendoza-code.github.io
 
 ## Estructura
-- `index.html` — landing v2: preloader animado, hero con figura 3D, perfil, servicios, proyectos, trayectoria, stack, FAQ y contacto (ES/EN)
+- `index.html` — landing: preloader, hero, perfil, servicios, **AI Lab** (ventanas por proyecto con demo, arquitectura y código), matriz capacidades → evidencia, diplomado Tec, Datos & BI, trayectoria, stack, FAQ y contacto (ES/EN)
+- `lab/` — exportaciones saneadas de agentes (Dify, n8n + MCP, Langflow RAG, Make) y proyectos Python del diplomado, cada uno con README
 - `assets/site/` — estilos, script, fuentes autoalojadas (Archivo, JetBrains Mono) e imágenes del sitio
 - `assets/og-image.png` — vista previa para LinkedIn / redes (1200×630)
 - `dashboards/` — casos de estudio: recreaciones HTML de dashboards de Power BI (datos de muestra)

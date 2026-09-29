@@ -1,0 +1,183 @@
+{
+  "name": "mcp-server",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "herramientas"
+      },
+      "type": "@n8n/n8n-nodes-langchain.mcpTrigger",
+      "typeVersion": 2,
+      "position": [
+        128,
+        0
+      ],
+      "id": "75a86cd1-92d8-4166-8f85-6b5dc2a7a256",
+      "name": "MCP Server Trigger",
+      "webhookId": "<WEBHOOK_ID>"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTimeTool",
+      "typeVersion": 2,
+      "position": [
+        0,
+        224
+      ],
+      "id": "fa86e872-b9aa-4c3d-aee1-8d73509db105",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Agendar una reunión con el usuario a partir de la fecha de hoy en adelante y añade un título descriptivo al evento para que quede claro.",
+        "calendar": {
+          "__rl": true,
+          "value": "correo@ejemplo.com",
+          "mode": "list",
+          "cachedResultName": "correo@ejemplo.com"
+        },
+        "end": "={{ /*<ID>*/ $fromAI('End', ``, 'string') }}",
+        "useDefaultReminders": false,
+        "additionalFields": {
+          "attendees": [
+            "={{ /*<ID>*/ $fromAI('attendees0_Attendees', ``, 'string') }}"
+          ],
+          "conferenceDataUi": {
+            "conferenceDataValues": {
+              "conferenceSolution": "hangoutsMeet"
+            }
+          },
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}",
+          "summary": "={{ /*<ID>*/ $fromAI('Summary', `Título corto de máximo de 40 caracteres y que sea descriptivo`, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        128,
+        224
+      ],
+      "id": "3de67b24-8ccf-4094-8ad0-e388162722dd",
+      "name": "CrearEvento",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://serpapi.com/search.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "={{ /*<ID>*/ $fromAI('parameters0_Value', ``, 'string') }}"
+            },
+            {
+              "name": "engine",
+              "value": "google"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.2,
+      "position": [
+        256,
+        224
+      ],
+      "id": "df04e5b8-c406-4627-b97e-e2c7031b27b8",
+      "name": "SerpAPI",
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*<ID>*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*<ID>*/ $fromAI('Subject', ``, 'string') }}",
+        "message": "={{ /*<ID>*/ $fromAI('Message', ``, 'string') }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        384,
+        224
+      ],
+      "id": "82cfda39-eb88-4532-bfe1-ea92fc26dbf1",
+      "name": "Enviar email",
+      "webhookId": "<WEBHOOK_ID>",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "<CREDENTIAL>",
+          "name": "<CREDENTIAL>"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Date & Time": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CrearEvento": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "SerpAPI": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar email": {
+      "ai_tool": [
+        [
+          {
+            "node": "MCP Server Trigger",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "<ID>",
+  "id": "4nBC4UarphS9xmtN",
+  "tags": []
+}
