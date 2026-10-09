@@ -5,8 +5,8 @@
 
   /* ---------- i18n ---------- */
   const EN={
-    loading:"Loading portfolio", nav1:"Profile", nav2:"Services", nav3:"Data &amp; BI", nav6:"Evidence", nav7:"Diploma", nav4:"Experience", nav5:"FAQ", skip:"Skip to content", cv:"Download CV ↓", cvL:"Résumé (PDF)", explore:"Explore dashboard", cta:"Let's talk",
-    role:"Agentic AI &amp; Data Engineer", lead:"I build <em>AI agents</em> that work on real business data — with tools, memory and human controls.", heroLab:"See the AI Lab →",
+    nav1:"Profile", nav2:"Services", nav3:"Data &amp; BI", nav6:"Evidence", nav7:"Diploma", nav4:"Experience", nav5:"FAQ", skip:"Skip to content", cv:"Download CV ↓", cvL:"Résumé (PDF)", explore:"Explore dashboard", cta:"Let's talk",
+    role:"Agentic AI &amp; Data Engineer", lead:"I build AI agents that work on real business data — with tools, memory and human controls.", hi1:"Hi, I’m Rodrigo Mendoza,", hi2:"Agentic AI &amp; Data Engineer · Mexico City", pLab:"See the AI Lab", pEv:"See the evidence", pMail:"Write me:",
     based:"Mexico City", avail:"Available · 2026", scroll:"Scroll", aboutLabel:"(01) Profile",
     manifesto:"Industrial engineer with 5+ years taking ERP data to decisions. Today I design <span class=\"hl\">AI agents</span> on top of that same data: with RAG, tools, MCP and a human in the loop when the decision calls for it. I understand the process before the model — that’s why my agents don’t break it.",
     f2l:"Education", f2s:"Industrial Eng.", f3l:"Certification", f4l:"Specialization", f4s:"AI Technologies", f4p:"Tec de Monterrey — LLMs, RAG, multi-agent, MCP", f5l:"Languages", f5s:"ES · EN B2", f5p:"Italian · Portuguese",
@@ -66,14 +66,13 @@
   };
   const ES={};
   $$('[data-i18n]').forEach(el=>{ const k=el.dataset.i18n; if(!(k in ES)) ES[k]=el.innerHTML; });
-  const LOGS={es:["conectando lakehouse","cargando modelo semántico","despertando agentes","sirviendo café"],en:["connecting lakehouse","loading semantic model","waking up agents","pouring coffee"]};
   let lang='es';
   try{ const s=localStorage.getItem('rm-lang'); if(s==='en'||s==='es') lang=s; else if((navigator.language||'').slice(0,2)==='en') lang='en'; }catch(e){}
   function setLang(l){
     lang=l; const d=l==='en'?EN:ES; document.documentElement.lang=l;
     $$('[data-i18n]').forEach(el=>{ const v=d[el.dataset.i18n]; if(v!=null){ el.innerHTML=v; if(el.dataset.t!=null) el.dataset.t=el.textContent; } });
     $$('.lang button').forEach(b=>b.setAttribute('aria-pressed', b.dataset.lang===l));
-    splitManifesto(); buildMarquee(); onScroll();
+    splitManifesto(); buildMarquee(); onScroll(); typeLead();
     try{localStorage.setItem('rm-lang',l)}catch(e){}
   }
   $$('.lang button').forEach(b=>b.addEventListener('click',()=>setLang(b.dataset.lang)));
@@ -103,29 +102,44 @@
     $('#marq').innerHTML=one+one;
   }
 
-  /* ---------- preloader ---------- */
-  function runLoader(){
-    const countEl=$('#count'), bar=$('#bar'), log=$('#log');
-    let seen=false; try{ seen=sessionStorage.getItem('rm-seen')==='1'; sessionStorage.setItem('rm-seen','1'); }catch(e){}
-    const dur = reduce ? 300 : (seen ? 1100 : 3000), t0=performance.now();
-    const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
-    let shown=-1;
-    const lines=LOGS[lang];
-    function frame(now){
-      const p=Math.min(1,(now-t0)/dur), v=Math.round(ease(p)*100);
-      if(v!==shown){ countEl.textContent=v; bar.style.transform=`scaleX(${v/100})`; shown=v;
-        const idx=Math.min(lines.length-1,Math.floor(v/ (100/lines.length)));
-        const html=lines.slice(Math.max(0,idx-1),idx+1).map((l,i,a)=>`<span>${l}… ${i<a.length-1||v===100?'<b>ok</b>':''}</span>`).join('');
-        if(log.dataset.i!==String(idx)+(v===100)){ log.innerHTML=html; log.dataset.i=String(idx)+(v===100); }
-      }
-      if(p<1) requestAnimationFrame(frame); else setTimeout(finish, reduce?0:380);
+  /* ---------- hero: typewriter (texto fuente en #typeSrc, traducible) ---------- */
+  let typeTimer=0;
+  function typeLead(){
+    const src=$('#typeSrc'), out=$('#typed'), caret=$('#caret'); if(!src||!out) return;
+    clearTimeout(typeTimer); clearInterval(typeTimer);
+    const text=src.textContent.trim();
+    if(reduce){ out.textContent=text; caret.classList.add('done'); return; }
+    out.textContent=''; caret.classList.remove('done');
+    let i=0;
+    typeTimer=setTimeout(()=>{ typeTimer=setInterval(()=>{ i++; out.textContent=text.slice(0,i); if(i>=text.length){ clearInterval(typeTimer); caret.classList.add('done'); } },38); },600);
+  }
+
+  /* ---------- hero: video que avanza/retrocede con el mouse ---------- */
+  function heroScrub(){
+    const v=$('#heroVideo'), hero=$('.hero'); if(!v||!hero) return;
+    if(reduce){ const so=$('source',v); if(so){ so.remove(); v.load(); } return; }
+    const SENS=.8; let prevX=null, target=0, seeking=false, inView=true;
+    new IntersectionObserver(es=>{ inView=es[0].isIntersecting; prevX=null; }).observe(hero);
+    const seek=()=>{ if(!v.duration) return; if(Math.abs(v.currentTime-target)<.01){ seeking=false; return; } seeking=true; v.currentTime=target; };
+    v.addEventListener('seeked',seek);
+    function move(x){
+      if(!inView||!v.duration) return;
+      if(prevX===null){ prevX=x; return; }
+      const d=x-prevX; prevX=x;
+      target=Math.min(v.duration,Math.max(0,target+(d/innerWidth)*SENS*v.duration));
+      if(!seeking) seek();
     }
-    requestAnimationFrame(frame);
+    if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+      addEventListener('mousemove',e=>move(e.clientX),{passive:true});
+    } else {
+      // táctil: sin mouse, reproduce el saludo una vez cuando el hero está a la vista
+      hero.addEventListener('touchmove',e=>move(e.touches[0].clientX),{passive:true});
+      hero.addEventListener('touchend',()=>{ prevX=null; },{passive:true});
+      v.addEventListener('loadeddata',()=>{ const p=v.play(); if(p) p.catch(()=>{}); },{once:true});
+      v.addEventListener('ended',()=>{ target=v.currentTime; });
+    }
   }
-  function finish(){
-    body.classList.add('loaded'); body.classList.remove('is-loading');
-    setTimeout(()=>{ const l=$('#loader'); if(l) l.remove(); }, 1600);
-  }
+  setTimeout(()=>{ const p=$('#pills'); if(p) p.classList.add('on'); }, reduce?0:400);
 
   /* ---------- reveal on scroll ---------- */
   const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} }),{threshold:.15,rootMargin:'0px 0px -6% 0px'});
@@ -189,16 +203,18 @@
   }));
 
   /* ---------- scroll effects ---------- */
-  const nav=$('#nav'), prog=$('#progress'), avatar=$('#avatar'), dark=$('.dark');
+  const nav=$('#nav'), prog=$('#progress'), hero=$('.hero'), darks=$$('.dark');
   let lastY=0, ticking=false;
   function onScroll(){
     const y=scrollY, h=document.documentElement.scrollHeight-innerHeight;
     prog.style.transform=`scaleX(${h>0?y/h:0})`;
     nav.classList.toggle('scrolled', y>40);
     if(!body.classList.contains('menu-open')) nav.classList.toggle('hidden', y>lastY && y>innerHeight*.8);
-    const dr=dark.getBoundingClientRect(); nav.classList.toggle('dark', dr.top<60 && dr.bottom>60);
+    const over=el=>{ const r=el.getBoundingClientRect(); return r.top<60 && r.bottom>60; };
+    const onHero=!!hero && over(hero);
+    nav.classList.toggle('on-hero', onHero && !body.classList.contains('menu-open'));
+    nav.classList.toggle('dark', !onHero && darks.some(over));
     lastY=y;
-    if(!reduce && y<innerHeight*1.2){ avatar.style.transform=(innerWidth<=760?'translateX(50%) ':'')+`translateY(${y*.12}px) scale(${1-y*.00012})`; }
     // manifesto words
     const m=$('#manifesto'); if(m){ const r=m.getBoundingClientRect(); const ws=m.querySelectorAll('.w');
       const p=Math.min(1,Math.max(0,(innerHeight*.85-r.top)/(r.height+innerHeight*.35)));
@@ -210,12 +226,8 @@
 
   /* ---------- mobile menu ---------- */
   const burger=$('#burger');
-  burger.addEventListener('click',()=>{ const o=body.classList.toggle('menu-open'); burger.setAttribute('aria-expanded',o); burger.setAttribute('aria-label', o?'Cerrar menú':'Abrir menú'); nav.classList.remove('hidden'); });
+  burger.addEventListener('click',()=>{ const o=body.classList.toggle('menu-open'); burger.setAttribute('aria-expanded',o); burger.setAttribute('aria-label', o?'Cerrar menú':'Abrir menú'); nav.classList.remove('hidden'); onScroll(); });
   $$('#mmenu a').forEach(a=>a.addEventListener('click',()=>{ body.classList.remove('menu-open'); burger.setAttribute('aria-expanded','false'); }));
-
-  /* ---------- clock ---------- */
-  function tick(){ try{ $('#clock').textContent=new Intl.DateTimeFormat('es-MX',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'America/Mexico_City'}).format(new Date()); }catch(e){} }
-  tick(); setInterval(tick,15000);
 
   /* ---------- copy email ---------- */
   const toast=$('#toast');
@@ -223,12 +235,12 @@
   const MAIL = 'rdgo.mendoza' + '@' + 'gmail.com';
   $$('[data-em]').forEach(a=>a.setAttribute('href','mailto:'+MAIL));
   $$('[data-em-text]').forEach(el=>el.textContent=MAIL);
-  $('#copy').addEventListener('click',async()=>{
+  $$('[data-copy]').forEach(btn=>btn.addEventListener('click',async()=>{
     const mail=MAIL;
     try{ await navigator.clipboard.writeText(mail); toast.textContent= lang==='en'?'Email copied':'Correo copiado'; }
     catch(e){ location.href='mailto:'+mail; return; }
     toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),1800);
-  });
+  }));
 
   /* ---------- cursor + magnetic ---------- */
   if(matchMedia('(hover:hover)').matches && !reduce){
@@ -241,14 +253,11 @@
       el.addEventListener('mousemove',e=>{ const r=el.getBoundingClientRect(); el.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.25}px,${(e.clientY-r.top-r.height/2)*.35}px)`; });
       el.addEventListener('mouseleave',()=>el.style.transform='');
     });
-    // hero avatar parallax on mouse
-    const inner=$('.hero__avatar-inner img');
-    $('.hero').addEventListener('mousemove',e=>{ const dx=(e.clientX/innerWidth-.5), dy=(e.clientY/innerHeight-.5); inner.style.transform=`translate(${dx*-14}px,${dy*-8}px)`; });
   }
 
   /* ---------- init ---------- */
-  if(lang!=='es') setLang(lang); else { splitManifesto(); buildMarquee(); }
+  body.classList.add('loaded');
+  if(lang!=='es') setLang(lang); else { splitManifesto(); buildMarquee(); typeLead(); }
   onScroll();
-  scrollTo(0,0);
-  runLoader();
+  heroScrub();
 })();

@@ -8,7 +8,7 @@
 <meta name="author" content="Rodrigo Mendoza Cortés">
 <meta name="robots" content="index, follow">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="theme-color" content="#E8E8E8">
+<meta name="theme-color" content="#111214">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self'; frame-src https://udify.app; object-src 'none'; base-uri 'self'; form-action 'self'">
 <link rel="canonical" href="https://rmendoza-code.github.io/">
 <meta property="og:type" content="website">
@@ -27,40 +27,21 @@
 <meta name="twitter:image" content="https://rmendoza-code.github.io/assets/og-image.png">
 <link rel="icon" href="assets/site/img/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="assets/site/fonts/archivo-wdth.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="assets/site/img/about.webp" as="image">
+<link rel="preload" href="assets/site/img/hero-poster.webp" as="image">
 <link rel="stylesheet" href="assets/site/styles.css">
-<noscript><style>.loader{display:none}body.is-loading{overflow:auto;height:auto}.reveal{opacity:1;transform:none}.nav{opacity:1}.hero__avatar-inner{opacity:1;transform:none}.hero__name .row>span{transform:none}.hero__intro,.hero__side,.hero__scroll{opacity:1;transform:none}.hero__halo{transform:scale(1)}.manifesto .w{opacity:1}</style></noscript>
+<noscript><style>.reveal{opacity:1;transform:none}.nav{opacity:1}.hero__pills{opacity:1;transform:none}.hero__typed,.hero__caret{display:none}.hero__type .sr{position:static;width:auto;height:auto;clip:auto;white-space:normal}.manifesto .w{opacity:1}</style></noscript>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Rodrigo Mendoza Cortés","jobTitle":"Agentic AI & Data Engineer","knowsAbout":["Agentic AI","LangGraph","RAG","Model Context Protocol","Microsoft Fabric","Power BI"],"address":{"@type":"PostalAddress","addressLocality":"Ciudad de México","addressCountry":"MX"},"alumniOf":"Universidad Nacional Autónoma de México","url":"https://rmendoza-code.github.io/","sameAs":["https://www.linkedin.com/in/rodrigomzc","https://github.com/rmendoza-code"]}</script>
 <script src="assets/site/main.js" defer></script>
 </head>
-<body class="is-loading">
+<body>
 <a class="sr" href="#about" data-i18n="skip">Saltar al contenido</a>
-
-<!-- PRELOADER -->
-<div class="loader" id="loader" aria-hidden="true">
-  <div class="loader__top">
-    <div class="mono">RM — Portfolio ©2026</div>
-    <div class="loader__log mono" id="log"></div>
-  </div>
-  <div class="loader__stage">
-    <div class="loader__shadow"></div>
-    <img class="loader__desk" src="assets/site/img/about.webp" alt="">
-  </div>
-  <div class="loader__bottom">
-    <div class="loader__meta">
-      <span class="mono" data-i18n="loading">Cargando portafolio</span>
-      <div class="loader__bar"><i id="bar"></i></div>
-    </div>
-    <div class="loader__count"><span id="count">0</span><sup>%</sup></div>
-  </div>
-</div>
 
 <div class="progress" id="progress"></div>
 <div class="cursor" id="cursor"></div>
 
 <!-- NAV -->
 <header class="nav" id="nav">
-  <a href="#top" class="logo" aria-label="Rodrigo Mendoza — inicio"><span class="logo__mark">RM</span><span>Rodrigo Mendoza Cortés</span></a>
+  <a href="#top" class="logo" aria-label="Rodrigo Mendoza — inicio"><span class="logo__name">Rodrigo Mendoza<sup>©</sup></span><span class="logo__star" aria-hidden="true">✳︎</span></a>
   <nav aria-label="Principal">
     <ul class="nav__links">
       <li><a href="#about"><span data-i18n="nav1" data-t="Perfil">Perfil</span></a></li>
@@ -76,7 +57,7 @@
       <button type="button" data-lang="es" aria-pressed="true">ES</button>
       <button type="button" data-lang="en" aria-pressed="false">EN</button>
     </div>
-    <a href="#contact" class="btn magnetic"><span class="dot"></span><span data-i18n="cta">Hablemos</span></a>
+    <a href="#contact" class="nav__cta" data-i18n="cta">Hablemos</a>
     <button type="button" class="burger" id="burger" aria-label="Abrir menú" aria-expanded="false"><i></i></button>
   </div>
 </header>
@@ -97,30 +78,22 @@
 <main id="top">
 <!-- HERO -->
 <section class="hero" aria-label="Inicio">
-  <div class="hero__grid"></div>
-  <div class="hero__intro">
-    <div class="hero__tag mono"><i></i><span data-i18n="role">Agentic AI &amp; Data Engineer</span></div>
-    <p class="hero__lead" data-i18n="lead">Construyo <em>agentes de IA</em> que trabajan sobre datos reales del negocio — con herramientas, memoria y controles humanos.</p>
-    <a class="hero__lab mono" href="#ai-lab" data-i18n="heroLab">Ver AI Lab →</a>
+  <video class="hero__video" id="heroVideo" muted playsinline preload="auto" poster="assets/site/img/hero-poster.webp" aria-hidden="true" tabindex="-1">
+    <source src="assets/site/video/hero-wave.mp4" type="video/mp4">
+  </video>
+  <div class="hero__shade" aria-hidden="true"></div>
+  <div class="hero__content">
+    <h1 class="sr">Rodrigo Mendoza Cortés — Agentic AI &amp; Data Engineer</h1>
+    <p class="hero__hi" aria-hidden="true"><span data-i18n="hi1">Hola, soy Rodrigo Mendoza,</span><br><span data-i18n="hi2">Agentic AI &amp; Data Engineer · Ciudad de México</span></p>
+    <p class="hero__type"><span class="sr" id="typeSrc" data-i18n="lead">Construyo agentes de IA que trabajan sobre datos reales del negocio — con herramientas, memoria y controles humanos.</span><span class="hero__typed" id="typed" aria-hidden="true"></span><i class="hero__caret" id="caret" aria-hidden="true"></i></p>
+    <div class="hero__pills" id="pills">
+      <a class="pill" href="#ai-lab" data-i18n="pLab">Ver AI Lab</a>
+      <a class="pill" href="#capacidades" data-i18n="pEv">Ver evidencia</a>
+      <a class="pill" href="CV_Rodrigo_Mendoza_Cortes.pdf" download data-i18n="cv">Descargar CV ↓</a>
+      <a class="pill" href="#contact" data-i18n="cta">Hablemos</a>
+      <button type="button" class="pill pill--ghost" data-copy><span><span data-i18n="pMail">Escríbeme:</span> <u data-em-text>rdgo.mendoza [at] gmail.com</u></span><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><path d="M8.5 1.5h-6a1 1 0 0 0-1 1v6"/></svg><span class="sr" data-i18n="copy">Copiar</span></button>
+    </div>
   </div>
-  <div class="hero__side mono">
-    <span data-i18n="based">Ciudad de México</span>
-    <span><strong id="clock">--:--</strong> CDMX</span>
-    <span data-i18n="avail">Disponible · 2026</span>
-    <a class="hero__cv" href="CV_Rodrigo_Mendoza_Cortes.pdf" download data-i18n="cv">Descargar CV ↓</a>
-  </div>
-  <div class="hero__halo" aria-hidden="true"></div>
-  <div class="hero__avatar" id="avatar">
-    <div class="hero__avatar-inner"><img src="assets/site/img/hero.webp" alt="Figura 3D de Rodrigo Mendoza de pie, con los brazos cruzados"></div>
-  </div>
-  <h1 class="hero__name">
-    <span class="row"><span>Rodrigo</span></span>
-    <span class="row"><span>Mendoza<sup>©26</sup></span></span>
-  </h1>
-  <a href="#about" class="hero__scroll mono" aria-label="Bajar al perfil">
-    <span data-i18n="scroll">Scroll</span>
-    <span class="ring"><svg width="14" height="18" viewBox="0 0 14 18" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M7 1v15M1 10l6 6 6-6"/></svg></span>
-  </a>
 </section>
 
 <!-- MARQUEE -->
@@ -770,7 +743,7 @@ Respuesta:</code></pre>
   <div class="contact__cta">
     <p data-i18n="cP">Busco sumarme a un equipo que lleve agentes de IA a procesos reales. Si tu proyecto necesita a alguien que entienda el proceso, los datos y el agente, hablemos.</p>
     <div class="links">
-      <button type="button" id="copy" data-u="rdgo.mendoza" data-d="gmail.com"><span data-em-text>rdgo.mendoza [at] gmail.com</span><span class="mono" data-i18n="copy">Copiar</span></button>
+      <button type="button" id="copy" data-copy data-u="rdgo.mendoza" data-d="gmail.com"><span data-em-text>rdgo.mendoza [at] gmail.com</span><span class="mono" data-i18n="copy">Copiar</span></button>
       <a href="https://www.linkedin.com/in/rodrigomzc" target="_blank" rel="noopener"><span>LinkedIn</span><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 13L13 3M5 3h8v8"/></svg></a>
       <a href="CV_Rodrigo_Mendoza_Cortes.pdf" download><span data-i18n="cvL">Currículum (PDF)</span><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2v10M3 8l5 5 5-5M2 14.5h12"/></svg></a>
       <a href="https://github.com/rmendoza-code" target="_blank" rel="noopener"><span>GitHub</span><svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 13L13 3M5 3h8v8"/></svg></a>

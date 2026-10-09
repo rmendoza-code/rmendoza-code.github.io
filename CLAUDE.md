@@ -15,7 +15,7 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 ## Estructura
 | Ruta | Qué es |
 |---|---|
-| `index.html` | Landing: preloader 0→100, hero con figura 3D, perfil + métricas, servicios, **AI Lab** (`#ai-lab`, 6 ventanas), matriz **capacidades → evidencia** (`#capacidades`), **diplomado Tec** (`#diplomado`, `#tsp`), **Datos & BI** (`#dashboards`), trayectoria, stack, FAQ, contacto |
+| `index.html` | Landing: hero oscuro con video del avatar que avanza/retrocede con el mouse (`assets/site/video/hero-wave.mp4`, póster `img/hero-poster.webp`), texto con efecto máquina de escribir y píldoras; perfil + métricas, servicios, **AI Lab** (`#ai-lab`, 6 ventanas), matriz **capacidades → evidencia** (`#capacidades`), **diplomado Tec** (`#diplomado`, `#tsp`), **Datos & BI** (`#dashboards`), trayectoria, stack, FAQ, contacto |
 | `assets/site/styles.css`, `main.js` | Estilos y lógica del landing. **Textos en inglés en el objeto `EN` de `main.js`** (misma clave que `data-i18n`); el español vive en el HTML |
 | `assets/site/case.css` | Estilos compartidos de las páginas de caso |
 | `assets/site/fonts/`, `img/` | Fuentes autoalojadas (Archivo, JetBrains Mono) e imágenes (figuras 3D en WebP) |
@@ -25,6 +25,7 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 | `assets/i18n.js` + `I18N.register({...})` | Motor ES⇄EN de las páginas de `dashboards/` (traduce nodos de texto exactos) |
 | `lab/` | Exportaciones saneadas de agentes (Dify, n8n + MCP, Langflow RAG, Make) y proyecto TSP en Python, cada una con README |
 | `CV_Rodrigo_Mendoza_Cortes.pdf` | CV publicado (se genera desde `tools/cv/cv.html`) |
+| `assets/site/video/` | Video del hero: generado en Higgsfield (Kling 3.0 std, cuadro inicial/final = `hero.webp`/`wave.webp` sobre `#111214`), recodificado todo-intra (`-g 1`) para que el scrub sea fluido |
 | `tools/` | Fuentes de trabajo: CV en HTML, imagen OG, saneador de `lab/`, originales de las figuras 3D y hoja de personaje |
 
 ## Sistema de diseño
