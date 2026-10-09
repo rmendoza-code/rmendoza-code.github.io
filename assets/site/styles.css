@@ -74,7 +74,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hero__content{position:relative;z-index:2;max-width:36rem}
 .hero__hi,.hero__type{font-size:clamp(18px,4vw,26px);font-weight:400;font-stretch:100%;letter-spacing:-.005em}
 .hero__hi{line-height:1.3;filter:blur(4px);user-select:none;pointer-events:none;margin-bottom:clamp(20px,2vw,24px)}
-.hero__type{line-height:1.35;min-height:2.7em;margin-bottom:clamp(20px,2vw,24px)}
+.hero__type{line-height:1.35;margin-bottom:clamp(20px,2vw,24px);display:grid}
+.hero__ghost,.hero__live{grid-area:1/1}
+.hero__ghost{visibility:hidden}
 .hero__type em{font-style:normal}
 .hero__caret{display:inline-block;width:2px;height:1.1em;background:currentColor;vertical-align:middle;margin-left:2px;animation:caret 1s step-end infinite}
 .hero__caret.done{display:none}
@@ -89,7 +91,8 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .pill:focus-visible{outline:2px solid var(--lime);outline-offset:2px}
 @media (min-width:761px){.hero{justify-content:center;padding:0 clamp(20px,3vw,40px)}}
 @media (max-width:640px){.pill{font-size:13px;padding-inline:16px}}
-@media (max-width:760px){.hero__shade{background:linear-gradient(0deg,rgba(17,18,20,.88) 0%,rgba(17,18,20,.55) 45%,rgba(17,18,20,0) 75%)}}
+@media (min-width:761px) and (max-width:1300px){.hero__video{object-position:40% center}.hero__content{max-width:min(36rem,42vw)}}
+@media (max-width:760px){.hero__shade{background:linear-gradient(0deg,rgba(17,18,20,.92) 0%,rgba(17,18,20,.75) 35%,rgba(17,18,20,.35) 55%,rgba(17,18,20,0) 70%)}}
 /* nav sobre el hero */
 .logo{gap:12px}
 .logo__name{font-size:clamp(19px,1.6vw,24px);font-weight:500;font-stretch:100%;letter-spacing:-.025em}

@@ -108,6 +108,7 @@
     const src=$('#typeSrc'), out=$('#typed'), caret=$('#caret'); if(!src||!out) return;
     clearTimeout(typeTimer); clearInterval(typeTimer);
     const text=src.textContent.trim();
+    const ghost=$('#typeGhost'); if(ghost) ghost.textContent=text;
     if(reduce){ out.textContent=text; caret.classList.add('done'); return; }
     out.textContent=''; caret.classList.remove('done');
     let i=0;
@@ -135,7 +136,7 @@
       // táctil: sin mouse, reproduce el saludo una vez cuando el hero está a la vista
       hero.addEventListener('touchmove',e=>move(e.touches[0].clientX),{passive:true});
       hero.addEventListener('touchend',()=>{ prevX=null; },{passive:true});
-      v.addEventListener('loadeddata',()=>{ const p=v.play(); if(p) p.catch(()=>{}); },{once:true});
+      const p=v.play(); if(p) p.catch(()=>{});
       v.addEventListener('ended',()=>{ target=v.currentTime; });
     }
   }

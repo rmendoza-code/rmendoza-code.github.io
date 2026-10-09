@@ -26,7 +26,7 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 | `lab/` | Exportaciones saneadas de agentes (Dify, n8n + MCP, Langflow RAG, Make) y proyecto TSP en Python, cada una con README |
 | `CV_Rodrigo_Mendoza_Cortes.pdf` | CV publicado (se genera desde `tools/cv/cv.html`) |
 | `assets/site/video/` | Video del hero: generado en Higgsfield (Kling 3.0 std, cuadro inicial/final = `hero.webp`/`wave.webp` sobre `#111214`), recodificado todo-intra (`-g 1`) para que el scrub sea fluido |
-| `tools/` | Fuentes de trabajo: CV en HTML, imagen OG, saneador de `lab/`, originales de las figuras 3D y hoja de personaje |
+| `tools/` | Fuentes de trabajo: servidor local con Range (`serve.py`), receta del video del hero (`hero-video/`), CV en HTML, imagen OG, saneador de `lab/`, originales de las figuras 3D y hoja de personaje |
 
 ## Sistema de diseño
 - Colores: fondo `#E8E8E8`, tinta `#111214`, cobalto `#3B4FE0` (acento en claro), lima `#B8E08C` (acento en oscuro).
@@ -37,7 +37,7 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 
 ## Flujo de trabajo
 1. Editar HTML/CSS/JS directamente (sitio estático, sin build).
-2. Probar en local: `python3 -m http.server 8000` → http://localhost:8000 (revisa ES y EN, escritorio y móvil).
+2. Probar en local: `python tools/serve.py` → http://127.0.0.1:8000 (`http.server` no soporta Range y el video del hero no hace scrub) (revisa ES y EN, escritorio y móvil).
 3. Verificar enlaces y anclas antes de publicar (todas las anclas que usa el CV: `ai-lab, capacidades, lab-hotel, lab-mcp, lab-rag, lab-fabric, lab-auto, lab-langgraph, tsp, dashboards`).
 4. Regenerar derivados si cambió su fuente: `node tools/render.js cv` y `node tools/render.js og` (requiere Playwright).
 5. `git add -A && git commit && git push origin main` → GitHub Pages publica en 1–2 min.
