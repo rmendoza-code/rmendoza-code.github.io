@@ -7,6 +7,7 @@
   --ink:#111214; --ink-2:#2A2B2E; --muted:#56585E;
   --line:rgba(17,18,20,.14);
   --accent:#3B4FE0; --accent-ink:#3B4FE0; --lime:#B8E08C;
+  --hero-bg:#121C5C; --hero-edge:8,12,48; --hero-base:18,28,92;
   --d-bg:#111214; --d-text:#EDEDED; --d-muted:#9FA1A6; --d-line:rgba(237,237,237,.14); --d-panel:#1A1B1E;
   --gut:clamp(16px,3vw,48px);
   --ease:cubic-bezier(.76,0,.24,1);
@@ -68,9 +69,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes down{0%{transform:translateY(-8px);opacity:0}40%{opacity:1}100%{transform:translateY(8px);opacity:0}}
 /* ============ HERO (video + agente) ============ */
-.hero{position:relative;height:100svh;min-height:600px;overflow:hidden;background:var(--d-bg);color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:0 var(--gut) 48px;isolation:isolate}
+.hero{position:relative;height:100svh;min-height:600px;overflow:hidden;background:var(--hero-bg);color:#fff;display:flex;flex-direction:column;justify-content:flex-end;padding:0 var(--gut) 48px;isolation:isolate}
 .hero__video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% center;z-index:0;pointer-events:none}
-.hero__shade{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(17,18,20,.72) 0%,rgba(17,18,20,.35) 38%,rgba(17,18,20,0) 60%)}
+.hero__shade{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(var(--hero-edge),.55) 0%,rgba(var(--hero-base),.25) 38%,rgba(var(--hero-base),0) 60%)}
 .hero__content{position:relative;z-index:2;max-width:36rem}
 .hero__hi,.hero__type{font-size:clamp(18px,4vw,26px);font-weight:400;font-stretch:100%;letter-spacing:-.005em}
 .hero__hi{line-height:1.3;filter:blur(4px);user-select:none;pointer-events:none;margin-bottom:clamp(20px,2vw,24px)}
@@ -92,7 +93,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @media (min-width:761px){.hero{justify-content:center;padding:0 clamp(20px,3vw,40px)}}
 @media (max-width:640px){.pill{font-size:13px;padding-inline:16px}}
 @media (min-width:761px) and (max-width:1300px){.hero__video{object-position:40% center}.hero__content{max-width:min(36rem,42vw)}}
-@media (max-width:760px){.hero__shade{background:linear-gradient(0deg,rgba(17,18,20,.92) 0%,rgba(17,18,20,.75) 35%,rgba(17,18,20,.35) 55%,rgba(17,18,20,0) 70%)}}
+@media (max-width:760px){.hero__shade{background:linear-gradient(0deg,rgba(var(--hero-base),.95) 0%,rgba(var(--hero-base),.8) 35%,rgba(var(--hero-base),.35) 55%,rgba(var(--hero-base),0) 70%)}}
 /* nav sobre el hero */
 .logo{gap:12px}
 .logo__name{font-size:clamp(19px,1.6vw,24px);font-weight:500;font-stretch:100%;letter-spacing:-.025em}

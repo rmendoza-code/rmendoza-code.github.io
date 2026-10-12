@@ -25,11 +25,11 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 | `assets/i18n.js` + `I18N.register({...})` | Motor ES⇄EN de las páginas de `dashboards/` (traduce nodos de texto exactos) |
 | `lab/` | Exportaciones saneadas de agentes (Dify, n8n + MCP, Langflow RAG, Make) y proyecto TSP en Python, cada una con README |
 | `CV_Rodrigo_Mendoza_Cortes.pdf` | CV publicado (se genera desde `tools/cv/cv.html`) |
-| `assets/site/video/` | Video del hero: generado en Higgsfield (Kling 3.0 std, cuadro inicial/final = `hero.webp`/`wave.webp` sobre `#111214`), recodificado todo-intra (`-g 1`) para que el scrub sea fluido |
+| `assets/site/video/` | Video del hero (2560×1440, ~3 MB): Higgsfield Kling 3.0 std con cuadro inicial/final = `hero.webp`/`wave.webp` sobre degradado azul noche → cobalto, escalado a 2K y recodificado con keyframe cada 4 cuadros para el scrub. Receta en `tools/hero-video/` |
 | `tools/` | Fuentes de trabajo: servidor local con Range (`serve.py`), receta del video del hero (`hero-video/`), CV en HTML, imagen OG, saneador de `lab/`, originales de las figuras 3D y hoja de personaje |
 
 ## Sistema de diseño
-- Colores: fondo `#E8E8E8`, tinta `#111214`, cobalto `#3B4FE0` (acento en claro), lima `#B8E08C` (acento en oscuro).
+- Colores: fondo `#E8E8E8`, tinta `#111214`, cobalto `#3B4FE0` (acento en claro), lima `#B8E08C` (acento en oscuro). Hero: azul noche `#121C5C` → cobalto (tokens `--hero-*` en `styles.css`); si cambias el fondo hay que regenerar el video.
 - Tipografía del sitio: **Archivo** (variable, condensada 62% en títulos) + **JetBrains Mono** (etiquetas).
 - Tipografía del CV: **DM Sans** + **Fira Code** (la del CV original de Rodrigo). CV sobrio, una columna, amigable con ATS: no subir el `letter-spacing` de los títulos (rompe la extracción de texto).
 - Figuras 3D: personaje de `tools/assets/hoja-de-personaje.png`, fondo transparente, generadas en Higgsfield (gpt_image_2_5). Receta: mismo personaje, camisa blanca, pantalón negro, reloj con correa cobalto.
