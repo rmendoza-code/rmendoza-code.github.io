@@ -45,7 +45,7 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 ## Estado al 2026-10-12
 - Publicado: v2 (rediseño), v3 (AI Lab + matriz + diplomado), v4 (dashboards rediseñados), CVs, casos Cloud billing y Training App, `CLAUDE.md` + `tools/`.
 - Publicado: **hero v5** — video del avatar en 2K sobre azul noche → cobalto, controlado por el mouse (scrub) y reproducido una vez en móvil, con máquina de escribir y píldoras. Rodrigo lo aprobó; no hay nada pendiente de push.
-- Por revisar: el hero en un celular real (solo se probó con emulación).
+- Hero revisado por Rodrigo en su celular el 2026-10-12: se ve bien.
 - Postulación en curso: vacante *Generative / Agentic AI Engineer* (reclutadora: Myrna Arredondo, myrna.arredondo@mystratis.com). Correo redactado; enviar con el CV adjunto.
 
 ## Pendientes / siguientes pasos
