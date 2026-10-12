@@ -42,9 +42,10 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 4. Regenerar derivados si cambió su fuente: `node tools/render.js cv` y `node tools/render.js og` (requiere Playwright).
 5. `git add -A && git commit && git push origin main` → GitHub Pages publica en 1–2 min.
 
-## Estado al 2026-09-29
-- Publicado: v2 (rediseño), v3 (AI Lab + matriz + diplomado), v4 (dashboards rediseñados), CVs.
-- **Pendiente de push:** commit "Casos Cloud billing y Training App + auditoría de enlaces" y este `CLAUDE.md` + `tools/`.
+## Estado al 2026-10-12
+- Publicado: v2 (rediseño), v3 (AI Lab + matriz + diplomado), v4 (dashboards rediseñados), CVs, casos Cloud billing y Training App, `CLAUDE.md` + `tools/`.
+- Publicado: **hero v5** — video del avatar en 2K sobre azul noche → cobalto, controlado por el mouse (scrub) y reproducido una vez en móvil, con máquina de escribir y píldoras. Rodrigo lo aprobó; no hay nada pendiente de push.
+- Por revisar: el hero en un celular real (solo se probó con emulación).
 - Postulación en curso: vacante *Generative / Agentic AI Engineer* (reclutadora: Myrna Arredondo, myrna.arredondo@mystratis.com). Correo redactado; enviar con el CV adjunto.
 
 ## Pendientes / siguientes pasos
