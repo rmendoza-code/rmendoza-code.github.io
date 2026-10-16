@@ -15,7 +15,7 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 ## Estructura
 | Ruta | Qué es |
 |---|---|
-| `index.html` | Landing: hero oscuro con video del avatar que avanza/retrocede con el mouse (`assets/site/video/hero-wave.mp4`, póster `img/hero-poster.webp`), texto con efecto máquina de escribir y píldoras; perfil + métricas, servicios, **AI Lab** (`#ai-lab`, 6 ventanas), matriz **capacidades → evidencia** (`#capacidades`), **diplomado Tec** (`#diplomado`, `#tsp`), **Datos & BI** (`#dashboards`), trayectoria, stack, FAQ, contacto |
+| `index.html` | Landing: hero oscuro con video del avatar que avanza/retrocede con el mouse (`assets/site/video/hero-wave.mp4`, póster `img/hero-poster.webp`), texto con efecto máquina de escribir y píldoras; perfil + métricas, servicios, **AI Lab** (`#ai-lab`, 8 ventanas; las dos primeras, `#lab-harness` y `#lab-bi-agents`, son sistemas multiagente de su trabajo actual mostrados anonimizados), matriz **capacidades → evidencia** (`#capacidades`), **diplomado Tec** (`#diplomado`, `#tsp`), **Datos & BI** (`#dashboards`), trayectoria, stack, FAQ, contacto |
 | `assets/site/styles.css`, `main.js` | Estilos y lógica del landing. **Textos en inglés en el objeto `EN` de `main.js`** (misma clave que `data-i18n`); el español vive en el HTML |
 | `assets/site/case.css` | Estilos compartidos de las páginas de caso |
 | `assets/site/fonts/`, `img/` | Fuentes autoalojadas (Archivo, JetBrains Mono) e imágenes (figuras 3D en WebP) |
@@ -46,6 +46,7 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 - Publicado: v2 (rediseño), v3 (AI Lab + matriz + diplomado), v4 (dashboards rediseñados), CVs, casos Cloud billing y Training App, `CLAUDE.md` + `tools/`.
 - Publicado: **hero v5** — video del avatar en 2K sobre azul noche → cobalto, controlado por el mouse (scrub) y reproducido una vez en móvil, con máquina de escribir y píldoras. Rodrigo lo aprobó; no hay nada pendiente de push.
 - Hero revisado por Rodrigo en su celular el 2026-10-12: se ve bien.
+- 2026-10-16: AI Lab con dos ventanas nuevas: harness multiagente de incidentes de datos (piloto de 2 días: arquitectura, 5 resultados con tiempo y costo, guardrails) y equipo de agentes que construye dashboards (equipo y etapas G0–G8). **Regla de Rodrigo: todo lo de su trabajo actual va anonimizado, solo resultados y diagramas;** sin nombres de workspaces, modelos, asuntos de correo ni cifras de la organización. Matriz: guardrails/HITL pasa a ✓ y se agrega la fila "Evaluación de agentes (evals) y control de costo" (◐).
 - Postulación en curso: vacante *Generative / Agentic AI Engineer* (reclutadora: Myrna Arredondo, myrna.arredondo@mystratis.com). Correo redactado; enviar con el CV adjunto.
 
 ## Pendientes / siguientes pasos
@@ -54,7 +55,10 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 3. Completar casos Financial Execution y RAMS (hoy "en construcción").
 4. Decidir si se nombra a CIMMYT en las páginas de caso o se generaliza.
 5. Limitar gasto de OpenAI del agente público de Dify.
-6. Seguridad local (fuera del repo): en `Downloads\Datos_y_codigo` había una llave de cuenta de servicio de Google Cloud y un token tipo AstraDB en texto plano → revocar y borrar.
+6. **Ahorro estimado** de los dos sistemas multiagente: falta el punto de partida de Rodrigo (horas manuales por caso, casos al mes, horas del Excel mensual). Fórmula: (horas manuales − horas de revisión) × casos/mes × costo/hora − costo de agentes. No publicar cifras de ahorro sin ese dato.
+7. Correr los 3 jueces de evals del harness (USD 4–12 equivalentes) y, con resultados, actualizar la ventana `#lab-harness`.
+8. Agregar los dos sistemas multiagente al CV (`tools/cv/cv.html`) con enlaces a `#lab-harness` y `#lab-bi-agents`.
+9. Seguridad local (fuera del repo): en `Downloads\Datos_y_codigo` había una llave de cuenta de servicio de Google Cloud y un token tipo AstraDB en texto plano → revocar y borrar.
 
 ## Convenciones de git
 - Rama `main`, mensajes en español describiendo el cambio.

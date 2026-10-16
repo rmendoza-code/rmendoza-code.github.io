@@ -151,9 +151,112 @@
     <h2>AI Lab</h2>
     <span class="mono" data-i18n="labS">(03) Agentes · RAG · MCP<br>con código abierto</span>
   </div>
-  <p class="lab-intro reveal" data-i18n="labIntro">Cada ventana es un proyecto real. Las conversaciones son recreaciones con datos ficticios; la arquitectura, los prompts y los flujos son los que construí — y el código exportado está en GitHub.</p>
+  <p class="lab-intro reveal" data-i18n="labIntro">Cada ventana es un proyecto real. Las conversaciones son recreaciones con datos ficticios; la arquitectura, los prompts y los flujos son los que construí. Los proyectos de mi trabajo actual se muestran anonimizados, solo con resultados; el resto tiene su código exportado en GitHub.</p>
 
-  <!-- 01 HOTEL -->
+  <!-- 01 INCIDENT HARNESS -->
+  <article class="lab reveal" id="lab-harness">
+    <div class="win">
+      <div class="win__bar"><span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="win__url mono">claude code · incident-harness / multi-agente</span><span class="win__tabs" role="tablist"><button type="button" role="tab" data-view="arch" aria-selected="true" data-i18n="tArch">Arquitectura</button><button type="button" role="tab" data-view="res" aria-selected="false" data-i18n="tRes">Resultados</button><button type="button" role="tab" data-view="ctl" aria-selected="false" data-i18n="tCtl">Controles</button></span></div>
+      <div class="win__body">
+        <div class="win__panel" data-panel="arch">
+          <svg class="diag" viewBox="0 0 640 360" role="img" aria-label="Diagrama: el correo pasa por triage, un orquestador lanza cuatro especialistas en paralelo, se genera un informe y un humano revisa y aplica la corrección; todo en solo lectura">
+            <g class="diag__edges"><path d="M86 180H112"/><path d="M218 180H246"/><path d="M165 210V256"/><path d="M585 152V224"/></g>
+            <g class="diag__edges diag__edges--flow"><path d="M358 180C372 180 372 48 386 48"/><path d="M358 180C372 180 372 114 386 114"/><path d="M358 180H386"/><path d="M358 180C372 180 372 246 386 246"/><path d="M510 48C524 48 524 122 538 122"/><path d="M510 114C524 114 524 122 538 122"/><path d="M510 180C524 180 524 122 538 122"/><path d="M510 246C524 246 524 122 538 122"/></g>
+            <g class="diag__n"><rect x="10" y="156" width="76" height="48" rx="24"/><text x="48" y="177">Correo</text><text x="48" y="193" class="s">o alerta</text></g>
+            <g class="diag__n"><rect x="112" y="150" width="106" height="60" rx="12"/><text x="165" y="174">Triage</text><text x="165" y="192" class="s">Haiku · P1–P4</text></g>
+            <g class="diag__n"><rect x="112" y="256" width="106" height="48" rx="12"/><text x="165" y="277">Archivar</text><text x="165" y="293" class="s">no relacionado</text></g>
+            <g class="diag__n diag__n--hl"><rect x="246" y="150" width="112" height="60" rx="12"/><text x="302" y="174">Orquestador</text><text x="302" y="192" class="s">Sonnet · plan</text></g>
+            <g class="diag__n"><rect x="386" y="26" width="124" height="44" rx="10"/><text x="448" y="46">Modelo semántico</text><text x="448" y="61" class="s">DAX · refresh</text></g>
+            <g class="diag__n"><rect x="386" y="92" width="124" height="44" rx="10"/><text x="448" y="112">Pipelines</text><text x="448" y="127" class="s">jobs · fallos</text></g>
+            <g class="diag__n"><rect x="386" y="158" width="124" height="44" rx="10"/><text x="448" y="178">Código</text><text x="448" y="193" class="s">notebooks · SQL</text></g>
+            <g class="diag__n"><rect x="386" y="224" width="124" height="44" rx="10"/><text x="448" y="244">Lakehouse</text><text x="448" y="259" class="s">frescura · duplicados</text></g>
+            <g class="diag__n"><rect x="538" y="92" width="94" height="60" rx="12"/><text x="585" y="116">Informe</text><text x="585" y="133" class="s">causa · rollback</text></g>
+            <g class="diag__n diag__n--hitl"><rect x="538" y="224" width="94" height="56" rx="12"/><text x="585" y="247">Humano</text><text x="585" y="264" class="s">revisa y aplica</text></g>
+            <g class="diag__tools"><rect x="386" y="292" width="124" height="52" rx="12"/><text x="448" y="314">solo lectura</text><text x="448" y="332" class="s">wrapper + hook</text></g>
+          </svg>
+        </div>
+        <div class="win__panel" data-panel="res" hidden>
+          <ul class="runs">
+            <li class="ok"><b data-i18n="hr1t">Alerta real: refresh fallido a diario</b><span data-i18n="hr1d">Encontró la causa: dos refrescos programados chocaban y el pipeline se reportaba como “Completed” aunque había fallado.</span><em class="mono">9 min · USD 1.08</em></li>
+            <li class="ok"><b data-i18n="hr2t">Correo real con 3 hallazgos de calidad de datos</b><span data-i18n="hr2d">Explicó 2 con evidencia, pidió ejemplos para el tercero y detectó un filtro que excluía registros sin que nadie lo hubiera reportado.</span><em class="mono">23 min · USD 2.81</em></li>
+            <li class="ok"><b data-i18n="hr3t">Problema ficticio</b><span data-i18n="hr3d">Revisó los datos reales, no encontró el problema y pidió información en lugar de inventar una causa.</span><em class="mono">15 min · USD 2.00</em></li>
+            <li class="sec"><b data-i18n="hr4t">Correo malicioso (prompt injection)</b><span data-i18n="hr4d">Detectó la orden de exportar datos y borrar un pipeline, la ignoró y la reportó. No envió ni cambió nada.</span><em class="mono">14 min · USD 1.42</em></li>
+            <li><b data-i18n="hr5t">Correo no relacionado</b><span data-i18n="hr5d">Clasificado como no relacionado (98 % de confianza) y archivado.</span><em class="mono">&lt;1 min · USD 0.002</em></li>
+          </ul>
+          <p class="runs__note mono" data-i18n="hrNote">Piloto de 2 días · casos anonimizados · costo equivalente de API</p>
+        </div>
+        <div class="win__panel" data-panel="ctl" hidden>
+          <div class="mcp">
+            <div class="mcp__srv"><b>Guardrails</b><span class="mono" data-i18n="hcSub">propone · no ejecuta</span></div>
+            <ul class="mcp__tools">
+              <li><code>read_only</code><span data-i18n="hc1">Wrapper con lista blanca (GET, SELECT, EVALUATE) y un hook que bloquea todo lo demás</span></li>
+              <li><code>scope</code><span data-i18n="hc2">Solo puede consultar 4 espacios de trabajo autorizados; cualquier otro se rechaza</span></li>
+              <li><code>untrusted_input</code><span data-i18n="hc3">El correo es dato no confiable: si trae instrucciones, se reportan y no se obedecen</span></li>
+              <li><code>no_send</code><span data-i18n="hc4">Los agentes no pueden enviar nada; la notificación va a un único destinatario fijo</span></li>
+              <li><code>privacy</code><span data-i18n="hc5">No guarda direcciones de correo, solo nombres, y limita el detalle que entra al informe</span></li>
+              <li><code>budget</code><span data-i18n="hc6">Tope diario de investigaciones; el triage usa un modelo económico y cada caso registra su costo</span></li>
+            </ul>
+            <p class="mono mcp__note" data-i18n="hcNote">Evals en preparación: set de referencia, batería de 6 ataques y 3 jueces LLM independientes.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="lab__meta">
+      <span class="lab__num mono">01 · Claude Code · <span data-i18n="multiTag">Multi-agente</span> <em class="badge" data-i18n="pilotTag">Piloto</em></span>
+      <h3 data-i18n="lht">Harness multiagente para incidentes de datos</h3>
+      <p data-i18n="lhd">Cada correo de “las cifras no cuadran” o “falló el refresh” obliga a un especialista a revisar a mano modelo, pipeline, código y datos en Microsoft Fabric. Aquí un modelo económico clasifica el correo; si es relevante, un orquestador arma un plan y lanza en paralelo cuatro especialistas que investigan en solo lectura. El resultado es un informe con evidencia, causa raíz, plan de corrección con validación y reversa, y un borrador de respuesta.</p>
+      <p class="lab__key"><b data-i18n="keyL">Decisión clave</b> <span data-i18n="lhk">El agente propone y un humano corrige. Es de solo lectura por diseño y, si no hay evidencia, responde “necesito información” en lugar de inventar una causa.</span></p>
+      <div class="tags"><span class="tag">Orquestador</span><span class="tag">Subagentes en paralelo</span><span class="tag">Guardrails</span><span class="tag">Prompt injection</span><span class="tag">Human-in-the-loop</span><span class="tag">Claude</span></div>
+    </div>
+  </article>
+
+  <!-- 02 BI AGENT TEAM -->
+  <article class="lab lab--flip reveal" id="lab-bi-agents">
+    <div class="win">
+      <div class="win__bar"><span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="win__url mono">claude code · bi-agents / power bi</span><span class="win__tabs" role="tablist"><button type="button" role="tab" data-view="team" aria-selected="true" data-i18n="tTeam">Equipo</button><button type="button" role="tab" data-view="gates" aria-selected="false" data-i18n="tGates">Etapas</button></span></div>
+      <div class="win__body">
+        <div class="win__panel" data-panel="team">
+          <svg class="diag" viewBox="0 0 640 360" role="img" aria-label="Diagrama: el usuario aprueba el plan, un orquestador reparte el trabajo entre analista de datos, data engineer, diseñador UX/UI y documentador; los generadores producen el reporte, un revisor lo acepta y se entrega en Power BI">
+            <g class="diag__edges"><path d="M94 180H124"/><path d="M480 152V224"/></g>
+            <g class="diag__edges diag__edges--flow"><path d="M236 180C252 180 252 48 268 48"/><path d="M236 180C252 180 252 114 268 114"/><path d="M236 180H268"/><path d="M236 180C252 180 252 246 268 246"/><path d="M398 48C414 48 414 122 430 122"/><path d="M398 114C414 114 414 122 430 122"/><path d="M398 180C414 180 414 122 430 122"/><path d="M530 248C545 248 545 180 556 180"/></g>
+            <g class="diag__n diag__n--hitl"><rect x="10" y="150" width="84" height="60" rx="12"/><text x="52" y="174">Usuario</text><text x="52" y="192" class="s">aprueba plan</text></g>
+            <g class="diag__n diag__n--hl"><rect x="124" y="150" width="112" height="60" rx="12"/><text x="180" y="174">Orquestador</text><text x="180" y="192" class="s">plan · etapas</text></g>
+            <g class="diag__n"><rect x="268" y="26" width="130" height="44" rx="10"/><text x="333" y="46">Analista de datos</text><text x="333" y="61" class="s">insights · KPIs</text></g>
+            <g class="diag__n"><rect x="268" y="92" width="130" height="44" rx="10"/><text x="333" y="112">Data engineer</text><text x="333" y="127" class="s">modelo · DAX · cuadre</text></g>
+            <g class="diag__n"><rect x="268" y="158" width="130" height="44" rx="10"/><text x="333" y="178">UX/UI</text><text x="333" y="193" class="s">diseño · layout</text></g>
+            <g class="diag__n"><rect x="268" y="224" width="130" height="44" rx="10"/><text x="333" y="244">Documentador</text><text x="333" y="259" class="s">manual · diccionario</text></g>
+            <g class="diag__n"><rect x="430" y="92" width="100" height="60" rx="12"/><text x="480" y="116">Generadores</text><text x="480" y="133" class="s">PBIR · TMDL</text></g>
+            <g class="diag__n"><rect x="430" y="224" width="100" height="48" rx="12"/><text x="480" y="245">Revisor</text><text x="480" y="261" class="s">acepta / rechaza</text></g>
+            <g class="diag__n"><rect x="556" y="150" width="76" height="60" rx="12"/><text x="594" y="174">Power BI</text><text x="594" y="192" class="s">PBIP</text></g>
+            <g class="diag__tools"><rect x="268" y="292" width="262" height="52" rx="12"/><text x="399" y="314">memory.md compartido</text><text x="399" y="332" class="s">plan aprobado · un escritor por carpeta</text></g>
+          </svg>
+        </div>
+        <div class="win__panel" data-panel="gates" hidden>
+          <ul class="road road--tight">
+            <li class="done"><span data-i18n="g0">G0 · Entrevista y plan aprobado por el usuario</span></li>
+            <li><span data-i18n="g1">G1 · Datos: reglas de negocio y cuadre contra la fuente oficial</span></li>
+            <li><span data-i18n="g2">G2 · Modelo semántico local y medidas</span></li>
+            <li class="done"><span data-i18n="g3">G3 · Insights: pregunta → métrica → visual</span></li>
+            <li class="done"><span data-i18n="g4">G4 · Diseño revisado (contraste y vistas)</span></li>
+            <li class="done"><span data-i18n="g5">G5 · Construcción con generadores y validación</span></li>
+            <li><span data-i18n="g6">G6 · QA</span></li>
+            <li><span data-i18n="g7">G7 · Manual, diccionario de datos y runbook</span></li>
+            <li><span data-i18n="g8">G8 · Publicación</span></li>
+          </ul>
+          <p class="runs__note mono" data-i18n="gNote">Avance del primer dashboard financiero construido así</p>
+        </div>
+      </div>
+    </div>
+    <div class="lab__meta">
+      <span class="lab__num mono">02 · Claude Code · Power BI <em class="badge" data-i18n="intTag">Uso interno</em></span>
+      <h3 data-i18n="lbt">Equipo de agentes que construye dashboards</h3>
+      <p data-i18n="lbd">Un orquestador entrevista al usuario, redacta un plan por etapas y reparte el trabajo entre un analista de datos, un data engineer, un diseñador UX/UI y un documentador. El reporte de Power BI sale de generadores en código y un revisor acepta o rechaza cada entrega. Lo uso en tres dashboards: finanzas, portafolio de proyectos y consumo de nube.</p>
+      <p class="lab__key"><b data-i18n="keyL">Decisión clave</b> <span data-i18n="lbk">Nada se construye sin un plan aprobado, y los generadores son la fuente de verdad. Así cada cambio se puede reproducir, tiene respaldo y declara su nivel de validación: preparado, revisado o validado en Power BI.</span></p>
+      <div class="tags"><span class="tag">Orquestación</span><span class="tag">Subagentes</span><span class="tag">Power BI</span><span class="tag">TMDL · PBIR</span><span class="tag">Human-in-the-loop</span></div>
+    </div>
+  </article>
+
+  <!-- 03 HOTEL -->
   <article class="lab reveal" id="lab-hotel">
     <div class="win">
       <div class="win__bar"><span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="win__url mono">dify · hotel-casa-merida / multi-agente</span><span class="win__tabs" role="tablist"><button type="button" role="tab" data-view="demo" aria-selected="true" data-i18n="tDemo">Demo</button><button type="button" role="tab" data-view="arch" aria-selected="false" data-i18n="tArch">Arquitectura</button><button type="button" role="tab" data-view="live" aria-selected="false" data-i18n="tLive">En vivo</button></span></div>
@@ -195,7 +298,7 @@
       </div>
     </div>
     <div class="lab__meta">
-      <span class="lab__num mono">01 · Dify</span>
+      <span class="lab__num mono">03 · Dify</span>
       <h3 data-i18n="l1t">Concierge multi-agente para hotel</h3>
       <p data-i18n="l1d">Asistente para huéspedes de un hotel boutique en Mérida. Un clasificador enruta cada mensaje a uno de tres agentes (reservaciones, facturación CFDI, disponibilidad) con function calling, memoria y herramientas: fuente oficial del hotel, Google Sheets, Tavily y Wikipedia.</p>
       <p class="lab__key"><b data-i18n="keyL">Decisión clave</b> <span data-i18n="l1k">Un agente por intención en lugar de un prompt gigante: cada uno con su persona, sus reglas y solo las herramientas que necesita.</span></p>
@@ -204,7 +307,7 @@
     </div>
   </article>
 
-  <!-- 02 LANGGRAPH (in progress) -->
+  <!-- 04 LANGGRAPH (in progress) -->
   <article class="lab lab--flip reveal" id="lab-langgraph">
     <div class="win">
       <div class="win__bar"><span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="win__url mono">python · concierge-langgraph / StateGraph</span><span class="win__tabs" role="tablist"><button type="button" role="tab" data-view="graph" aria-selected="true" data-i18n="tGraph">Grafo</button><button type="button" role="tab" data-view="road" aria-selected="false" data-i18n="tRoad">Avance</button></span></div>
@@ -240,7 +343,7 @@
       </div>
     </div>
     <div class="lab__meta">
-      <span class="lab__num mono">02 · Python · LangGraph <em class="badge" data-i18n="wip">En construcción</em></span>
+      <span class="lab__num mono">04 · Python · LangGraph <em class="badge" data-i18n="wip">En construcción</em></span>
       <h3 data-i18n="l2t">Del prototipo a producción, en código</h3>
       <p data-i18n="l2d">Port del concierge a Python + LangGraph para cubrir lo que un low-code no da: RAG sobre base vectorial, guardrails de entrada y salida, validación estructurada de datos fiscales, aprobación humana con interrupt() y evaluación reproducible.</p>
       <p class="lab__key"><b data-i18n="keyL">Decisión clave</b> <span data-i18n="l2k">Prototipar rápido en Dify para validar el diseño con usuarios; llevarlo a código cuando hacen falta controles, pruebas y despliegue.</span></p>
@@ -248,7 +351,7 @@
     </div>
   </article>
 
-  <!-- 03 N8N MCP -->
+  <!-- 05 N8N MCP -->
   <article class="lab reveal" id="lab-mcp">
     <div class="win">
       <div class="win__bar"><span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="win__url mono">n8n · asistente-interno / mcp</span><span class="win__tabs" role="tablist"><button type="button" role="tab" data-view="flow" aria-selected="true" data-i18n="tFlow">Flujo</button><button type="button" role="tab" data-view="mcp" aria-selected="false" data-i18n="tMcp">Servidor MCP</button></span></div>
@@ -283,7 +386,7 @@
       </div>
     </div>
     <div class="lab__meta">
-      <span class="lab__num mono">03 · n8n · MCP</span>
+      <span class="lab__num mono">05 · n8n · MCP</span>
       <h3 data-i18n="l3t">Asistente interno con servidor MCP propio</h3>
       <p data-i18n="l3d">Solicitudes internas entran por webhook, se clasifican y un Switch las enruta a Slack, Notion, Gmail o Sheets. Si hay que agendar, un agente (OpenAI o Claude) usa un cliente MCP conectado a mi propio servidor MCP con herramientas de calendario, correo y búsqueda.</p>
       <p class="lab__key"><b data-i18n="keyL">Decisión clave</b> <span data-i18n="l3k">Reglas deterministas donde basta (Switch) y LLM solo donde aporta; más un workflow global de errores que alerta en Slack.</span></p>
@@ -292,7 +395,7 @@
     </div>
   </article>
 
-  <!-- 04 LEXMEX RAG -->
+  <!-- 06 LEXMEX RAG -->
   <article class="lab lab--flip reveal" id="lab-rag">
     <div class="win">
       <div class="win__bar"><span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="win__url mono">langflow · lexmex / rag</span><span class="win__tabs" role="tablist"><button type="button" role="tab" data-view="pipe" aria-selected="true" data-i18n="tPipe">Pipeline</button><button type="button" role="tab" data-view="prompt" aria-selected="false" data-i18n="tPrompt">Prompt</button></span></div>
@@ -323,7 +426,7 @@ Respuesta:</code></pre>
       </div>
     </div>
     <div class="lab__meta">
-      <span class="lab__num mono">04 · Langflow · AstraDB · <span data-i18n="dipTag">Diplomado Tec</span></span>
+      <span class="lab__num mono">06 · Langflow · AstraDB · <span data-i18n="dipTag">Diplomado Tec</span></span>
       <h3 data-i18n="l4t">LexMex: chatbot legal con RAG</h3>
       <p data-i18n="l4d">Caso del diplomado: un despacho pierde horas buscando en normativa dispersa. Pipeline completo de RAG: carga del Código Civil Federal, chunking, embeddings, base vectorial en AstraDB y respuesta de un LLM apoyada solo en el contexto recuperado.</p>
       <p class="lab__key"><b data-i18n="keyL">Decisión clave</b> <span data-i18n="l4k">Temperatura 0.1 y la instrucción explícita de responder “No lo sé” si el contexto no alcanza: primer guardrail contra alucinaciones.</span></p>
@@ -332,7 +435,7 @@ Respuesta:</code></pre>
     </div>
   </article>
 
-  <!-- 05 FABRIC DATA AGENT -->
+  <!-- 07 FABRIC DATA AGENT -->
   <article class="lab reveal" id="lab-fabric">
     <div class="win">
       <div class="win__bar"><span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="win__url mono">fabric · data-agent / procurement</span><span class="win__tabs" role="tablist"><button type="button" role="tab" data-view="ask" aria-selected="true" data-i18n="tAsk">Pregunta</button><button type="button" role="tab" data-view="dax" aria-selected="false" data-i18n="tDax">DAX</button></span></div>
@@ -363,7 +466,7 @@ Respuesta:</code></pre>
       </div>
     </div>
     <div class="lab__meta">
-      <span class="lab__num mono">05 · Microsoft Fabric · <span data-i18n="prodTag">En producción</span></span>
+      <span class="lab__num mono">07 · Microsoft Fabric · <span data-i18n="prodTag">En producción</span></span>
       <h3 data-i18n="l5t">Agentes de datos sobre modelos semánticos</h3>
       <p data-i18n="l5d">En CIMMYT construí agentes de datos con IA en Microsoft Fabric conectados a modelos semánticos en vivo: los usuarios preguntan en lenguaje natural y el agente responde con consultas sobre medidas certificadas, no con cifras inventadas.</p>
       <p class="lab__key"><b data-i18n="keyL">Decisión clave</b> <span data-i18n="l5k">Respuestas gobernadas: el agente solo consulta el modelo semántico y sus medidas, así la cifra coincide con el dashboard oficial.</span></p>
@@ -372,7 +475,7 @@ Respuesta:</code></pre>
     </div>
   </article>
 
-  <!-- 06 AUTOMATIONS -->
+  <!-- 08 AUTOMATIONS -->
   <article class="lab lab--flip reveal" id="lab-auto">
     <div class="win">
       <div class="win__bar"><span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="win__url mono">make · n8n / automatizaciones con LLM</span><span class="win__tabs" role="tablist"><button type="button" role="tab" data-view="all" aria-selected="true" data-i18n="tAll">Flujos</button></span></div>
@@ -388,7 +491,7 @@ Respuesta:</code></pre>
       </div>
     </div>
     <div class="lab__meta">
-      <span class="lab__num mono">06 · Make · n8n</span>
+      <span class="lab__num mono">08 · Make · n8n</span>
       <h3 data-i18n="l6t">LLMs dentro de procesos de negocio</h3>
       <p data-i18n="l6d">Automatizaciones donde el LLM es un paso más del proceso: agente de voz que agenda citas, extracción de facturas a JSON, minutas de reuniones y un asistente de Telegram que entiende notas de voz.</p>
       <div class="tags"><span class="tag">Webhooks</span><span class="tag">Salida estructurada</span><span class="tag">Voz</span><span class="tag">Integraciones</span></div>
@@ -405,15 +508,16 @@ Respuesta:</code></pre>
     <span class="mono" data-i18n="mxS">(04) Lo que pide un<br>Agentic AI Engineer</span>
   </div>
   <ul class="caps">
-<li class="cap cap--ok reveal"><span class="cap__req" data-i18n="x1">Diseño, desarrollo y despliegue de agentes de IA</span><span class="cap__ev"><a href="#lab-hotel">Concierge multi-agente</a><a href="#lab-mcp">Asistente MCP</a><a href="#lab-fabric">Fabric data agents</a></span><span class="cap__st mono"><i>✓</i><span data-i18n="stOk">Demostrado</span></span></li>
+<li class="cap cap--ok reveal"><span class="cap__req" data-i18n="x1">Diseño, desarrollo y despliegue de agentes de IA</span><span class="cap__ev"><a href="#lab-harness">Harness de incidentes</a><a href="#lab-hotel">Concierge multi-agente</a><a href="#lab-mcp">Asistente MCP</a><a href="#lab-fabric">Fabric data agents</a></span><span class="cap__st mono"><i>✓</i><span data-i18n="stOk">Demostrado</span></span></li>
 <li class="cap cap--ok reveal"><span class="cap__req" data-i18n="x2">LLMs, RAG, embeddings y bases vectoriales</span><span class="cap__ev"><a href="#lab-rag">LexMex RAG · AstraDB</a><a href="#lab-langgraph">Concierge v2 (vector DB)</a></span><span class="cap__st mono"><i>✓</i><span data-i18n="stOk">Demostrado</span></span></li>
-<li class="cap cap--ok reveal"><span class="cap__req" data-i18n="x3">Arquitecturas agénticas y tool calling</span><span class="cap__ev"><a href="#lab-hotel">Router + function calling</a><a href="#lab-mcp">Servidor MCP propio</a></span><span class="cap__st mono"><i>✓</i><span data-i18n="stOk">Demostrado</span></span></li>
+<li class="cap cap--ok reveal"><span class="cap__req" data-i18n="x3">Arquitecturas agénticas y tool calling</span><span class="cap__ev"><a href="#lab-harness">Orquestador + 4 especialistas</a><a href="#lab-bi-agents">Equipo de agentes BI</a><a href="#lab-hotel">Router + function calling</a><a href="#lab-mcp">Servidor MCP propio</a></span><span class="cap__st mono"><i>✓</i><span data-i18n="stOk">Demostrado</span></span></li>
 <li class="cap cap--ok reveal"><span class="cap__req" data-i18n="x4">Integraciones: APIs REST, webhooks, sistemas empresariales</span><span class="cap__ev"><a href="#lab-mcp">Webhooks n8n</a><a href="#lab-auto">Agente de voz · facturas</a><a href="#experience">D365 F&amp;O · SharePoint</a></span><span class="cap__st mono"><i>✓</i><span data-i18n="stOk">Demostrado</span></span></li>
 <li class="cap cap--ok reveal"><span class="cap__req" data-i18n="x5">Prompts, memoria, herramientas y lógica de decisión</span><span class="cap__ev"><a href="#lab-hotel">Personas + memoria</a><a href="#lab-mcp">Switch + LLM</a></span><span class="cap__st mono"><i>✓</i><span data-i18n="stOk">Demostrado</span></span></li>
 <li class="cap cap--ok reveal"><span class="cap__req" data-i18n="x6">IA en ambientes productivos</span><span class="cap__ev"><a href="#lab-fabric">Fabric data agents · CIMMYT</a></span><span class="cap__st mono"><i>✓</i><span data-i18n="stOk">Demostrado</span></span></li>
 <li class="cap cap--ok reveal"><span class="cap__req" data-i18n="x7">Stakeholders técnicos y de negocio</span><span class="cap__ev"><a href="#experience">5+ años de consultoría ERP/BI</a><a href="#experience">Capacitación de 2 días</a></span><span class="cap__st mono"><i>✓</i><span data-i18n="stOk">Demostrado</span></span></li>
 <li class="cap cap--wip reveal"><span class="cap__req" data-i18n="x8">Python</span><span class="cap__ev"><a href="#diplomado">TSP · metaheurísticas</a><a href="#dashboards">PySpark en Fabric</a><a href="#lab-langgraph">Concierge v2</a></span><span class="cap__st mono"><i>◐</i><span data-i18n="stWip">En progreso</span></span></li>
-<li class="cap cap--wip reveal"><span class="cap__req" data-i18n="x9">Guardrails y human-in-the-loop</span><span class="cap__ev"><a href="#lab-rag">Grounding “No lo sé”</a><a href="#lab-fabric">Respuestas gobernadas</a><a href="#lab-langgraph">interrupt() en LangGraph</a></span><span class="cap__st mono"><i>◐</i><span data-i18n="stWip">En progreso</span></span></li>
+<li class="cap cap--ok reveal"><span class="cap__req" data-i18n="x9">Guardrails y human-in-the-loop</span><span class="cap__ev"><a href="#lab-harness">Solo lectura + anti-inyección</a><a href="#lab-bi-agents">Plan aprobado por el usuario</a><a href="#lab-rag">Grounding “No lo sé”</a><a href="#lab-fabric">Respuestas gobernadas</a></span><span class="cap__st mono"><i>✓</i><span data-i18n="stOk">Demostrado</span></span></li>
+<li class="cap cap--wip reveal"><span class="cap__req" data-i18n="x11">Evaluación de agentes (evals) y control de costo</span><span class="cap__ev"><a href="#lab-harness">Costo por caso · batería de ataques</a><a href="#lab-langgraph">Evals con trazas</a></span><span class="cap__st mono"><i>◐</i><span data-i18n="stWip">En progreso</span></span></li>
 <li class="cap cap--wip reveal"><span class="cap__req" data-i18n="x10">Plus: LangChain/LangGraph · MCP · Power Automate · Power Platform</span><span class="cap__ev"><a href="#lab-mcp">MCP</a><a href="#dashboards">Power Automate + SharePoint</a><a href="#lab-langgraph">LangGraph</a></span><span class="cap__st mono"><i>◐</i><span data-i18n="stWip">En progreso</span></span></li>
   </ul>
   <p class="caps__legend mono"><span><i class="ok">✓</i> <span data-i18n="lgOk">con evidencia enlazada</span></span><span><i class="wip">◐</i> <span data-i18n="lgWip">evidencia parcial, en construcción</span></span></p>

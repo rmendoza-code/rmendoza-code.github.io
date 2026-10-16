@@ -471,6 +471,17 @@ section{position:relative}
 .auto b{font-size:16px}
 .auto span{font-family:var(--mono);font-size:11px;color:var(--lime)}
 .auto small{color:var(--d-muted);font-size:12px}
+/* pilot results */
+.runs{list-style:none;display:flex;flex-direction:column;gap:6px}
+.runs li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 14px;padding:8px 12px 8px 14px;border-radius:10px;background:#1E1F23;border-left:3px solid #3A3B40}
+.runs li.ok{border-left-color:var(--lime)}
+.runs li.sec{border-left-color:var(--accent)}
+.runs b{font-size:13.5px}
+.runs span{grid-column:1;font-size:12.5px;line-height:1.4;color:var(--d-muted)}
+.runs em{grid-column:2;grid-row:1/3;align-self:center;font-style:normal;font-size:11px;text-transform:none;color:var(--lime);white-space:nowrap}
+.runs__note{margin-top:10px;color:var(--d-muted);font-size:10px;text-transform:uppercase;text-align:right}
+.road--tight{gap:6px;padding:0}
+.road--tight li{padding:7px 12px;font-size:13px}
 /* capability matrix */
 .matrix{padding-block:clamp(90px,12vw,170px)}
 .caps{list-style:none;border-top:1px solid var(--d-line)}
@@ -517,6 +528,8 @@ a.mod__lk:hover{text-decoration:underline}
   .win__tabs{margin-left:auto}
   .pipe{grid-template-columns:1fr 1fr}
   .mcp__tools,.autos{grid-template-columns:1fr}
+  .runs li{grid-template-columns:1fr}
+  .runs em{grid-column:1;grid-row:auto;margin-top:4px}
   .mods{grid-template-columns:1fr}
   .mod{min-height:0}
   .qa__bars div{grid-template-columns:78px 1fr 48px}
