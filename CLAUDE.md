@@ -42,9 +42,9 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 4. Regenerar derivados si cambió su fuente: `node tools/render.js cv` y `node tools/render.js og` (requiere Playwright).
 5. `git add -A && git commit && git push origin main` → GitHub Pages publica en 1–2 min.
 
-## Estado al 2026-10-12
+## Estado al 2026-10-16
 - Publicado: v2 (rediseño), v3 (AI Lab + matriz + diplomado), v4 (dashboards rediseñados), CVs, casos Cloud billing y Training App, `CLAUDE.md` + `tools/`.
-- Publicado: **hero v5** — video del avatar en 2K sobre azul noche → cobalto, controlado por el mouse (scrub) y reproducido una vez en móvil, con máquina de escribir y píldoras. Rodrigo lo aprobó; no hay nada pendiente de push.
+- Publicado: **hero v5** — video del avatar en 2K sobre azul noche → cobalto, controlado por el mouse (scrub) y reproducido una vez en móvil, con máquina de escribir y píldoras. Rodrigo lo aprobó.
 - Hero revisado por Rodrigo en su celular el 2026-10-12: se ve bien.
 - 2026-10-16: AI Lab con dos ventanas nuevas: harness multiagente de incidentes de datos (piloto de 2 días: arquitectura, 5 resultados con tiempo y costo, guardrails) y equipo de agentes que construye dashboards (equipo y etapas G0–G8). **Regla de Rodrigo: todo lo de su trabajo actual va anonimizado, solo resultados y diagramas;** sin nombres de workspaces, modelos, asuntos de correo ni cifras de la organización. Matriz: guardrails/HITL pasa a ✓ y se agrega la fila "Evaluación de agentes (evals) y control de costo" (◐).
 - Postulación en curso: vacante *Generative / Agentic AI Engineer* (reclutadora: Myrna Arredondo, myrna.arredondo@mystratis.com). Correo redactado; enviar con el CV adjunto.
