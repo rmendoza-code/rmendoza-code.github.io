@@ -15,7 +15,7 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 ## Estructura
 | Ruta | Qué es |
 |---|---|
-| `index.html` | Landing: hero oscuro con video del avatar que avanza/retrocede con el mouse (`assets/site/video/hero-wave.mp4`, póster `img/hero-poster.webp`), texto con efecto máquina de escribir y píldoras; perfil + métricas, servicios, **AI Lab** (`#ai-lab`, 8 ventanas; las dos primeras, `#lab-harness` y `#lab-bi-agents`, son sistemas multiagente de su trabajo actual mostrados anonimizados), matriz **capacidades → evidencia** (`#capacidades`), **diplomado Tec** (`#diplomado`, `#tsp`), **Datos & BI** (`#dashboards`), trayectoria, stack, FAQ, contacto |
+| `index.html` | Landing (la sección `#dashboards` es un archivero: carpetas apiladas con título; al pasar el cursor se asoman los documentos y el clic abre el caso): hero oscuro con video del avatar que avanza/retrocede con el mouse (`assets/site/video/hero-wave.mp4`, póster `img/hero-poster.webp`), texto con efecto máquina de escribir y píldoras; perfil + métricas, servicios, **AI Lab** (`#ai-lab`, 8 ventanas; las dos primeras, `#lab-harness` y `#lab-bi-agents`, son sistemas multiagente de su trabajo actual mostrados anonimizados), matriz **capacidades → evidencia** (`#capacidades`), **diplomado Tec** (`#diplomado`, `#tsp`), **Datos & BI** (`#dashboards`), trayectoria, stack, FAQ, contacto |
 | `assets/site/styles.css`, `main.js` | Estilos y lógica del landing. **Textos en inglés en el objeto `EN` de `main.js`** (misma clave que `data-i18n`); el español vive en el HTML |
 | `assets/site/case.css` | Estilos compartidos de las páginas de caso |
 | `assets/site/fonts/`, `img/` | Fuentes autoalojadas (Archivo, JetBrains Mono) e imágenes (figuras 3D en WebP) |
