@@ -546,7 +546,7 @@ a.mod__lk:hover{text-decoration:underline}
 @media (max-width:760px){.win__panel .diag{min-width:600px;height:340px}.win__panel{overflow-x:auto}}
 
 /* archivero de expedientes (Datos & BI) */
-.cab{position:relative;max-width:1080px;margin:0 auto;padding-top:clamp(70px,9vw,120px)}
+.cab{position:relative;max-width:1080px;margin:0 auto;padding-top:clamp(40px,6vw,84px)}
 .cab__drawer{position:relative;padding:26px clamp(14px,3vw,34px) 0;background:linear-gradient(180deg,#121316,#1C1D21);border:1px solid var(--d-line);border-bottom:0;border-radius:18px 18px 0 0}
 .fold{position:relative;display:block;height:236px;margin-top:-138px;z-index:calc(var(--i) + 1);color:var(--ink);transition:transform .55s var(--ease)}
 .fold:first-child{margin-top:0}

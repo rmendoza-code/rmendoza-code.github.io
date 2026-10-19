@@ -40,7 +40,7 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 - CSP estricta en `index.html`: solo `'self'`, `data:` para imágenes y `frame-src https://udify.app` (demo en vivo del agente del hotel). Si agregas otro iframe o host, actualiza la CSP.
 
 ## Flujo de trabajo
-1. Editar HTML/CSS/JS directamente (sitio estático, sin build).
+1. Editar HTML/CSS/JS directamente (sitio estático, sin build). Si cambias un CSS o JS, sube el `?v=AAAAMMDD` de sus enlaces en `index.html` y `dashboards/*.html` para que el navegador no use la versión en caché.
 2. Probar en local: `python tools/serve.py` → http://127.0.0.1:8000 (`http.server` no soporta Range y el video del hero no hace scrub) (revisa ES y EN, escritorio y móvil).
 3. Verificar enlaces y anclas antes de publicar (todas las anclas que usa el CV: `ai-lab, capacidades, lab-hotel, lab-mcp, lab-rag, lab-fabric, lab-auto, lab-langgraph, tsp, dashboards`).
 4. Regenerar derivados si cambió su fuente: `node tools/render.js cv` y `node tools/render.js og` (requiere Playwright).
