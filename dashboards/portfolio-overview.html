@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#E8E8E8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'" />
+<title>Portafolio de proyectos · Rodrigo Mendoza Cortés</title>
+<meta name="description" content="Caso: reporte de Power BI que reemplaza la presentación mensual de un portafolio regional de proyectos, con una vista por responsable y exportación a PDF. Recreación con datos de muestra." />
+<link rel="canonical" href="https://rmendoza-code.github.io/dashboards/portfolio-overview.html" />
+<meta property="og:image" content="https://rmendoza-code.github.io/assets/og-image.png" />
+<link rel="icon" href="../assets/site/img/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="../assets/site/case.css" />
+<link rel="stylesheet" href="../assets/site/db.css" />
+<style>
+.ring{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ring svg{width:56px;height:56px;flex:none}
+.donut{display:grid;grid-template-columns:minmax(0,180px) 1fr;gap:16px;align-items:center;margin-top:10px}
+.donut svg{margin:0}
+.donut ul{list-style:none;display:grid;gap:10px;font-size:13px}
+.donut li{display:grid;grid-template-columns:12px 1fr auto;gap:8px;align-items:center}
+.donut li i{width:12px;height:12px;border-radius:3px}
+.donut li b{font-family:"JBMono",monospace;font-size:11px;font-weight:500}
+.pos{list-style:none;display:grid;gap:14px;margin-top:12px}
+.pos li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;font-size:13px}
+.pos li b{font-family:"JBMono",monospace;font-size:11px;font-weight:500}
+.pos__bar{grid-column:1/-1;display:flex;height:22px;border-radius:5px;overflow:hidden;background:#2D2E32}
+.pos__bar i{display:flex;align-items:center;justify-content:center;font-style:normal;font-family:"JBMono",monospace;font-size:10px;overflow:hidden;white-space:nowrap;transition:width .8s var(--ease-out)}
+.pos__bar .e{background:#B8E08C;color:#111214}.pos__bar .c{background:#3B4FE0;color:#fff}.pos__bar .b{background:#3A3B40;color:#C9CBD0}
+@media(max-width:520px){.donut{grid-template-columns:1fr}.donut svg{max-width:180px;margin:0 auto}}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="btn" href="../index.html#dashboards">← Volver al portafolio</a>
+  <span data-lang-toggle-here></span>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="kick"><span class="pill pill--lime pill--dot mono">En desarrollo</span><span class="pill mono">Finanzas · Proyectos</span><span class="pill mono">Datos de muestra</span></div>
+    <h1>Portafolio de proyectos</h1>
+    <p class="lead">Cada mes, el avance de un portafolio regional de proyectos se presentaba en un PowerPoint de unas 22 diapositivas armado a mano: resumen, planes por responsable y una sección por cada investigador. Este reporte de Power BI reproduce esa presentación con datos vivos y la exporta a PDF en el mismo orden.</p>
+    <div class="tags"><span>Power BI</span><span>DAX</span><span>Bookmarks</span><span>Exportación a PDF</span><span>Equipo de agentes</span></div>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">01 · El problema</div>
+    <h2>Una presentación que se rehacía cada mes</h2>
+    <p class="intro">La presentación funcionaba, y por eso nadie quería perderla. El reto no era inventar otro tablero: era que el reporte se viera como la presentación de siempre y dejara de depender de copiar cifras a mano.</p>
+    <div class="grid3">
+      <div class="fact"><span class="mono">Panorama</span><b>¿Cómo va el portafolio?</b><p>Presupuesto del año, gasto, comprometido, saldo y porcentaje de implementación.</p></div>
+      <div class="fact"><span class="mono">Planes</span><b>¿Quién tiene plan?</b><p>Responsables ordenados por saldo pendiente, con el estado de su plan de gasto.</p></div>
+      <div class="fact"><span class="mono">Por investigador</span><b>¿Cómo va cada uno?</b><p>Una sección por responsable con sus proyectos, fechas y comentarios.</p></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">02 · La solución</div>
+    <h2>La misma presentación, ahora con datos vivos</h2>
+    <div class="flow">
+      <div class="step"><span class="mono">Diseño</span><b>Extraído del PPTX</b><p>Cajas, colores, fuentes y tablas de cada diapositiva se leyeron del archivo original.</p></div>
+      <div class="step"><span class="mono">Datos</span><b>Modelo central</b><p>Lectura del modelo financiero compartido, con medidas propias para el alcance del portafolio.</p></div>
+      <div class="step"><span class="mono">Por responsable</span><b>Bookmarks</b><p>Un marcador por investigador filtra sus páginas sin duplicarlas.</p></div>
+      <div class="step"><span class="mono">Entrega</span><b>PDF en orden</b><p>Se exporta con las mismas páginas, en el mismo orden que la presentación.</p></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">03 · El tablero</div>
+    <h2>Panorama del portafolio, interactivo</h2>
+    <p class="intro">Recreación con datos de muestra. Cambia el mes de corte o filtra por portafolio: los KPIs, la dona, las barras y la tabla se recalculan.</p>
+    <div class="win">
+      <div class="win__bar"><span class="dots"><i></i><i></i><i></i></span><span class="url mono">powerbi · portafolio-regional / panorama</span></div>
+      <div class="db">
+        <div class="db__top"><span class="db__lbl">Mes de corte</span><div class="seg" id="months" role="group" aria-label="Mes de corte"></div></div>
+        <div class="db__top"><span class="db__lbl">Portafolio</span><div class="seg" id="ports" role="group" aria-label="Portafolio"></div></div>
+        <div class="kpis kpis--6">
+          <div class="k"><span class="mono">Proyectos</span><b id="k-n">—</b></div>
+          <div class="k"><span class="mono">Presupuesto del año</span><b id="k-bud">—</b></div>
+          <div class="k"><span class="mono">Gasto</span><b id="k-exp">—</b></div>
+          <div class="k"><span class="mono">Comprometido</span><b id="k-com">—</b></div>
+          <div class="k"><span class="mono">Saldo</span><b id="k-bal">—</b></div>
+          <div class="k k--hl"><span class="mono">Implementación</span><div class="ring"><b id="k-imp">—</b><svg viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="14" fill="none" stroke="rgba(17,18,20,.18)" stroke-width="5"/><circle id="k-ring" cx="18" cy="18" r="14" fill="none" stroke="#111214" stroke-width="5" stroke-linecap="round" stroke-dasharray="0 88" transform="rotate(-90 18 18)"/></svg></div></div>
+        </div>
+        <div class="charts charts--even">
+          <div class="panel"><span class="mono">Participación en el presupuesto del año</span><div class="donut"><svg id="donut" viewBox="0 0 120 120" role="img" aria-label="Dona de participación por portafolio"></svg><ul id="donut-l"></ul></div></div>
+          <div class="panel"><span class="mono">Posición por portafolio</span><ul class="pos" id="pos"></ul><div class="legend"><span><i style="background:#B8E08C"></i>Gasto</span><span><i style="background:#3B4FE0"></i>Comprometido</span><span><i style="background:#3A3B40"></i>Saldo</span></div></div>
+        </div>
+        <div class="panel"><span class="mono">Planes por responsable · ordenados por saldo</span>
+          <div class="tbl-wrap"><table class="tbl"><thead><tr><th>Responsable</th><th>Proyectos</th><th>Presupuesto</th><th>Implementación</th><th>Saldo</th><th>Plan de gasto</th></tr></thead><tbody id="plans"></tbody></table></div>
+        </div>
+      </div>
+      <div class="win__foot mono">Recreación · datos de muestra</div>
+    </div>
+    <p class="note">Implementación = (gasto + comprometido) ÷ presupuesto del año. Cifras, portafolios y responsables son ilustrativos.</p>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">04 · Las páginas</div>
+    <h2>El orden de la presentación</h2>
+    <ol class="pages">
+      <li><b>Portada</b><p>Con el mes del reporte como subtítulo dinámico.</p></li>
+      <li><b>Panorama</b><p>KPIs, participación y posición por portafolio.</p></li>
+      <li><b>Resumen ejecutivo</b><p>La narrativa del mes junto a las cifras.</p></li>
+      <li><b>Planes por responsable</b><p>Estado del plan de gasto y saldo de cada titular.</p></li>
+      <li><b>Investigador</b><p>KPIs, anillo de implementación y tabla de sus proyectos con fechas.</p></li>
+      <li><b>Comentarios</b><p>Notas del investigador sobre sus proyectos.</p></li>
+      <li><b>Plan de gasto</b><p>Lo que falta ejecutar y cuándo.</p></li>
+      <li><b>Cierre</b><p>La misma diapositiva final de la presentación.</p></li>
+    </ol>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">05 · Cómo se construyó</div>
+    <div class="built">
+      <div>
+        <h2>Con un equipo de agentes</h2>
+        <p>Un orquestador redactó cada plan, un implementador lo construyó y un revisor lo aceptó o rechazó. El usuario aprobó cada plan antes de que se ejecutara.</p>
+        <p style="margin-top:14px"><a class="btn" href="../index.html#lab-bi-agents">Ver el equipo de agentes →</a></p>
+      </div>
+      <ul>
+        <li>El diseño de cada diapositiva se extrajo del PPTX a un archivo de especificación.</li>
+        <li>Las tablas complejas se dibujan como SVG generado con DAX.</li>
+        <li>Lo que el usuario ajusta a mano en Power BI se respeta y pasa a la especificación.</li>
+        <li>Un solo revisor por iteración, para no duplicar costo ni ruido.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a class="btn" href="financial-execution.html">Ver el caso de presupuesto →</a>
+    <a class="btn btn--ghost" href="../index.html#dashboards">Todos los dashboards</a>
+  </div>
+</main>
+<footer class="mono"><span>Rodrigo Mendoza Cortés · Agentic AI &amp; Data Engineer</span><a href="../index.html">rmendoza-code.github.io</a></footer>
+
+<script>
+(function(){
+  /* datos de muestra: 24 proyectos, 3 portafolios, 6 responsables */
+  var PORT=[{n:'Fondos de donantes',c:'#B8E08C'},{n:'Programa de investigación',c:'#3B4FE0'},{n:'Iniciativa estratégica',c:'#A9B4F2'}];
+  var BUD=[.42,.31,.58,.27,.36,.49,.22,.65,.33,.4,.29,.52,.38,.24,.47,.31,.56,.26,.44,.35,.3,.61,.28,.39];
+  var RATE=[.95,1.1,.7,.85,1.2,.6,1.05,.8], COMM=[.08,.12,.2,.05,.1,.15,.07];
+  var PLAN=['listo','parcial','listo','pendiente','listo','parcial'];
+  var P=BUD.map(function(b,k){return {p:[0,0,1,0,2,1][k%6],r:k%6,b:b*1.4,rate:RATE[k%8],c:COMM[k%7]}});
+  var MES=['Jun','Jul','Ago','Sep'], MI=[5,6,7,8], cur=2, port=-1;
+  var $=function(id){return document.getElementById(id)};
+  function M(v){return '$'+v.toFixed(2)+'M'}
+  function calc(list){var b=0,e=0,c=0;list.forEach(function(x){var ex=Math.min(x.b*x.rate*(MI[cur]+1)/12,x.b*(1-x.c));b+=x.b;e+=ex;c+=x.b*x.c});return {n:list.length,b:b,e:e,c:c,s:b-e-c,i:b?(e+c)/b:0}}
+  function seg(id,items,on,cb){
+    $(id).innerHTML=items.map(function(t,i){return '<button type="button" class="'+(i===on?'on':'')+'" data-i="'+i+'" aria-pressed="'+(i===on)+'">'+t+'</button>'}).join('');
+    [].forEach.call($(id).querySelectorAll('button'),function(b){b.onclick=function(){cb(+b.dataset.i);render()}});
+  }
+  function render(){
+    seg('months',MES,cur,function(i){cur=i});
+    seg('ports',['Todos'].concat(PORT.map(function(p){return p.n})),port+1,function(i){port=i-1});
+    var sel=P.filter(function(x){return port<0||x.p===port}), t=calc(sel);
+    $('k-n').textContent=t.n; $('k-bud').textContent=M(t.b); $('k-exp').textContent=M(t.e); $('k-com').textContent=M(t.c); $('k-bal').textContent=M(t.s);
+    $('k-imp').textContent=Math.round(t.i*100)+'%'; $('k-ring').setAttribute('stroke-dasharray',(t.i*88).toFixed(1)+' 88');
+    /* dona: participación de cada portafolio en el presupuesto (resalta el filtrado) */
+    var tot=calc(P).b, a0=-Math.PI/2, s='', leg='';
+    PORT.forEach(function(p,i){
+      var v=calc(P.filter(function(x){return x.p===i})).b, a1=a0+v/tot*Math.PI*2, R=54, r=34, big=a1-a0>Math.PI?1:0;
+      var f=function(a,rr){return (60+rr*Math.cos(a)).toFixed(2)+' '+(60+rr*Math.sin(a)).toFixed(2)};
+      s+='<path d="M'+f(a0,R)+' A'+R+' '+R+' 0 '+big+' 1 '+f(a1,R)+' L'+f(a1,r)+' A'+r+' '+r+' 0 '+big+' 0 '+f(a0,r)+'Z" fill="'+p.c+'" opacity="'+(port<0||port===i?1:.25)+'"/>';
+      leg+='<li><i style="background:'+p.c+'"></i><span>'+p.n+'</span><b>'+(v/tot*100).toFixed(1)+'%</b></li>';
+      a0=a1;
+    });
+    s+='<text x="60" y="64" text-anchor="middle" style="font-size:13px;fill:#EDEDED;font-family:Archivo,sans-serif;font-weight:700">'+M(tot)+'</text>';
+    $('donut').innerHTML=s; $('donut-l').innerHTML=leg;
+    /* posición por portafolio */
+    $('pos').innerHTML=PORT.map(function(p,i){
+      var q=calc(P.filter(function(x){return x.p===i})), e=q.e/q.b*100, c=q.c/q.b*100, b=100-e-c;
+      var lab=function(v){return v>=9?Math.round(v)+'%':''};
+      return '<li style="opacity:'+(port<0||port===i?1:.35)+'"><span>'+p.n+'</span><b>'+Math.round(q.i*100)+'%</b><span class="pos__bar"><i class="e" style="width:'+e+'%">'+lab(e)+'</i><i class="c" style="width:'+c+'%">'+lab(c)+'</i><i class="b" style="width:'+b+'%">'+lab(b)+'</i></span></li>';
+    }).join('');
+    /* planes por responsable, ordenados por saldo */
+    var rows=[0,1,2,3,4,5].map(function(r){var q=calc(sel.filter(function(x){return x.r===r}));q.r=r;return q}).filter(function(q){return q.n}).sort(function(a,b){return b.s-a.s});
+    var ST={listo:['st--ok','Plan listo'],parcial:['st--mid','Parcial'],pendiente:['st--bad','Pendiente']};
+    $('plans').innerHTML=rows.map(function(q){var st=ST[PLAN[q.r]];return '<tr><td><span>Responsable</span> 0'+(q.r+1)+'</td><td>'+q.n+'</td><td>'+M(q.b)+'</td><td>'+Math.round(q.i*100)+'%</td><td>'+M(q.s)+'</td><td><span class="st '+st[0]+'">'+st[1]+'</span></td></tr>'}).join('');
+    if(window.I18N&&I18N.refresh)I18N.refresh();
+  }
+  render();
+})();
+</script>
+<script src="../assets/i18n.js"></script>
+<script>
+I18N.register({
+  "← Volver al portafolio":"← Back to portfolio","En desarrollo":"In development","Finanzas · Proyectos":"Finance · Projects","Datos de muestra":"Sample data",
+  "Portafolio de proyectos":"Project portfolio",
+  "Cada mes, el avance de un portafolio regional de proyectos se presentaba en un PowerPoint de unas 22 diapositivas armado a mano: resumen, planes por responsable y una sección por cada investigador. Este reporte de Power BI reproduce esa presentación con datos vivos y la exporta a PDF en el mismo orden.":"Every month, progress on a regional project portfolio was presented in a hand-built PowerPoint of about 22 slides: summary, plans by owner and a section per researcher. This Power BI report reproduces that deck with live data and exports it to PDF in the same order.",
+  "Exportación a PDF":"PDF export","Equipo de agentes":"Agent team",
+  "01 · El problema":"01 · The problem","Una presentación que se rehacía cada mes":"A deck rebuilt every month",
+  "La presentación funcionaba, y por eso nadie quería perderla. El reto no era inventar otro tablero: era que el reporte se viera como la presentación de siempre y dejara de depender de copiar cifras a mano.":"The deck worked, so nobody wanted to lose it. The challenge wasn’t inventing another dashboard: it was making the report look like the usual deck and stop depending on copying figures by hand.",
+  "Panorama":"Overview","¿Cómo va el portafolio?":"How is the portfolio doing?","Presupuesto del año, gasto, comprometido, saldo y porcentaje de implementación.":"Year budget, expense, committed, balance and implementation rate.",
+  "Planes":"Plans","¿Quién tiene plan?":"Who has a plan?","Responsables ordenados por saldo pendiente, con el estado de su plan de gasto.":"Owners ranked by remaining balance, with the status of their spending plan.",
+  "Por investigador":"By researcher","¿Cómo va cada uno?":"How is each one doing?","Una sección por responsable con sus proyectos, fechas y comentarios.":"One section per owner with their projects, dates and comments.",
+  "02 · La solución":"02 · The solution","La misma presentación, ahora con datos vivos":"The same deck, now with live data",
+  "Diseño":"Design","Extraído del PPTX":"Extracted from the PPTX","Cajas, colores, fuentes y tablas de cada diapositiva se leyeron del archivo original.":"Boxes, colors, fonts and tables of each slide were read from the original file.",
+  "Datos":"Data","Modelo central":"Central model","Lectura del modelo financiero compartido, con medidas propias para el alcance del portafolio.":"Reads the shared financial model, with its own measures for the portfolio scope.",
+  "Por responsable":"By owner","Un marcador por investigador filtra sus páginas sin duplicarlas.":"One bookmark per researcher filters their pages without duplicating them.",
+  "Entrega":"Delivery","PDF en orden":"PDF in order","Se exporta con las mismas páginas, en el mismo orden que la presentación.":"Exported with the same pages, in the same order as the deck.",
+  "03 · El tablero":"03 · The dashboard","Panorama del portafolio, interactivo":"Portfolio overview, interactive",
+  "Recreación con datos de muestra. Cambia el mes de corte o filtra por portafolio: los KPIs, la dona, las barras y la tabla se recalculan.":"Recreation with sample data. Change the cut-off month or filter by portfolio: KPIs, donut, bars and table recalculate.",
+  "Mes de corte":"Cut-off month","Portafolio":"Portfolio","Todos":"All",
+  "Proyectos":"Projects","Presupuesto del año":"Year budget","Gasto":"Expense","Comprometido":"Committed","Saldo":"Balance","Implementación":"Implementation",
+  "Participación en el presupuesto del año":"Share of year budget","Posición por portafolio":"Position by portfolio",
+  "Planes por responsable · ordenados por saldo":"Plans by owner · ranked by balance","Responsable":"Owner","Presupuesto":"Budget","Plan de gasto":"Spending plan",
+  "Plan listo":"Plan ready","Parcial":"Partial","Pendiente":"Pending",
+  "Fondos de donantes":"Donor funds","Programa de investigación":"Research program","Iniciativa estratégica":"Strategic initiative","Ago":"Aug",
+  "Recreación · datos de muestra":"Recreation · sample data",
+  "Implementación = (gasto + comprometido) ÷ presupuesto del año. Cifras, portafolios y responsables son ilustrativos.":"Implementation = (expense + committed) ÷ year budget. Figures, portfolios and owners are illustrative.",
+  "04 · Las páginas":"04 · The pages","El orden de la presentación":"The deck’s order",
+  "Portada":"Cover","Con el mes del reporte como subtítulo dinámico.":"With the report month as a dynamic subtitle.",
+  "KPIs, participación y posición por portafolio.":"KPIs, share and position by portfolio.",
+  "Resumen ejecutivo":"Executive summary","La narrativa del mes junto a las cifras.":"The month’s narrative next to the figures.",
+  "Planes por responsable":"Plans by owner","Estado del plan de gasto y saldo de cada titular.":"Spending-plan status and balance for each holder.",
+  "Investigador":"Researcher","KPIs, anillo de implementación y tabla de sus proyectos con fechas.":"KPIs, implementation ring and a table of their projects with dates.",
+  "Comentarios":"Comments","Notas del investigador sobre sus proyectos.":"The researcher’s notes on their projects.",
+  "Lo que falta ejecutar y cuándo.":"What remains to be spent, and when.",
+  "Cierre":"Closing","La misma diapositiva final de la presentación.":"The same closing slide as the deck.",
+  "05 · Cómo se construyó":"05 · How it was built","Con un equipo de agentes":"With an agent team",
+  "Un orquestador redactó cada plan, un implementador lo construyó y un revisor lo aceptó o rechazó. El usuario aprobó cada plan antes de que se ejecutara.":"An orchestrator drafted each plan, an implementer built it and a reviewer accepted or rejected it. The user approved every plan before it ran.",
+  "Ver el equipo de agentes →":"See the agent team →",
+  "El diseño de cada diapositiva se extrajo del PPTX a un archivo de especificación.":"Each slide’s design was extracted from the PPTX into a spec file.",
+  "Las tablas complejas se dibujan como SVG generado con DAX.":"Complex tables are drawn as DAX-generated SVG.",
+  "Lo que el usuario ajusta a mano en Power BI se respeta y pasa a la especificación.":"Whatever the user adjusts by hand in Power BI is kept and folded into the spec.",
+  "Un solo revisor por iteración, para no duplicar costo ni ruido.":"A single reviewer per iteration, to avoid doubling cost and noise.",
+  "Ver el caso de presupuesto →":"See the budget case →","Todos los dashboards":"All dashboards"
+});
+I18N.init();
+</script>
+</body>
+</html>

@@ -4,103 +4,213 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="referrer" content="strict-origin-when-cross-origin" />
-<meta name="robots" content="noindex, follow" />
+<meta name="robots" content="index, follow" />
 <meta name="theme-color" content="#E8E8E8" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'" />
-<title>Financial Execution Report · Rodrigo Mendoza Cortés</title>
+<title>Presupuesto vs gasto real · Rodrigo Mendoza Cortés</title>
+<meta name="description" content="Caso: dashboard de Power BI que reemplaza el Excel mensual de presupuesto vs gasto real, con ejecución por unidad, ritmo lineal y alertas de sobregiro. Recreación con datos de muestra." />
+<link rel="canonical" href="https://rmendoza-code.github.io/dashboards/financial-execution.html" />
+<meta property="og:image" content="https://rmendoza-code.github.io/assets/og-image.png" />
 <link rel="icon" href="../assets/site/img/favicon.svg" type="image/svg+xml" />
-<style>
-@font-face{font-family:"Archivo";src:url(../assets/site/fonts/archivo-wdth.woff2) format("woff2");font-weight:100 900;font-stretch:62% 125%;font-display:swap}
-@font-face{font-family:"JBMono";src:url(../assets/site/fonts/jetbrains-mono-500.woff2) format("woff2");font-weight:500;font-display:swap}
-:root{--paper:#E8E8E8;--ink:#111214;--muted:#56585E;--line:rgba(17,18,20,.14);--pen:#3B4FE0;--lime:#B8E08C;--gut:clamp(16px,3vw,48px);--ease:cubic-bezier(.76,0,.24,1)}
-*{margin:0;padding:0;box-sizing:border-box}
-body{min-height:100svh;background:var(--paper);color:var(--ink);font-family:"Archivo",system-ui,sans-serif;-webkit-font-smoothing:antialiased;display:flex;flex-direction:column}
-a{color:inherit;text-decoration:none}
-.mono{font-family:"JBMono",ui-monospace,monospace;font-size:12px;text-transform:uppercase}
-.top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px var(--gut);border-bottom:1px solid var(--line)}
-.btn{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 18px;border-radius:999px;background:var(--ink);color:var(--paper);font-weight:600;font-size:14px;transition:background-color .3s}
-.btn:hover{background:var(--pen)}
-.btn--ghost{background:transparent;color:var(--ink);border:1px solid var(--ink)}
-.btn--ghost:hover{background:var(--ink);color:var(--paper)}
-.lang-toggle{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 14px;border:1px solid var(--ink);border-radius:999px;background:transparent;color:var(--muted);cursor:pointer;font-family:"JBMono",monospace;font-size:12px}
-.lang-toggle [data-lang]{opacity:.45}.lang-toggle [data-lang].on{opacity:1;color:var(--ink)}.lang-sep{opacity:.4}
-main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(24px,5vw,72px);align-items:center;padding:clamp(40px,7vw,96px) var(--gut)}
-.badge{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--lime);color:var(--ink)}
-.badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink);animation:p 1.6s ease-in-out infinite}
-@keyframes p{50%{opacity:.25}}
-h1{font-weight:800;font-stretch:62%;text-transform:uppercase;font-size:clamp(44px,5.8vw,96px);line-height:.88;letter-spacing:-.015em;margin:22px 0 22px}
-.lead{font-size:clamp(17px,1.4vw,20px);color:var(--muted);max-width:34em}
-.tags{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 28px}
-.tags span{font-family:"JBMono",monospace;font-size:11px;padding:7px 12px;border:1px solid var(--line);border-radius:999px}
-.actions{display:flex;flex-wrap:wrap;gap:10px}
-.win{background:#16171A;border-radius:18px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(17,18,20,.45),0 0 0 1px rgba(17,18,20,.9)}
-.bar{display:flex;align-items:center;gap:12px;height:46px;padding:0 14px;background:#0E0F11;color:#9FA1A6}
-.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:#3A3B40}.dots i:first-child{background:var(--lime)}
-.url{flex:1;background:#1C1D21;border-radius:8px;padding:6px 10px;font-size:11px;text-transform:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.win svg{display:block;width:100%;height:auto}
-.note{padding:10px 14px;color:#9FA1A6;font-size:10px;text-align:right;background:#16171A}
-footer{padding:20px var(--gut);border-top:1px solid var(--line);color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-:focus-visible{outline:2px solid var(--pen);outline-offset:3px}
-@media(max-width:860px){main{grid-template-columns:1fr}}
-</style>
+<link rel="stylesheet" href="../assets/site/case.css" />
+<link rel="stylesheet" href="../assets/site/db.css" />
 </head>
 <body>
 <header class="top">
   <a class="btn" href="../index.html#dashboards">← Volver al portafolio</a>
   <span data-lang-toggle-here></span>
 </header>
-<main>
-  <div>
-    <span class="badge mono">En construcción</span>
-    <h1>Financial Execution Report</h1>
-    <p class="lead">Reporte de ejecución financiera con página de comentarios integrada vía Microsoft Forms → Power Automate → SharePoint, renderizada con HTML Viewer.</p>
-    <div class="tags"><span>Power BI</span><span>Power Automate</span><span>SharePoint</span><span>Microsoft Forms</span></div>
-    <p class="lead">Este caso de estudio se está documentando — del levantamiento del requerimiento al dashboard interactivo, igual que el de Procurement.</p>
-    <div class="actions" style="margin-top:26px">
-      <a class="btn" href="procurement-analytics.html">Ver el caso de Procurement →</a>
-      <a class="btn btn--ghost" href="../index.html#ai-lab">Ir al AI Lab</a>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="kick"><span class="pill pill--lime pill--dot mono">En desarrollo</span><span class="pill mono">Finanzas</span><span class="pill mono">Datos de muestra</span></div>
+    <h1>Presupuesto vs gasto real</h1>
+    <p class="lead">Cada mes, Finanzas armaba a mano un Excel con el presupuesto contra el gasto real de cada unidad y programa. Este dashboard lo reemplaza: muestra la ejecución contra el presupuesto, detecta sobregiros y permite bajar del resumen ejecutivo hasta el proyecto y sus transacciones.</p>
+    <div class="tags"><span>Power BI</span><span>Modelo compuesto · DirectQuery</span><span>DAX</span><span>Drill-through</span><span>Equipo de agentes</span></div>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">01 · El problema</div>
+    <h2>Un Excel mensual para tres audiencias</h2>
+    <p class="intro">El mismo archivo tenía que servirle a dirección, a los directores de programa y a quien administra cada presupuesto. Cada mes había que reconstruirlo, y bajar al detalle de un proyecto significaba abrir otro reporte.</p>
+    <div class="grid3">
+      <div class="fact"><span class="mono">Dirección</span><b>¿Vamos al ritmo?</b><p>Ejecución total contra el presupuesto anual y contra el ritmo lineal del año.</p></div>
+      <div class="fact"><span class="mono">Directores de programa</span><b>¿Quién se sobregira?</b><p>Comparar unidades y programas, y ver primero los que van por encima del ritmo.</p></div>
+      <div class="fact"><span class="mono">Responsables de presupuesto</span><b>¿Qué hay detrás?</b><p>Bajar del programa al proyecto, sus categorías de gasto, transacciones y compromisos.</p></div>
     </div>
-  </div>
-  <div class="win" aria-hidden="true">
-    <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span class="url mono">powerbi · financial-execution / resumen</span></div>
-    <svg viewBox="0 0 640 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <rect width="640" height="400" fill="#1A1B1E"/>
-          <g font-family="JBMono,monospace" font-size="11" fill="#9FA1A6">
-            <text x="48" y="70">EJECUTADO</text><text x="330" y="70">VS. PRESUPUESTO</text>
-          </g>
-          <text x="48" y="122" font-family="Archivo,sans-serif" font-size="46" font-weight="800" fill="#EDEDED">$84.2M</text>
-          <text x="330" y="122" font-family="Archivo,sans-serif" font-size="46" font-weight="800" fill="#B8E08C">96.1%</text>
-          <g font-family="JBMono,monospace" font-size="11" fill="#9FA1A6">
-            <text x="48" y="178">CAPEX</text><text x="48" y="218">OPEX</text><text x="48" y="258">SERVICIOS</text>
-          </g>
-          <g>
-            <rect x="150" y="168" width="440" height="12" rx="6" fill="#2D2E32"/><rect class="hb" x="150" y="168" width="420" height="12" rx="6" fill="#EDEDED"/>
-            <rect x="150" y="208" width="440" height="12" rx="6" fill="#2D2E32"/><rect class="hb" x="150" y="208" width="400" height="12" rx="6" fill="#EDEDED"/>
-            <rect x="150" y="248" width="440" height="12" rx="6" fill="#2D2E32"/><rect class="hb" x="150" y="248" width="436" height="12" rx="6" fill="#B8E08C"/>
-            <path d="M572 160v28M572 200v28M572 240v28" stroke="#B8E08C" stroke-width="2"/>
-          </g>
-          <g font-family="JBMono,monospace" font-size="11" text-anchor="middle">
-            <rect x="48" y="310" width="120" height="40" rx="20" fill="#222327" stroke="rgba(237,237,237,.2)"/><text x="108" y="334" fill="#EDEDED">FORMS</text>
-            <rect x="248" y="310" width="140" height="40" rx="20" fill="#B8E08C"/><text x="318" y="334" fill="#111214">AUTOMATE</text>
-            <rect x="468" y="310" width="124" height="40" rx="20" fill="#222327" stroke="rgba(237,237,237,.2)"/><text x="530" y="334" fill="#EDEDED">SHAREPOINT</text>
-          </g>
-          <g fill="none" stroke="rgba(237,237,237,.35)" stroke-width="1.5"><path d="M168 330H248"/><path d="M388 330H468"/></g>
-        </svg>
-    <div class="note mono">Vista previa · datos de muestra</div>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">02 · La solución</div>
+    <h2>Del modelo central al reporte, sin tocar la fuente</h2>
+    <div class="flow">
+      <div class="step"><span class="mono">Fuente</span><b>Modelo central</b><p>Modelo financiero compartido, en solo lectura: no se modifica ni se publica.</p></div>
+      <div class="step"><span class="mono">Modelo local</span><b>Compuesto</b><p>DirectQuery al modelo central más medidas, calendario y tablas auxiliares propias.</p></div>
+      <div class="step"><span class="mono">Cuadre</span><b>Contra el Excel</b><p>Las cifras se cuadran contra el reporte mensual; el último mes cerrado se calcula con una regla explícita.</p></div>
+      <div class="step"><span class="mono">Reporte</span><b>8 páginas</b><p>Resumen, programas, sobregiros, geografía, comentarios y detalle con drill-through, también en móvil.</p></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">03 · El tablero</div>
+    <h2>Resumen ejecutivo, interactivo</h2>
+    <p class="intro">Recreación con datos de muestra. Elige el último mes cerrado: los KPIs, la gráfica y la ejecución por unidad se recalculan contra el ritmo lineal.</p>
+    <div class="win">
+      <div class="win__bar"><span class="dots"><i></i><i></i><i></i></span><span class="url mono">powerbi · presupuesto-vs-gasto / resumen</span></div>
+      <div class="db">
+        <div class="db__top"><span class="db__lbl">Mes cerrado</span><div class="seg" id="months" role="group" aria-label="Mes cerrado"></div></div>
+        <div class="kpis">
+          <div class="k"><span class="mono">Presupuesto anual</span><b id="k-bud">—</b><small id="k-bud-s"></small></div>
+          <div class="k"><span class="mono">Gasto real acumulado</span><b id="k-act">—</b><small id="k-act-s"></small></div>
+          <div class="k"><span class="mono">Compromisos</span><b id="k-com">—</b><small id="k-com-s"></small></div>
+          <div class="k k--hl"><span class="mono">Gasto real vs presupuesto</span><b id="k-pct">—</b><small id="k-pct-s"></small></div>
+        </div>
+        <div class="charts">
+          <div class="panel"><span class="mono">Gasto real mensual: año actual vs anterior</span><svg id="ch" viewBox="0 0 560 230" role="img" aria-label="Barras de gasto mensual del año actual contra el anterior"></svg><div class="legend"><span><i style="background:#B8E08C"></i>Año actual</span><span><i style="background:#56585E"></i>Año anterior</span></div></div>
+          <div class="panel"><span class="mono">Ejecución por unidad</span><ul class="exe" id="exe"></ul><div class="legend"><span><i style="background:#B8E08C"></i>Gasto real</span><span><i style="background:#3B4FE0"></i>Compromisos</span><span><i style="background:rgba(169,180,242,.35)"></i>Presupuesto</span><span><i class="ln"></i>Ritmo lineal</span></div></div>
+        </div>
+      </div>
+      <div class="win__foot mono">Recreación · datos de muestra</div>
+    </div>
+    <p class="note">Las cifras y los nombres de unidades son ilustrativos. La barra repite un solo lenguaje visual en todo el reporte: gasto real y compromisos sobre la pista del presupuesto, con el ritmo lineal como referencia. El estado nunca se indica solo con color: lleva ▲ / ▼ y texto.</p>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">04 · Las páginas</div>
+    <h2>Del resumen a la transacción</h2>
+    <ol class="pages">
+      <li><b>Resumen</b><p>KPIs del año, gasto mensual contra el año anterior y ejecución por unidad.</p></li>
+      <li><b>Programas y proyectos</b><p>Programas principales por portafolio con su avance contra el presupuesto.</p></li>
+      <li><b>Sobregiros</b><p>Lista de vigilancia de lo que va por encima del ritmo o del presupuesto.</p></li>
+      <li><b>Geografía</b><p>Ejecución por país y oficina regional.</p></li>
+      <li><b>Comentarios</b><p>Notas de los responsables junto a las cifras (integración en curso).</p></li>
+      <li><b>Detalle de proyecto</b><p>Drill-through a categorías de gasto de un proyecto.</p></li>
+      <li><b>Transacciones y compromisos</b><p>El renglón que explica cada cifra.</p></li>
+      <li><b>Tooltip de KPI</b><p>Contexto al pasar el cursor: año anterior y ritmo.</p></li>
+    </ol>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">05 · Cómo se construyó</div>
+    <div class="built">
+      <div>
+        <h2>Con un equipo de agentes</h2>
+        <p>Lo construyó el equipo de agentes del AI Lab: un orquestador con analista de datos, data engineer, diseñador UX/UI y documentador, por etapas y con un plan aprobado antes de construir.</p>
+        <p style="margin-top:14px"><a class="btn" href="../index.html#lab-bi-agents">Ver el equipo de agentes →</a></p>
+      </div>
+      <ul>
+        <li>El reporte y el modelo se generan con scripts, no a mano.</li>
+        <li>Antes de cada cambio se hace un respaldo y queda registrado.</li>
+        <li>Si falta un dato, se registra como pregunta abierta o supuesto, no se inventa.</li>
+        <li>Cada entrega declara su nivel de validación: preparado, revisado o validado en Power BI.</li>
+      </ul>
+    </div>
+  </section>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap">
+    <a class="btn" href="portfolio-overview.html">Ver el caso de portafolio →</a>
+    <a class="btn btn--ghost" href="../index.html#dashboards">Todos los dashboards</a>
   </div>
 </main>
 <footer class="mono"><span>Rodrigo Mendoza Cortés · Agentic AI &amp; Data Engineer</span><a href="../index.html">rmendoza-code.github.io</a></footer>
+
+<script>
+(function(){
+  /* datos de muestra: presupuesto anual por unidad (millones USD), ritmo de gasto relativo y compromisos */
+  var U=[
+    {n:'Investigación aplicada',b:14.2,r:.92,c:.11},
+    {n:'Programas regionales',b:9.6,r:1.12,c:.14},
+    {n:'Operaciones',b:7.4,r:.97,c:.08},
+    {n:'Tecnología y datos',b:5.8,r:1.21,c:.10},
+    {n:'Alianzas',b:4.3,r:.74,c:.17},
+    {n:'Finanzas y RR. HH.',b:3.6,r:1.02,c:.05},
+    {n:'Dirección general',b:3.1,r:.88,c:.04}
+  ];
+  var W=[.055,.065,.08,.075,.085,.08,.09,.07,.085,.09,.095,.13];
+  var WPY=[.06,.07,.075,.08,.08,.085,.085,.075,.08,.085,.095,.13];
+  var PY=44.5, MES=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  var CLOSED=9, cur=8;
+  var $=function(id){return document.getElementById(id)};
+  var BUD=U.reduce(function(s,u){return s+u.b},0);
+  function cum(a,m){var s=0;for(var i=0;i<=m;i++)s+=a[i];return s}
+  function cy(i){return U.reduce(function(s,u){return s+u.b*u.r*W[i]},0)}
+  function M(v){return '$'+v.toFixed(1)+'M'}
+  function render(){
+    $('months').innerHTML=MES.slice(0,CLOSED).map(function(m,i){return '<button type="button" class="'+(i===cur?'on':'')+'" data-i="'+i+'" aria-pressed="'+(i===cur)+'">'+m+'</button>'}).join('');
+    [].forEach.call($('months').querySelectorAll('button'),function(b){b.onclick=function(){cur=+b.dataset.i;render()}});
+    var pace=(cur+1)/12, act=0, com=0, pyAct=PY*cum(WPY,cur);
+    for(var i=0;i<=cur;i++)act+=cy(i);
+    U.forEach(function(u){com+=u.b*u.c});
+    var pct=act/BUD*100, gap=pct-pace*100, d=(act-pyAct)/pyAct*100;
+    $('k-bud').textContent=M(BUD); $('k-bud-s').innerHTML='<span>Año anterior</span> '+M(PY)+' · ▲ '+((BUD-PY)/PY*100).toFixed(1)+'%';
+    $('k-act').textContent=M(act); $('k-act-s').innerHTML='<span class="'+(d>=0?'up':'down')+'">'+(d>=0?'▲ ':'▼ ')+Math.abs(d).toFixed(1)+'%</span> <span>vs mismo periodo del año anterior</span>';
+    $('k-com').textContent=M(com); $('k-com-s').innerHTML=(com/BUD*100).toFixed(1)+'% <span>del presupuesto</span>';
+    $('k-pct').textContent=pct.toFixed(1)+'%'; $('k-pct-s').innerHTML='<span class="'+(gap>0?'up':'down')+'">'+(gap>0?'▲ ':'▼ ')+Math.abs(gap).toFixed(1)+' pp</span> <span>'+(gap>0?'sobre el ritmo lineal':'bajo el ritmo lineal')+'</span> ('+(pace*100).toFixed(1)+'%)';
+    /* gráfica mensual */
+    var Wd=560,H=230,L=36,B=24,T=12,max=6,bw=(Wd-L-6)/12,s='';
+    for(var g=0;g<=max;g+=2){var y=H-B-(g/max)*(H-B-T); s+='<line x1="'+L+'" x2="'+Wd+'" y1="'+y+'" y2="'+y+'" stroke="rgba(237,237,237,.08)"/><text x="'+(L-6)+'" y="'+(y+3)+'" text-anchor="end">'+g+'M</text>';}
+    for(i=0;i<12;i++){
+      var x=L+i*bw+bw*.16,w=bw*.32,p=PY*WPY[i],hp=p/max*(H-B-T);
+      s+='<rect x="'+x+'" y="'+(H-B-hp)+'" width="'+w+'" height="'+hp+'" fill="#56585E" rx="2"/>';
+      if(i<=cur){var c=cy(i),hc=c/max*(H-B-T);s+='<rect x="'+(x+w+2)+'" y="'+(H-B-hc)+'" width="'+w+'" height="'+hc+'" fill="#B8E08C" rx="2"/>';}
+      s+='<text x="'+(x+w+1)+'" y="'+(H-6)+'" text-anchor="middle"'+(i===cur?' style="fill:#EDEDED"':'')+'>'+MES[i]+'</text>';
+    }
+    $('ch').innerHTML=s;
+    /* ejecución por unidad, ordenada por desviación contra el ritmo */
+    var rows=U.map(function(u){var a=u.b*u.r*cum(W,cur);return {n:u.n,a:a/u.b,c:u.c,dev:a/u.b-pace}}).sort(function(x,y){return y.dev-x.dev});
+    $('exe').innerHTML=rows.map(function(r){
+      var a=Math.min(r.a,1)*100,c=Math.max(0,Math.min(r.a+r.c,1)*100-a),over=r.dev>.05;
+      return '<li><span>'+r.n+'</span><b class="'+(over?'flag':'')+'">'+(r.a*100).toFixed(1)+'%'+(over?' ▲':'')+'</b><span class="exe__bar"><i class="a" style="width:'+a+'%"></i><i class="c" style="left:'+a+'%;width:'+c+'%"></i><u style="left:'+(pace*100)+'%"></u></span></li>';
+    }).join('');
+    if(window.I18N&&I18N.refresh)I18N.refresh();
+  }
+  render();
+})();
+</script>
 <script src="../assets/i18n.js"></script>
 <script>
 I18N.register({
-  "← Volver al portafolio": "← Back to portfolio",
-  "En construcción": "In progress",
-  "Financial Execution Report": "Financial Execution Report",
-  "Reporte de ejecución financiera con página de comentarios integrada vía Microsoft Forms → Power Automate → SharePoint, renderizada con HTML Viewer.": "Financial execution report with an embedded comment-capture page via Microsoft Forms → Power Automate → SharePoint, rendered with HTML Viewer.",
-  "Este caso de estudio se está documentando — del levantamiento del requerimiento al dashboard interactivo, igual que el de Procurement.": "This case study is being documented — from requirement gathering to the interactive dashboard, just like the Procurement one.",
-  "Ver el caso de Procurement →": "See the Procurement case →",
-  "Ir al AI Lab": "Go to the AI Lab",
-  "Vista previa · datos de muestra": "Preview · sample data"
+  "← Volver al portafolio":"← Back to portfolio","En desarrollo":"In development","Finanzas":"Finance","Datos de muestra":"Sample data",
+  "Presupuesto vs gasto real":"Budget vs actual expenses",
+  "Cada mes, Finanzas armaba a mano un Excel con el presupuesto contra el gasto real de cada unidad y programa. Este dashboard lo reemplaza: muestra la ejecución contra el presupuesto, detecta sobregiros y permite bajar del resumen ejecutivo hasta el proyecto y sus transacciones.":"Every month, Finance built an Excel file by hand comparing budget against actual expenses for each unit and program. This dashboard replaces it: it shows execution against budget, flags overspending and lets you drill from the executive summary down to the project and its transactions.",
+  "Modelo compuesto · DirectQuery":"Composite model · DirectQuery","Equipo de agentes":"Agent team",
+  "01 · El problema":"01 · The problem","Un Excel mensual para tres audiencias":"One monthly Excel for three audiences",
+  "El mismo archivo tenía que servirle a dirección, a los directores de programa y a quien administra cada presupuesto. Cada mes había que reconstruirlo, y bajar al detalle de un proyecto significaba abrir otro reporte.":"The same file had to serve leadership, program directors and each budget holder. It had to be rebuilt every month, and drilling into a project meant opening another report.",
+  "Dirección":"Leadership","¿Vamos al ritmo?":"Are we on pace?","Ejecución total contra el presupuesto anual y contra el ritmo lineal del año.":"Total execution against the annual budget and the year’s linear pace.",
+  "Directores de programa":"Program directors","¿Quién se sobregira?":"Who is overspending?","Comparar unidades y programas, y ver primero los que van por encima del ritmo.":"Compare units and programs, and see first the ones running ahead of pace.",
+  "Responsables de presupuesto":"Budget holders","¿Qué hay detrás?":"What’s behind it?","Bajar del programa al proyecto, sus categorías de gasto, transacciones y compromisos.":"Drill from program to project, its spending categories, transactions and commitments.",
+  "02 · La solución":"02 · The solution","Del modelo central al reporte, sin tocar la fuente":"From the central model to the report, without touching the source",
+  "Fuente":"Source","Modelo central":"Central model","Modelo financiero compartido, en solo lectura: no se modifica ni se publica.":"Shared financial model, read-only: it is never modified or republished.",
+  "Modelo local":"Local model","Compuesto":"Composite","DirectQuery al modelo central más medidas, calendario y tablas auxiliares propias.":"DirectQuery to the central model plus its own measures, calendar and helper tables.",
+  "Cuadre":"Reconciliation","Contra el Excel":"Against the Excel","Las cifras se cuadran contra el reporte mensual; el último mes cerrado se calcula con una regla explícita.":"Figures are reconciled against the monthly report; the last closed month comes from an explicit rule.",
+  "Reporte":"Report","8 páginas":"8 pages","Resumen, programas, sobregiros, geografía, comentarios y detalle con drill-through, también en móvil.":"Summary, programs, overspending, geography, comments and drill-through detail, mobile included.",
+  "03 · El tablero":"03 · The dashboard","Resumen ejecutivo, interactivo":"Executive summary, interactive",
+  "Recreación con datos de muestra. Elige el último mes cerrado: los KPIs, la gráfica y la ejecución por unidad se recalculan contra el ritmo lineal.":"Recreation with sample data. Pick the last closed month: KPIs, the chart and execution by unit recalculate against the linear pace.",
+  "Mes cerrado":"Closed month","Presupuesto anual":"Annual budget","Gasto real acumulado":"Actuals YTD","Compromisos":"Commitments","Gasto real vs presupuesto":"Actuals vs budget",
+  "Gasto real mensual: año actual vs anterior":"Monthly actuals: current vs previous year","Año actual":"Current year","Año anterior":"Previous year",
+  "Ejecución por unidad":"Execution by unit","Gasto real":"Actuals","Presupuesto":"Budget","Ritmo lineal":"Linear pace",
+  "Recreación · datos de muestra":"Recreation · sample data",
+  "Las cifras y los nombres de unidades son ilustrativos. La barra repite un solo lenguaje visual en todo el reporte: gasto real y compromisos sobre la pista del presupuesto, con el ritmo lineal como referencia. El estado nunca se indica solo con color: lleva ▲ / ▼ y texto.":"Figures and unit names are illustrative. The bar repeats one visual language across the whole report: actuals and commitments on the budget track, with the linear pace as reference. Status is never shown by color alone: it carries ▲ / ▼ and text.",
+  "Investigación aplicada":"Applied research","Programas regionales":"Regional programs","Operaciones":"Operations","Tecnología y datos":"Technology & data","Alianzas":"Partnerships","Finanzas y RR. HH.":"Finance & HR","Dirección general":"Executive office",
+  "Ene":"Jan","Abr":"Apr","Ago":"Aug","Dic":"Dec",
+  "04 · Las páginas":"04 · The pages","Del resumen a la transacción":"From summary to transaction",
+  "Resumen":"Summary","KPIs del año, gasto mensual contra el año anterior y ejecución por unidad.":"Year KPIs, monthly spend against the previous year and execution by unit.",
+  "Programas y proyectos":"Programs & projects","Programas principales por portafolio con su avance contra el presupuesto.":"Top programs by portfolio with progress against budget.",
+  "Sobregiros":"Overspending","Lista de vigilancia de lo que va por encima del ritmo o del presupuesto.":"Watchlist of what runs ahead of pace or over budget.",
+  "Geografía":"Geography","Ejecución por país y oficina regional.":"Execution by country and regional office.",
+  "Comentarios":"Comments","Notas de los responsables junto a las cifras (integración en curso).":"Owners’ notes next to the figures (integration in progress).",
+  "Detalle de proyecto":"Project detail","Drill-through a categorías de gasto de un proyecto.":"Drill-through to a project’s spending categories.",
+  "Transacciones y compromisos":"Transactions & commitments","El renglón que explica cada cifra.":"The line that explains each figure.",
+  "Tooltip de KPI":"KPI tooltip","Contexto al pasar el cursor: año anterior y ritmo.":"Context on hover: previous year and pace.",
+  "05 · Cómo se construyó":"05 · How it was built","Con un equipo de agentes":"With an agent team",
+  "Lo construyó el equipo de agentes del AI Lab: un orquestador con analista de datos, data engineer, diseñador UX/UI y documentador, por etapas y con un plan aprobado antes de construir.":"It was built by the AI Lab agent team: an orchestrator with a data analyst, data engineer, UX/UI designer and documenter, in stages and with a plan approved before building.",
+  "Ver el equipo de agentes →":"See the agent team →",
+  "El reporte y el modelo se generan con scripts, no a mano.":"The report and the model are generated by scripts, not by hand.",
+  "Antes de cada cambio se hace un respaldo y queda registrado.":"Every change is backed up and logged first.",
+  "Si falta un dato, se registra como pregunta abierta o supuesto, no se inventa.":"Missing data is logged as an open question or an assumption, never invented.",
+  "Cada entrega declara su nivel de validación: preparado, revisado o validado en Power BI.":"Each delivery states its validation level: prepared, reviewed or validated in Power BI.",
+  "vs mismo periodo del año anterior":"vs same period last year","del presupuesto":"of budget","sobre el ritmo lineal":"above linear pace","bajo el ritmo lineal":"below linear pace",
+  "Ver el caso de portafolio →":"See the portfolio case →","Todos los dashboards":"All dashboards"
 });
 I18N.init();
 </script>

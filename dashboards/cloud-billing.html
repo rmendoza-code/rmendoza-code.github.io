@@ -7,37 +7,24 @@
 <meta name="robots" content="index, follow" />
 <meta name="theme-color" content="#E8E8E8" />
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; object-src 'none'; base-uri 'self'" />
-<title>Cloud billing unificado · Rodrigo Mendoza Cortés</title>
-<meta name="description" content="Caso: automatizar la consolidación de reportes mensuales de consumo cloud y un tablero analítico para dirección. Recreación con datos de muestra." />
+<title>Consumo cloud · Rodrigo Mendoza Cortés</title>
+<meta name="description" content="Caso: dashboard de Power BI sobre el consumo mensual de recursos en la nube: cuánto hubo, cuánto cambió, qué recursos lo explican y si los datos son confiables. Recreación con datos de muestra." />
 <link rel="canonical" href="https://rmendoza-code.github.io/dashboards/cloud-billing.html" />
 <meta property="og:image" content="https://rmendoza-code.github.io/assets/og-image.png" />
 <link rel="icon" href="../assets/site/img/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="../assets/site/case.css" />
+<link rel="stylesheet" href="../assets/site/db.css" />
 <style>
-.db{padding:18px;display:grid;gap:14px}
-.db__top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-.months{display:flex;gap:4px;flex-wrap:wrap;background:#0E0F11;padding:4px;border-radius:12px}
-.months button{font-family:"JBMono",monospace;font-size:12px;min-height:34px;padding:0 12px;border:0;border-radius:9px;background:transparent;color:var(--dk-muted);cursor:pointer}
-.months button.on{background:var(--lime);color:var(--ink)}
-.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.k{background:var(--dk-2);border-radius:14px;padding:14px 16px}
-.k .mono{color:var(--dk-muted);font-size:10.5px}
-.k b{display:block;font-weight:800;font-stretch:66%;font-size:44px;line-height:1;margin-top:8px;font-variant-numeric:tabular-nums}
-.k small{font-family:"JBMono",monospace;font-size:11px;color:var(--dk-muted)}
-.up{color:#FF8A7A}.down{color:var(--lime)}
-.charts{display:grid;grid-template-columns:1.4fr 1fr;gap:10px}
-.panel{background:var(--dk-2);border-radius:14px;padding:14px 16px}
-.panel .mono{color:var(--dk-muted);font-size:10.5px}
-.panel svg{width:100%;height:auto;display:block;margin-top:8px}
-.panel svg text{font-family:"JBMono",monospace;font-size:10px;fill:var(--dk-muted)}
-.rank{list-style:none;display:grid;gap:10px;margin-top:12px}
-.rank li{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:13px}
-.rank li i{grid-column:1/-1;height:8px;border-radius:4px;background:#2D2E32;position:relative;overflow:hidden}
-.rank li i::after{content:"";position:absolute;inset:0;width:var(--w);background:var(--c);border-radius:4px;transition:width .8s var(--ease-out)}
-.rank b{font-family:"JBMono",monospace;font-size:11px}
-.legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px;font-family:"JBMono",monospace;font-size:10.5px;color:var(--dk-muted)}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
-@media(max-width:900px){.charts,.kpis{grid-template-columns:1fr}}
+.inc{list-style:none;display:grid;gap:9px;margin-top:12px}
+.inc li{display:grid;grid-template-columns:minmax(0,130px) 1fr auto;gap:10px;align-items:center;font-size:12px}
+.inc li span{font-family:"JBMono",monospace;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.inc li i{height:10px;border-radius:3px;background:#FF8A7A;width:var(--w);transition:width .8s var(--ease-out)}
+.inc li i.neg{background:var(--lime)}
+.inc li b{font-family:"JBMono",monospace;font-size:11px;font-weight:500}
+.gross{display:flex;gap:24px;margin-top:12px;font-family:"JBMono",monospace;font-size:11px;color:var(--dk-muted)}
+.gross b{display:block;font-size:15px;color:#EDEDED;margin-top:2px}
+.tbl td.res{font-family:"JBMono",monospace;font-size:11.5px}
+.share{display:inline-block;height:8px;border-radius:3px;background:#A9B4F2;vertical-align:middle;margin-right:8px}
 </style>
 </head>
 <body>
@@ -48,115 +35,214 @@
 
 <main class="wrap">
   <section class="hero">
-    <div class="kick"><span class="pill pill--lime pill--dot mono">En desarrollo</span><span class="pill mono">CIMMYT</span><span class="pill mono">Datos de muestra</span></div>
-    <h1>Cloud billing unificado</h1>
-    <p class="lead">Cada mes llega un archivo de Excel con el consumo cloud del mes y se guarda en SharePoint. Dirección necesita una vista estrictamente analítica: qué se consume y qué fuentes cuestan más. El reto es que el tablero se actualice solo cuando llega el archivo nuevo.</p>
-    <div class="tags"><span>SharePoint</span><span>Consumo de Microsoft Fabric</span><span>Power BI</span><span>Automatización</span></div>
+    <div class="kick"><span class="pill pill--lime pill--dot mono">En desarrollo</span><span class="pill mono">Datos y analítica</span><span class="pill mono">Datos de muestra</span></div>
+    <h1>Consumo cloud</h1>
+    <p class="lead">Los archivos de uso de la nube traen el importe de cada recurso, renglón por renglón. El área necesitaba responder cada mes cuánto hubo, cuánto cambió frente al mes anterior, qué recursos explican el cambio y si los datos son confiables. Este dashboard responde esas cuatro preguntas.</p>
+    <div class="tags"><span>Power BI</span><span>Microsoft Fabric</span><span>DAX</span><span>Drill-through</span><span>Equipo de agentes</span></div>
   </section>
 
   <section class="sec">
     <div class="topic mono">01 · El problema</div>
-    <h2>Doce archivos, cero vista de conjunto</h2>
-    <p class="intro">Un archivo por mes funciona para consultar un mes. Para responder “¿qué está creciendo?” o “¿qué fuente cuesta más este año?”, alguien tenía que juntar los archivos a mano.</p>
+    <h2>Miles de renglones, una pregunta: ¿qué subió?</h2>
+    <p class="intro">El total del mes no basta. Para actuar hay que saber qué recurso explica el aumento, separar lo que solo aparece en uno de los dos meses y confiar en que la cifra coincide con la fuente.</p>
     <div class="grid3">
-      <div class="fact"><span class="mono">Audiencia</span><b>Dirección</b><p>Decisiones de presupuesto y capacidad: nada de detalle operativo, solo lo que mueve el costo.</p></div>
-      <div class="fact"><span class="mono">Pregunta 1</span><b>¿Qué se consume?</b><p>Consumo total por mes y su tendencia.</p></div>
-      <div class="fact"><span class="mono">Pregunta 2</span><b>¿Qué cuesta más?</b><p>Ranking de fuentes de consumo y su participación en el total.</p></div>
+      <div class="fact"><span class="mono">Cuánto</span><b>¿Cuánto hubo y cuánto cambió?</b><p>Importe a precio de lista del mes y su variación contra el mes anterior.</p></div>
+      <div class="fact"><span class="mono">Qué</span><b>¿Qué revisar primero?</b><p>Los recursos que más subieron, con subidas, bajadas, nuevos y faltantes separados.</p></div>
+      <div class="fact"><span class="mono">Confianza</span><b>¿Los datos cuadran?</b><p>Una página de auditoría compara contra el modelo central y muestra filas con problemas.</p></div>
     </div>
   </section>
 
   <section class="sec">
     <div class="topic mono">02 · La solución</div>
-    <h2>Del archivo mensual al tablero, sin copiar y pegar</h2>
+    <h2>Del archivo de uso a una prioridad de revisión</h2>
     <div class="flow">
-      <div class="step"><span class="mono">Fuente</span><b>Excel mensual</b><p>Un archivo nuevo por mes en una carpeta de SharePoint.</p></div>
-      <div class="step"><span class="mono">Automatización</span><b>Consolidar</b><p>Cada archivo nuevo se une al histórico con la misma estructura.</p></div>
-      <div class="step"><span class="mono">Modelo</span><b>Histórico único</b><p>Una sola tabla de consumo por mes y fuente, lista para medir.</p></div>
-      <div class="step"><span class="mono">Consumo</span><b>Tablero ejecutivo</b><p>Tendencia, variación mensual y ranking de fuentes para dirección.</p></div>
+      <div class="step"><span class="mono">Fuente</span><b>Archivos de uso</b><p>Cantidad usada × precio de lista por recurso; se cargan a diario.</p></div>
+      <div class="step"><span class="mono">Modelo</span><b>Medidas locales</b><p>Un catálogo de más de 100 medidas DAX en el reporte, sin modificar el modelo central.</p></div>
+      <div class="step"><span class="mono">Análisis</span><b>Cambio explicado</b><p>Subidas, bajadas, recursos nuevos y faltantes, comparables mes contra mes.</p></div>
+      <div class="step"><span class="mono">Reporte</span><b>5 páginas</b><p>Resumen, cambios, detalle por recurso, vista mensual y auditoría de datos.</p></div>
     </div>
   </section>
 
   <section class="sec">
     <div class="topic mono">03 · El tablero</div>
-    <h2>Vista ejecutiva, interactiva</h2>
-    <p class="intro">Recreación con datos de muestra. Elige un mes: los KPIs, la tendencia y el ranking se recalculan.</p>
+    <h2>Resumen ejecutivo, interactivo</h2>
+    <p class="intro">Recreación con datos de muestra. Elige un mes: los KPIs, la prioridad de revisión, la tendencia y los rankings se recalculan.</p>
     <div class="win">
-      <div class="win__bar"><span class="dots"><i></i><i></i><i></i></span><span class="url mono">powerbi · cloud-billing / resumen-ejecutivo</span></div>
+      <div class="win__bar"><span class="dots"><i></i><i></i><i></i></span><span class="url mono">powerbi · consumo-cloud / resumen</span></div>
       <div class="db">
-        <div class="db__top"><span class="mono" style="color:var(--dk-muted)">Mes</span><div class="months" id="months" role="group" aria-label="Mes"></div></div>
+        <div class="db__top"><span class="db__lbl">Mes</span><div class="seg" id="months" role="group" aria-label="Mes"></div></div>
         <div class="kpis">
-          <div class="k"><span class="mono">Consumo del mes</span><b id="k-total">—</b><small>USD</small></div>
-          <div class="k"><span class="mono">Vs. mes anterior</span><b id="k-delta">—</b><small id="k-delta-s"></small></div>
-          <div class="k"><span class="mono">Fuente principal</span><b id="k-top">—</b><small id="k-top-s"></small></div>
+          <div class="k"><span class="mono">Importe a precio de lista</span><b id="k-tot">—</b><small id="k-tot-s"></small></div>
+          <div class="k"><span class="mono">Cambio vs mes anterior</span><b id="k-chg">—</b><small id="k-chg-s"></small></div>
+          <div class="k"><span class="mono">Recursos activos</span><b id="k-res">—</b><small id="k-res-s"></small></div>
+          <div class="k"><span class="mono">Grupos de recursos</span><b id="k-rg">—</b><small>con registros en el mes</small></div>
         </div>
+        <div class="callout"><div><span class="mono">Prioridad de revisión</span><span id="prio"></span></div></div>
         <div class="charts">
-          <div class="panel"><span class="mono">Consumo por mes y fuente</span><svg id="ch" viewBox="0 0 560 240" role="img" aria-label="Barras apiladas de consumo mensual por fuente"></svg><div class="legend" id="legend"></div></div>
-          <div class="panel"><span class="mono">Ranking de fuentes · mes</span><ul class="rank" id="rank"></ul></div>
+          <div class="panel"><span class="mono">Tendencia mensual</span><svg id="trend" viewBox="0 0 560 200" role="img" aria-label="Línea de tendencia del importe mensual"></svg></div>
+          <div class="panel"><span class="mono">Mayores aumentos · vs mes anterior</span><ul class="inc" id="inc"></ul><div class="gross"><span>Aumentos<b id="g-up">—</b></span><span>Disminuciones<b id="g-dn">—</b></span></div></div>
+        </div>
+        <div class="charts charts--even">
+          <div class="panel"><span class="mono">Importe por categoría</span><ul class="rank" id="cats"></ul></div>
+          <div class="panel"><span class="mono">Recursos con mayor importe</span><div class="tbl-wrap"><table class="tbl"><thead><tr><th>Recurso</th><th>Importe</th><th>% del total</th></tr></thead><tbody id="top"></tbody></table></div></div>
         </div>
       </div>
       <div class="win__foot mono">Recreación · datos de muestra</div>
     </div>
-    <p class="note">Las cifras y nombres de fuentes son ilustrativos; el diseño responde a las dos preguntas del área. El proyecto sigue en desarrollo.</p>
+    <p class="note">El importe a precio de lista no es la factura ni lo que se pagó: sirve para ver tendencias y qué recursos suben. Cifras y nombres de recursos son ilustrativos.</p>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">04 · Las páginas</div>
+    <h2>Del total al recurso</h2>
+    <ol class="pages">
+      <li><b>Resumen</b><p>KPIs del mes, prioridad de revisión, tendencia y rankings.</p></li>
+      <li><b>Cambios</b><p>Cómo se explica el cambio: subidas, bajadas, nuevos y faltantes.</p></li>
+      <li><b>Detalle de recurso</b><p>Drill-through: de dónde sale el importe de un recurso y su evolución.</p></li>
+      <li><b>Mensual</b><p>Reparto por grupo de recursos y por mes a lo largo del año.</p></li>
+      <li><b>Auditoría de datos</b><p>Filas con problemas y cuadre contra el modelo central.</p></li>
+      <li><b>Móvil</b><p>Diseño para teléfono de cada página.</p></li>
+      <li><b>Manual</b><p>Manual de usuario en español y en inglés.</p></li>
+      <li><b>Plantilla</b><p>El diseño quedó como base para los siguientes dashboards.</p></li>
+    </ol>
+  </section>
+
+  <section class="sec">
+    <div class="topic mono">05 · Cómo se construyó</div>
+    <div class="built">
+      <div>
+        <h2>Con un equipo de agentes</h2>
+        <p>Un orquestador planea, un implementador construye y un revisor acepta o rechaza; al cerrar cada plan, un documentador actualiza el manual. El usuario aprueba cada plan antes de que se ejecute.</p>
+        <p style="margin-top:14px"><a class="btn" href="../index.html#lab-bi-agents">Ver el equipo de agentes →</a></p>
+      </div>
+      <ul>
+        <li>El objetivo fue construir el dashboard completo solo con agentes, plan por plan.</li>
+        <li>Los ajustes manuales del usuario en Power BI pasan a ser el estándar.</li>
+        <li>El manual se mantiene en dos idiomas con la misma estructura.</li>
+        <li>El diseño final se documentó como plantilla reutilizable.</li>
+      </ul>
+    </div>
   </section>
 
   <div style="display:flex;gap:10px;flex-wrap:wrap">
-    <a class="btn" href="procurement-analytics.html">Ver el caso de Procurement →</a>
-    <a class="btn btn--ghost" href="../index.html#ai-lab">Ir al AI Lab</a>
+    <a class="btn" href="financial-execution.html">Ver el caso de presupuesto →</a>
+    <a class="btn btn--ghost" href="../index.html#dashboards">Todos los dashboards</a>
   </div>
 </main>
 <footer class="mono"><span>Rodrigo Mendoza Cortés · Agentic AI &amp; Data Engineer</span><a href="../index.html">rmendoza-code.github.io</a></footer>
 
 <script>
 (function(){
-  var SRC=[{n:'Notebooks Spark',c:'#B8E08C'},{n:'Pipelines',c:'#3B4FE0'},{n:'Warehouse',c:'#A9B4F2'},{n:'Modelos semánticos',c:'#EDEDED'},{n:'Otros',c:'#56585E'}];
-  var MES=['Abr','May','Jun','Jul','Ago','Sep'];
-  var D=[[3.1,2.2,1.6,1.1,.5],[3.4,2.3,1.7,1.2,.5],[3.2,2.6,1.8,1.2,.6],[3.9,2.7,1.9,1.3,.6],[4.3,2.8,2.1,1.4,.6],[4.8,2.9,2.2,1.5,.7]];
-  var cur=5;
+  /* datos de muestra: importe mensual (USD) por recurso, Feb–Jul */
+  var R=[
+    {n:'vm-app-prod-01',c:'Cómputo',g:'rg-apps-prod',v:[612,630,618,655,640,1148]},
+    {n:'sql-erp-prod',c:'Bases de datos',g:'rg-erp-prod',v:[905,918,931,940,955,972]},
+    {n:'st-datalake-prod',c:'Almacenamiento',g:'rg-data-prod',v:[520,548,571,590,612,640]},
+    {n:'fabric-cap-prod',c:'Analítica',g:'rg-data-prod',v:[780,780,780,820,820,820]},
+    {n:'aks-api-prod',c:'Cómputo',g:'rg-apps-prod',v:[455,470,462,498,505,531]},
+    {n:'vm-bi-dev-02',c:'Cómputo',g:'rg-dev',v:[210,230,198,260,244,402]},
+    {n:'sql-analytics-qa',c:'Bases de datos',g:'rg-analytics-qa',v:[260,255,262,270,268,281]},
+    {n:'vnet-hub-shared',c:'Redes',g:'rg-shared',v:[340,342,345,351,355,358]},
+    {n:'st-backup-archive',c:'Almacenamiento',g:'rg-shared',v:[188,190,195,199,204,208]},
+    {n:'log-analytics-prod',c:'Gestión',g:'rg-shared',v:[150,162,171,168,182,190]},
+    {n:'func-etl-prod',c:'Cómputo',g:'rg-data-prod',v:[96,101,99,110,118,121]},
+    {n:'synapse-ws-dev',c:'Analítica',g:'rg-dev',v:[230,226,240,0,0,0]},
+    {n:'vm-sandbox-01',c:'Cómputo',g:'rg-dev',v:[0,0,0,0,140,96]},
+    {n:'kv-secrets-prod',c:'Seguridad',g:'rg-shared',v:[18,18,19,19,20,20]},
+    {n:'apim-gateway',c:'Redes',g:'rg-apps-prod',v:[0,0,0,0,0,175]}
+  ];
+  var MES=['Feb','Mar','Abr','May','Jun','Jul'], cur=5;
   var $=function(id){return document.getElementById(id)};
-  var sum=function(a){return a.reduce(function(x,y){return x+y},0)};
-  function fmt(v){return '$'+(v*1000).toLocaleString('en-US',{maximumFractionDigits:0})}
+  function U(v,d){return (v<0?'-':'')+'$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:d==null?2:d,maximumFractionDigits:d==null?2:d})}
+  function tot(m){return R.reduce(function(s,r){return s+r.v[m]},0)}
   function render(){
     $('months').innerHTML=MES.map(function(m,i){return '<button type="button" class="'+(i===cur?'on':'')+'" data-i="'+i+'" aria-pressed="'+(i===cur)+'">'+m+'</button>'}).join('');
     [].forEach.call($('months').querySelectorAll('button'),function(b){b.onclick=function(){cur=+b.dataset.i;render()}});
-    var t=sum(D[cur]); $('k-total').textContent=fmt(t);
-    if(cur>0){var p=sum(D[cur-1]),d=(t-p)/p*100; $('k-delta').textContent=(d>=0?'+':'')+d.toFixed(1)+'%'; $('k-delta').className=d>=0?'up':'down'; $('k-delta-s').textContent=MES[cur-1]+' → '+MES[cur];}
-    else{$('k-delta').textContent='—';$('k-delta').className='';$('k-delta-s').textContent='';}
-    var order=D[cur].map(function(v,i){return i}).sort(function(a,b){return D[cur][b]-D[cur][a]});
-    $('k-top').textContent=(D[cur][order[0]]/t*100).toFixed(0)+'%'; $('k-top-s').textContent=SRC[order[0]].n;
-    $('rank').innerHTML=order.map(function(i){var v=D[cur][i];return '<li><span>'+SRC[i].n+'</span><b>'+fmt(v)+'</b><i style="--w:'+(v/D[cur][order[0]]*100).toFixed(0)+'%;--c:'+SRC[i].c+'"></i></li>'}).join('');
-    var W=560,H=240,L=34,B=24,T=10,max=12,bw=(W-L-10)/MES.length,s='';
-    for(var g=0;g<=12;g+=4){var y=H-B-(g/max)*(H-B-T); s+='<line x1="'+L+'" x2="'+W+'" y1="'+y+'" y2="'+y+'" stroke="rgba(237,237,237,.08)"/><text x="'+(L-6)+'" y="'+(y+3)+'" text-anchor="end">'+g+'k</text>';}
-    D.forEach(function(row,i){var y=H-B,x=L+i*bw+bw*.2,w=bw*.6;row.forEach(function(v,j){var h=v/max*(H-B-T);y-=h;s+='<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+SRC[j].c+'" opacity="'+(i===cur?1:.35)+'" rx="2"/>'});s+='<text x="'+(x+w/2)+'" y="'+(H-6)+'" text-anchor="middle">'+MES[i]+'</text>'});
-    $('ch').innerHTML=s;
-    $('legend').innerHTML=SRC.map(function(x){return '<span><i style="background:'+x.c+'"></i>'+x.n+'</span>'}).join('');
+    var t=tot(cur), act=R.filter(function(r){return r.v[cur]>0});
+    $('k-tot').textContent=U(t);
+    var groups={}; act.forEach(function(r){groups[r.g]=1}); $('k-rg').textContent=Object.keys(groups).length;
+    $('k-res').textContent=act.length;
+    if(cur>0){
+      var p=tot(cur-1), d=t-p;
+      $('k-tot-s').innerHTML='<span>Mes anterior</span> '+U(p);
+      $('k-chg').textContent=(d>=0?'+':'')+U(d); $('k-chg').className=d>=0?'up':'down';
+      $('k-chg-s').innerHTML=(d>=0?'▲ ':'▼ ')+Math.abs(d/p*100).toFixed(1)+'% <span>vs mes anterior</span>';
+      var nw=R.filter(function(r){return r.v[cur]>0&&r.v[cur-1]===0}).length, ms=R.filter(function(r){return r.v[cur]===0&&r.v[cur-1]>0}).length, cmp=R.filter(function(r){return r.v[cur]>0&&r.v[cur-1]>0}).length;
+      $('k-res-s').innerHTML=cmp+' <span>comparables</span> · '+nw+' <span>nuevos</span> · '+ms+' <span>faltantes</span>';
+      var ch=R.filter(function(r){return r.v[cur]>0&&r.v[cur-1]>0}).map(function(r){return {n:r.n,d:r.v[cur]-r.v[cur-1]}}).sort(function(a,b){return b.d-a.d});
+      var up=ch.filter(function(x){return x.d>0}), mx=up.length?up[0].d:1;
+      $('inc').innerHTML=up.slice(0,5).map(function(x){return '<li><span>'+x.n+'</span><i style="--w:'+(x.d/mx*100).toFixed(0)+'%"></i><b>+'+U(x.d)+'</b></li>'}).join('')||'<li><span>—</span></li>';
+      $('g-up').textContent=U(up.reduce(function(s,x){return s+x.d},0));
+      $('g-dn').textContent=U(ch.filter(function(x){return x.d<0}).reduce(function(s,x){return s+x.d},0));
+      $('prio').innerHTML=up.length?'<span>Revisar primero:</span> <code style="font-family:JBMono,monospace;font-size:12px;color:var(--lime)">'+up[0].n+'</code>. <span>Revisa medidores, uso y responsable antes de actuar.</span>':'<span>Sin aumentos comparables este mes.</span>';
+    }else{
+      $('k-tot-s').textContent='';$('k-chg').textContent='—';$('k-chg').className='';$('k-chg-s').textContent='';$('k-res-s').textContent='';
+      $('inc').innerHTML='<li><span>—</span></li>';$('g-up').textContent='—';$('g-dn').textContent='—';
+      $('prio').innerHTML='<span>Elige un mes con mes anterior para comparar.</span>';
+    }
+    /* tendencia */
+    var Wd=560,H=200,L=44,B=24,T=22,lo=4000,hi=7000,s='',pts=[];
+    for(var g=lo;g<=hi;g+=1000){var y=H-B-(g-lo)/(hi-lo)*(H-B-T);s+='<line x1="'+L+'" x2="'+Wd+'" y1="'+y+'" y2="'+y+'" stroke="rgba(237,237,237,.08)"/><text x="'+(L-6)+'" y="'+(y+3)+'" text-anchor="end">$'+g/1000+'K</text>';}
+    MES.forEach(function(m,i){var x=L+20+i*(Wd-L-40)/(MES.length-1),y=H-B-(tot(i)-lo)/(hi-lo)*(H-B-T);pts.push([x,y]);s+='<text x="'+x+'" y="'+(H-6)+'" text-anchor="middle"'+(i===cur?' style="fill:#EDEDED"':'')+'>'+m+'</text>'});
+    s+='<polyline points="'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1)}).join(' ')+'" fill="none" stroke="#A9B4F2" stroke-width="2"/>';
+    pts.forEach(function(p,i){s+='<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(i===cur?6:4)+'" fill="'+(i===cur?'#B8E08C':'#A9B4F2')+'"/>'+(i===cur?'<text x="'+p[0]+'" y="'+(p[1]-11)+'" text-anchor="middle" style="fill:#EDEDED">'+U(tot(i),0)+'</text>':'')});
+    $('trend').innerHTML=s;
+    /* categorías */
+    var cats={}; R.forEach(function(r){cats[r.c]=(cats[r.c]||0)+r.v[cur]});
+    var ck=Object.keys(cats).sort(function(a,b){return cats[b]-cats[a]}), cmax=cats[ck[0]];
+    $('cats').innerHTML=ck.map(function(k){return '<li><span>'+k+'</span><b>'+U(cats[k])+'</b><i style="--w:'+(cats[k]/cmax*100).toFixed(0)+'%;--c:#A9B4F2"></i></li>'}).join('');
+    /* top recursos */
+    var top=act.slice().sort(function(a,b){return b.v[cur]-a.v[cur]}).slice(0,6);
+    $('top').innerHTML=top.map(function(r){var sh=r.v[cur]/t*100;return '<tr><td class="res">'+r.n+'</td><td>'+U(r.v[cur])+'</td><td><span class="share" style="width:'+(sh*3).toFixed(0)+'px"></span>'+sh.toFixed(1)+'%</td></tr>'}).join('');
+    if(window.I18N&&I18N.refresh)I18N.refresh();
   }
   render();
-  document.addEventListener('languagechange',function(){ if(window.I18N) I18N.refresh && I18N.refresh(); });
 })();
 </script>
 <script src="../assets/i18n.js"></script>
 <script>
 I18N.register({
-  "← Volver al portafolio":"← Back to portfolio","En desarrollo":"In development","Datos de muestra":"Sample data",
-  "Cloud billing unificado":"Unified cloud billing",
-  "Cada mes llega un archivo de Excel con el consumo cloud del mes y se guarda en SharePoint. Dirección necesita una vista estrictamente analítica: qué se consume y qué fuentes cuestan más. El reto es que el tablero se actualice solo cuando llega el archivo nuevo.":"Every month an Excel file with that month’s cloud consumption lands in SharePoint. Leadership needs a strictly analytical view: what is consumed and which sources cost the most. The challenge is keeping the dashboard current on its own when the new file arrives.",
-  "Consumo de Microsoft Fabric":"Microsoft Fabric consumption","Automatización":"Automation",
-  "01 · El problema":"01 · The problem","Doce archivos, cero vista de conjunto":"Twelve files, no big picture",
-  "Un archivo por mes funciona para consultar un mes. Para responder “¿qué está creciendo?” o “¿qué fuente cuesta más este año?”, alguien tenía que juntar los archivos a mano.":"One file per month works to look at one month. To answer “what is growing?” or “which source costs the most this year?”, someone had to stitch the files together by hand.",
-  "Audiencia":"Audience","Dirección":"Leadership","Decisiones de presupuesto y capacidad: nada de detalle operativo, solo lo que mueve el costo.":"Budget and capacity decisions: no operational detail, only what drives cost.",
-  "Pregunta 1":"Question 1","¿Qué se consume?":"What is consumed?","Consumo total por mes y su tendencia.":"Total monthly consumption and its trend.",
-  "Pregunta 2":"Question 2","¿Qué cuesta más?":"What costs the most?","Ranking de fuentes de consumo y su participación en el total.":"Ranking of consumption sources and their share of the total.",
-  "02 · La solución":"02 · The solution","Del archivo mensual al tablero, sin copiar y pegar":"From the monthly file to the dashboard, no copy-paste",
-  "Fuente":"Source","Excel mensual":"Monthly Excel","Un archivo nuevo por mes en una carpeta de SharePoint.":"A new file every month in a SharePoint folder.",
-  "Consolidar":"Consolidate","Cada archivo nuevo se une al histórico con la misma estructura.":"Each new file is appended to the history with the same structure.",
-  "Modelo":"Model","Histórico único":"Single history","Una sola tabla de consumo por mes y fuente, lista para medir.":"One consumption table by month and source, ready to measure.",
-  "Consumo":"Consumption","Tablero ejecutivo":"Executive dashboard","Tendencia, variación mensual y ranking de fuentes para dirección.":"Trend, month-over-month change and source ranking for leadership.",
-  "03 · El tablero":"03 · The dashboard","Vista ejecutiva, interactiva":"Executive view, interactive",
-  "Recreación con datos de muestra. Elige un mes: los KPIs, la tendencia y el ranking se recalculan.":"Recreation with sample data. Pick a month: KPIs, trend and ranking recalculate.",
-  "Mes":"Month","Consumo del mes":"Month consumption","Vs. mes anterior":"Vs. previous month","Fuente principal":"Top source",
-  "Consumo por mes y fuente":"Consumption by month and source","Ranking de fuentes · mes":"Source ranking · month","Recreación · datos de muestra":"Recreation · sample data",
-  "Las cifras y nombres de fuentes son ilustrativos; el diseño responde a las dos preguntas del área. El proyecto sigue en desarrollo.":"Figures and source names are illustrative; the design answers the team’s two questions. The project is still in development.",
-  "Ver el caso de Procurement →":"See the Procurement case →","Ir al AI Lab":"Go to the AI Lab"
+  "← Volver al portafolio":"← Back to portfolio","En desarrollo":"In development","Datos y analítica":"Data & analytics","Datos de muestra":"Sample data",
+  "Consumo cloud":"Cloud consumption",
+  "Los archivos de uso de la nube traen el importe de cada recurso, renglón por renglón. El área necesitaba responder cada mes cuánto hubo, cuánto cambió frente al mes anterior, qué recursos explican el cambio y si los datos son confiables. Este dashboard responde esas cuatro preguntas.":"Cloud usage files carry the amount for each resource, line by line. The team needed to answer every month how much there was, how much it changed from the previous month, which resources explain the change and whether the data can be trusted. This dashboard answers those four questions.",
+  "Equipo de agentes":"Agent team",
+  "01 · El problema":"01 · The problem","Miles de renglones, una pregunta: ¿qué subió?":"Thousands of lines, one question: what went up?",
+  "El total del mes no basta. Para actuar hay que saber qué recurso explica el aumento, separar lo que solo aparece en uno de los dos meses y confiar en que la cifra coincide con la fuente.":"The monthly total isn’t enough. To act you need to know which resource explains the increase, separate what appears in only one of the two months, and trust that the figure matches the source.",
+  "Cuánto":"How much","¿Cuánto hubo y cuánto cambió?":"How much, and how much did it change?","Importe a precio de lista del mes y su variación contra el mes anterior.":"The month’s list-price amount and its change against the previous month.",
+  "Qué":"What","¿Qué revisar primero?":"What to review first?","Los recursos que más subieron, con subidas, bajadas, nuevos y faltantes separados.":"The resources that rose the most, with increases, decreases, new and missing kept apart.",
+  "Confianza":"Trust","¿Los datos cuadran?":"Does the data reconcile?","Una página de auditoría compara contra el modelo central y muestra filas con problemas.":"An audit page checks against the central model and shows problem rows.",
+  "02 · La solución":"02 · The solution","Del archivo de uso a una prioridad de revisión":"From the usage file to a review priority",
+  "Fuente":"Source","Archivos de uso":"Usage files","Cantidad usada × precio de lista por recurso; se cargan a diario.":"Quantity used × list price per resource; loaded daily.",
+  "Modelo":"Model","Medidas locales":"Local measures","Un catálogo de más de 100 medidas DAX en el reporte, sin modificar el modelo central.":"A catalog of more than 100 DAX measures in the report, without modifying the central model.",
+  "Análisis":"Analysis","Cambio explicado":"Explained change","Subidas, bajadas, recursos nuevos y faltantes, comparables mes contra mes.":"Increases, decreases, new and missing resources, comparable month over month.",
+  "Reporte":"Report","5 páginas":"5 pages","Resumen, cambios, detalle por recurso, vista mensual y auditoría de datos.":"Overview, changes, resource detail, monthly view and data audit.",
+  "03 · El tablero":"03 · The dashboard","Resumen ejecutivo, interactivo":"Executive overview, interactive",
+  "Recreación con datos de muestra. Elige un mes: los KPIs, la prioridad de revisión, la tendencia y los rankings se recalculan.":"Recreation with sample data. Pick a month: KPIs, review priority, trend and rankings recalculate.",
+  "Mes":"Month","Importe a precio de lista":"List-price amount","Cambio vs mes anterior":"Change vs previous month","Recursos activos":"Active resources","Grupos de recursos":"Resource groups","con registros en el mes":"with records in the month",
+  "Mes anterior":"Previous month","vs mes anterior":"vs previous month","comparables":"comparable","nuevos":"new","faltantes":"missing",
+  "Prioridad de revisión":"Review priority","Revisar primero:":"Review first:","Revisa medidores, uso y responsable antes de actuar.":"Check meters, usage and owner before acting.","Sin aumentos comparables este mes.":"No comparable increases this month.","Elige un mes con mes anterior para comparar.":"Pick a month that has a previous month to compare.",
+  "Tendencia mensual":"Monthly trend","Mayores aumentos · vs mes anterior":"Largest increases · vs previous month","Aumentos":"Increases","Disminuciones":"Decreases",
+  "Importe por categoría":"Amount by category","Recursos con mayor importe":"Highest-amount resources","Recurso":"Resource","Importe":"Amount","% del total":"% of total",
+  "Cómputo":"Compute","Bases de datos":"Databases","Almacenamiento":"Storage","Analítica":"Analytics","Redes":"Networking","Gestión":"Management","Seguridad":"Security",
+  "Abr":"Apr","Recreación · datos de muestra":"Recreation · sample data",
+  "El importe a precio de lista no es la factura ni lo que se pagó: sirve para ver tendencias y qué recursos suben. Cifras y nombres de recursos son ilustrativos.":"The list-price amount is not the invoice or what was paid: it shows trends and which resources are rising. Figures and resource names are illustrative.",
+  "04 · Las páginas":"04 · The pages","Del total al recurso":"From total to resource",
+  "Resumen":"Overview","KPIs del mes, prioridad de revisión, tendencia y rankings.":"Month KPIs, review priority, trend and rankings.",
+  "Cambios":"Changes","Cómo se explica el cambio: subidas, bajadas, nuevos y faltantes.":"How the change breaks down: increases, decreases, new and missing.",
+  "Detalle de recurso":"Resource detail","Drill-through: de dónde sale el importe de un recurso y su evolución.":"Drill-through: where a resource’s amount comes from and how it evolved.",
+  "Mensual":"Monthly","Reparto por grupo de recursos y por mes a lo largo del año.":"Split by resource group and by month across the year.",
+  "Auditoría de datos":"Data audit","Filas con problemas y cuadre contra el modelo central.":"Problem rows and reconciliation against the central model.",
+  "Móvil":"Mobile","Diseño para teléfono de cada página.":"Phone layout for every page.",
+  "Manual":"Manual","Manual de usuario en español y en inglés.":"User manual in Spanish and English.",
+  "Plantilla":"Template","El diseño quedó como base para los siguientes dashboards.":"The design became the base for the next dashboards.",
+  "05 · Cómo se construyó":"05 · How it was built","Con un equipo de agentes":"With an agent team",
+  "Un orquestador planea, un implementador construye y un revisor acepta o rechaza; al cerrar cada plan, un documentador actualiza el manual. El usuario aprueba cada plan antes de que se ejecute.":"An orchestrator plans, an implementer builds and a reviewer accepts or rejects; when each plan closes, a documenter updates the manual. The user approves every plan before it runs.",
+  "Ver el equipo de agentes →":"See the agent team →",
+  "El objetivo fue construir el dashboard completo solo con agentes, plan por plan.":"The goal was to build the whole dashboard with agents only, plan by plan.",
+  "Los ajustes manuales del usuario en Power BI pasan a ser el estándar.":"The user’s manual tweaks in Power BI become the standard.",
+  "El manual se mantiene en dos idiomas con la misma estructura.":"The manual is kept in two languages with the same structure.",
+  "El diseño final se documentó como plantilla reutilizable.":"The final design was documented as a reusable template.",
+  "Ver el caso de presupuesto →":"See the budget case →","Todos los dashboards":"All dashboards"
 });
 I18N.init();
 </script>

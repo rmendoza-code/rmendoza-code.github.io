@@ -20,8 +20,12 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 | `assets/site/case.css` | Estilos compartidos de las páginas de caso |
 | `assets/site/fonts/`, `img/` | Fuentes autoalojadas (Archivo, JetBrains Mono) e imágenes (figuras 3D en WebP) |
 | `dashboards/procurement-analytics.html` | Caso completo PR→PO con dashboard interactivo |
-| `dashboards/cloud-billing.html`, `training-app.html` | Casos CIMMYT con recreación interactiva (datos/contenido de muestra) |
-| `dashboards/financial-execution.html`, `rams-mantenimiento.html` | Páginas "en construcción" con vista previa |
+| `dashboards/financial-execution.html` | Caso "Presupuesto vs gasto real" (dashboard Budget vs Expenses, anonimizado) con recreación interactiva |
+| `dashboards/portfolio-overview.html` | Caso "Portafolio de proyectos" (reporte que reemplaza la PPT mensual de un portafolio regional, anonimizado) |
+| `dashboards/cloud-billing.html` | Caso "Consumo cloud" (dashboard de consumo Azure, anonimizado, recursos con nombres genéricos) |
+| `dashboards/training-app.html` | Caso Training App (todavía nombra a CIMMYT) |
+| `dashboards/rams-mantenimiento.html` | Página "en construcción" con vista previa |
+| `assets/site/db.css` | Estilos compartidos de las recreaciones interactivas (KPIs, barras de ejecución, tablas) |
 | `assets/i18n.js` + `I18N.register({...})` | Motor ES⇄EN de las páginas de `dashboards/` (traduce nodos de texto exactos) |
 | `lab/` | Exportaciones saneadas de agentes (Dify, n8n + MCP, Langflow RAG, Make) y proyecto TSP en Python, cada una con README |
 | `CV_Rodrigo_Mendoza_Cortes.pdf` | CV publicado (se genera desde `tools/cv/cv.html`) |
@@ -52,7 +56,7 @@ Sitio personal publicado con GitHub Pages en https://rmendoza-code.github.io —
 ## Pendientes / siguientes pasos
 1. **Proyecto insignia:** portar el concierge del hotel a Python + LangGraph (RAG con base vectorial, guardrails, validación de RFC, `interrupt()` para aprobación humana, evaluación, demo pública). Al terminar, actualizar `#lab-langgraph`, la matriz (◐ → ✓) y el CV.
 2. Confirmar estado de módulos 5–6 del diplomado (hoy marcados "En curso").
-3. Completar casos Financial Execution y RAMS (hoy "en construcción").
+3. Completar el caso RAMS (hoy "en construcción"). Los casos de dashboards de CIMMYT van anonimizados: sin logo, colores de marca, nombres de unidades, personas, recursos, workspaces ni cifras reales; las recreaciones usan datos inventados.
 4. Decidir si se nombra a CIMMYT en las páginas de caso o se generaliza.
 5. Limitar gasto de OpenAI del agente público de Dify.
 6. **Ahorro estimado** de los dos sistemas multiagente: falta el punto de partida de Rodrigo (horas manuales por caso, casos al mes, horas del Excel mensual). Fórmula: (horas manuales − horas de revisión) × casos/mes × costo/hora − costo de agentes. No publicar cifras de ahorro sin ese dato.
